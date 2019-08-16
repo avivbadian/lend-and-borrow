@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "394974100574",
-    "firebase_url": "https://lendandborrowclient.firebaseio.com",
-    "project_id": "lendandborrowclient",
-    "storage_bucket": "lendandborrowclient.appspot.com"
+    "project_number": "724948294724",
+    "firebase_url": "https://handy-d7cdd.firebaseio.com",
+    "project_id": "handy-d7cdd",
+    "storage_bucket": "handy-d7cdd.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:394974100574:android:7ebefdaadeeed76e",
+        "mobilesdk_app_id": "1:724948294724:android:7ebefdaadeeed76e",
         "android_client_info": {
           "package_name": "com.example.lendandborrowclient"
         }
       },
       "oauth_client": [
         {
-          "client_id": "394974100574-oqvtkcd167s628eieu7q367qsjc2256b.apps.googleusercontent.com",
+          "client_id": "724948294724-8j6a9m9mhd7j5gqpgpq7s0e9hmrbj6lq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.lendandborrowclient",
@@ -23,20 +23,20 @@
           }
         },
         {
-          "client_id": "394974100574-d0iusa4e29pg31jkhop2f1jhk1esmp9i.apps.googleusercontent.com",
+          "client_id": "724948294724-94naepm8av2atmf6m4jerg1ih07or2sg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD5_Q2UjC1PtWlxvhLdKAwBNOu2jJKMW0M"
+          "current_key": "AIzaSyCMts17ma7k-eXcYBkN8qFPWhNVe8odHKM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "394974100574-d0iusa4e29pg31jkhop2f1jhk1esmp9i.apps.googleusercontent.com",
+              "client_id": "724948294724-94naepm8av2atmf6m4jerg1ih07or2sg.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
