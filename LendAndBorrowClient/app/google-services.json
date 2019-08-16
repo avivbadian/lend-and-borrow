@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "394974100574",
+    "firebase_url": "https://lendandborrowclient.firebaseio.com",
+    "project_id": "lendandborrowclient",
+    "storage_bucket": "lendandborrowclient.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394974100574:android:7ebefdaadeeed76e",
+        "android_client_info": {
+          "package_name": "com.example.lendandborrowclient"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "394974100574-oqvtkcd167s628eieu7q367qsjc2256b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lendandborrowclient",
+            "certificate_hash": "ec5c59f298b1e8cc31c7ec894d8b97469e9033b1"
+          }
+        },
+        {
+          "client_id": "394974100574-d0iusa4e29pg31jkhop2f1jhk1esmp9i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5_Q2UjC1PtWlxvhLdKAwBNOu2jJKMW0M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "394974100574-d0iusa4e29pg31jkhop2f1jhk1esmp9i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
