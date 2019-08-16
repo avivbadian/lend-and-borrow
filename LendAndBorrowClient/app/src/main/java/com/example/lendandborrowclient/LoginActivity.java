@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     // Firebase
-    private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
 
     private ProgressDialog loadingBar;
@@ -37,7 +36,6 @@ public class LoginActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
 
         initializeFields();
 
@@ -103,8 +101,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void sendUserToMainActivity() {
-        Intent login = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(login);
+        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+
+        // Adds the new activity (main) to the lifecycle, removes the current (register activity) from the stack
+        // This is to make sure that after logging in, pressing back won't redirect to login activity.
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mainIntent);
+
+        // onPause() -> onStop() -> onDestroy() are called in that order.
+        finish();
     }
 
     private void sendUserToRegisterActivity() {

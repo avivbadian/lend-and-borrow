@@ -62,11 +62,6 @@ public class RegisterActivity extends AppCompatActivity {
         loadingBar = new ProgressDialog(this);
     }
 
-    private void sendUserToLoginActivity() {
-        Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-        startActivity(loginIntent);
-    }
-
     private void createNewAccount() {
         String email = userEmail.getText().toString();
         String password = userPassword.getText().toString();
@@ -91,7 +86,11 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    sendUserToLoginActivity();
+
+                    // TODO: Decide what data to keep in SQL db regarding each user.
+                    // String currentUserID = mAuth.getCurrentUser().getUid();
+                    
+                    sendUserToMainActivity();
                     Toast.makeText(RegisterActivity.this, "Account created successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     String message = task.getException().toString();
@@ -101,5 +100,22 @@ public class RegisterActivity extends AppCompatActivity {
                 loadingBar.dismiss();
             }
         });
+    }
+
+    private void sendUserToLoginActivity() {
+        Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+        startActivity(loginIntent);
+    }
+
+    private void sendUserToMainActivity() {
+        Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
+
+        // Adds the new activity (main) to the lifecycle, removes the current (register activity) from the stack
+        // This is to make sure that after logging in, pressing back won't redirect to login activity.
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mainIntent);
+
+        // onPause() -> onStop() -> onDestroy() are called in that order.
+        finish();
     }
 }
