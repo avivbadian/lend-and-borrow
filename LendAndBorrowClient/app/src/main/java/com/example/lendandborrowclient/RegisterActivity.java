@@ -13,10 +13,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.lendandborrowclient.Models.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -86,10 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-
-                    // TODO: Decide what data to keep in SQL db regarding each user.
-                    // String currentUserID = mAuth.getCurrentUser().getUid();
-                    
+                    saveNewAccount();
                     sendUserToMainActivity();
                     Toast.makeText(RegisterActivity.this, "Account created successfully", Toast.LENGTH_SHORT).show();
                 } else {
@@ -100,6 +108,40 @@ public class RegisterActivity extends AppCompatActivity {
                 loadingBar.dismiss();
             }
         });
+    }
+
+    private void saveNewAccount() {
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        String json = "";
+        User user = new User(currentUserId, "", "");
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        try {
+            json = ow.writeValueAsString(user);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        String url = "http://10.0.2.2:8080/users/";
+
+        JsonObjectRequest jsonObjectRequest = null;
+        try {
+            jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.POST, url, new JSONObject(json), new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            error.printStackTrace();
+                        }
+                    });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Access the RequestQueue through the singleton accessor
+        RequestsManager.getInstance(this).addToRequestQueue(jsonObjectRequest);
     }
 
     private void sendUserToLoginActivity() {
