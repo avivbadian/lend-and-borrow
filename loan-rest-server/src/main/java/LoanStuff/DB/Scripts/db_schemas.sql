@@ -1,7 +1,11 @@
+DROP TABLE users;
+DROP TABLE items;
+
 CREATE TABLE users(
-	id char(30) not null,
-	pass char(30) not null,
-	PRIMARY KEY (id)
+    uid char(30) not null,
+	username char(30) not null,
+	status char(30) not null,
+	PRIMARY KEY (uid)
 );
 
 CREATE TABLE items(

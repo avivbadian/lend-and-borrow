@@ -25,9 +25,10 @@ public class UsersControllers {
         try {
             rs = db.execQuery("SELECT * FROM users");
             while(rs.next()) {
-                String userName = rs.getString(1).trim();
-                String password = rs.getString(2).trim();
-                users.add(new User(){{id = userName; pass = password;}});
+                String uid = rs.getString(1).trim();
+                String userName = rs.getString(2).trim();
+                String status = rs.getString(3).trim();
+                users.add(new User(){{Uid = uid; Username = userName; Status = status;}});
             }
         } catch (SQLException e) {
             // TODO: log or something
@@ -37,12 +38,29 @@ public class UsersControllers {
         return users;
     }
 
+    @GetMapping("users/{id}")
+    public User getUserByUid(@PathVariable String id) {
+        ResultSet rs;
+        try {
+            rs = db.execQuery("SELECT * FROM users WHERE uid = '" + id + "'");
+            rs.next();
+            String uid = rs.getString(1).trim();
+            String userName = rs.getString(2).trim();
+            String status = rs.getString(3).trim();
+            return (new User(){{Uid = uid; Username = userName; Status = status;}});
+        } catch (SQLException e) {
+            // TODO: log or something
+            return null;
+        }
+    }
+
 
     @PostMapping("/users")
     public User createUser(@RequestBody User newUser){
         Map vals = new HashMap();
-        vals.put("id", newUser.id);
-        vals.put("pass", newUser.pass);
+        vals.put("uid", newUser.Uid);
+        vals.put("username", newUser.Username);
+        vals.put("status", newUser.Status);
 
         try {
             if (db.insert("users", vals) == 1) {
@@ -56,14 +74,15 @@ public class UsersControllers {
         return newUser;
     }
 
-    @PutMapping("users/{id}")
-    User updateUser(@RequestBody User newUser, @PathVariable String id){
+    @PutMapping("users/{uid}")
+    User updateUser(@RequestBody User newUser, @PathVariable String uid){
         Map vals = new HashMap();
-        vals.put("id", newUser.id);
-        vals.put("pass", newUser.pass);
+        vals.put("uid", newUser.Uid);
+        vals.put("username", newUser.Username);
+        vals.put("status", newUser.Status);
 
         try {
-            db.update("users", String.format( "id = '%s'", id), vals);
+            db.update("users", String.format( "uid = '%s'", uid), vals);
         } catch (SQLException e) {
             // TODO: log or something
             return null;
@@ -72,10 +91,10 @@ public class UsersControllers {
         return newUser;
     }
 
-    @DeleteMapping("users/{id}")
-    void deleteUser(@PathVariable String id){
+    @DeleteMapping("users/{uid}")
+    void deleteUser(@PathVariable String uid){
         try {
-            db.delete("users",  String.format("id = '%s'", id));
+            db.delete("users",  String.format("uid = '%s'", uid));
         } catch (SQLException e) {
             // TODO: log or something
         }
