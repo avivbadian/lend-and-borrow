@@ -15,13 +15,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.lendandborrowclient.Models.User;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -30,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button updateAccountSettings;
     private EditText userName, userStatus;
     private CircleImageView userProfileImage;
+    private ObjectMapper objMapper;
 
     private String currentUserId;
     private FirebaseAuth mAuth;
@@ -44,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         currentUserId = mAuth.getCurrentUser().getUid();
 
         initalizeFields();
+        objMapper = new ObjectMapper();
 
         updateAccountSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,11 +61,47 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+        
+        retrieveUserInfo();
+    }
+
+    private void retrieveUserInfo() {
+        String currentUserId = mAuth.getCurrentUser().getUid();
+        String url = "http://10.0.2.2:8080/users/" + currentUserId;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            User user = objMapper.readValue(response.toString(), User.class);
+                            if (!TextUtils.isEmpty(user.Username)) {
+                                userName.setText(user.Username);
+                                userStatus.setText(user.Status);
+                            } else {
+                                Toast.makeText(SettingsActivity.this, "Please update your profile", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JsonParseException e) {
+                            e.printStackTrace();
+                        } catch (JsonMappingException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+        // Access the RequestQueue through the singleton accessor
+        RequestsManager.getInstance(this).addToRequestQueue(jsonObjectRequest);
     }
 
     private void updateSettings() throws JSONException {
-        String setUsername = userName.getText().toString();
-        String setStatus = userStatus.getText().toString();
+        final String setUsername = userName.getText().toString();
+        final String setStatus = userStatus.getText().toString();
 
         if (TextUtils.isEmpty(setUsername)){
             Toast.makeText(this, "Please choose a user name...", Toast.LENGTH_SHORT).show();
@@ -68,8 +110,8 @@ public class SettingsActivity extends AppCompatActivity {
         } else {
 
             String json = "";
-            User user = new User(currentUserId, setUsername, setStatus);
-            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            User user = new User(){{Uid = currentUserId; Username = setUsername; Status = setStatus;}};
+            ObjectWriter ow = objMapper.writer().withDefaultPrettyPrinter();
             try {
                 json = ow.writeValueAsString(user);
             } catch (JsonProcessingException e) {

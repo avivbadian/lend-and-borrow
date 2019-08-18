@@ -111,9 +111,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void saveNewAccount() {
-        String currentUserId = mAuth.getCurrentUser().getUid();
+        final String currentUserId = mAuth.getCurrentUser().getUid();
         String json = "";
-        User user = new User(currentUserId, "", "");
+        User user = new User(){{Uid = currentUserId;}};
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         try {
             json = ow.writeValueAsString(user);

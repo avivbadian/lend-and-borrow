@@ -70,16 +70,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void verifyUser() {
         String currentUserId = mAuth.getCurrentUser().getUid();
-
         String url = "http://10.0.2.2:8080/users/" + currentUserId;
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            String username = response.getString("Username");
+                            String username = response.getString("username");
                             if (!TextUtils.isEmpty(username)) {
                                 Toast.makeText(MainActivity.this, "Welcome " + username, Toast.LENGTH_SHORT).show();
                             } else {
@@ -97,10 +95,8 @@ public class MainActivity extends AppCompatActivity {
                         sendUserToSettingsActivity();
                     }
                 });
-
         // Access the RequestQueue through the singleton accessor
         RequestsManager.getInstance(this).addToRequestQueue(jsonObjectRequest);
-
     }
 
     @Override
