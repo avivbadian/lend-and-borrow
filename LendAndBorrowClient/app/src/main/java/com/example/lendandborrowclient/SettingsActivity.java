@@ -49,6 +49,11 @@ public class SettingsActivity extends AppCompatActivity {
         currentUserId = mAuth.getCurrentUser().getUid();
 
         initalizeFields();
+
+        // User can update his username only one time.
+        userName.setVisibility(View.INVISIBLE);
+
+        // Used to deserialize JSON
         objMapper = new ObjectMapper();
 
         updateAccountSettings.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +84,8 @@ public class SettingsActivity extends AppCompatActivity {
                                 userName.setText(user.Username);
                                 userStatus.setText(user.Status);
                             } else {
+                                // User can update his username one time.
+                                userName.setVisibility(View.VISIBLE);
                                 Toast.makeText(SettingsActivity.this, "Please update your profile", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JsonParseException e) {

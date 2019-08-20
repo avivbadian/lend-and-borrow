@@ -27,6 +27,8 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile 'org.hibernate:hibernate-agroal:5.4.4.Final'
+    compile 'org.hibernate:hibernate-core:5.4.4.Final'
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

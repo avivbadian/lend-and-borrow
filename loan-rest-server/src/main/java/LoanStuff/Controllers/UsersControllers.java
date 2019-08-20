@@ -43,11 +43,14 @@ public class UsersControllers {
         ResultSet rs;
         try {
             rs = db.execQuery("SELECT * FROM users WHERE uid = '" + id + "'");
-            rs.next();
-            String uid = rs.getString(1).trim();
-            String userName = rs.getString(2).trim();
-            String status = rs.getString(3).trim();
-            return (new User(){{Uid = uid; Username = userName; Status = status;}});
+            if (rs.next()){
+                String uid = rs.getString(1).trim();
+                String userName = rs.getString(2).trim();
+                String status = rs.getString(3).trim();
+                return (new User(){{Uid = uid; Username = userName; Status = status;}});
+            }
+            // TODO: log not found
+            return null;
         } catch (SQLException e) {
             // TODO: log or something
             return null;
