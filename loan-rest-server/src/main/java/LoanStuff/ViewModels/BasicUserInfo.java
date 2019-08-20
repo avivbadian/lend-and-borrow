@@ -1,9 +1,8 @@
-package LoanStuff.Api;
+package LoanStuff.ViewModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class User {
-
+public class BasicUserInfo {
     @JsonProperty("uid")
     public String Uid;
 
@@ -12,6 +11,4 @@ public class User {
 
     @JsonProperty("status")
     public String Status;
-
-    // Must have default empty ctor for deserialize
 }
