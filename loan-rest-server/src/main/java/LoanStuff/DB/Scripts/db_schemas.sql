@@ -7,12 +7,11 @@ CREATE TABLE "category"
 (
  "id"   numeric NOT NULL,
  "name" char(50) NOT NULL
-
 );
 
 CREATE UNIQUE INDEX "PK_category" ON "category"
 (
- "id"
+  "id"
 );
 
 CREATE TABLE "users"

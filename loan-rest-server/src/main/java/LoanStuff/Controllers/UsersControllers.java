@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.web.bind.annotation.*;
 
-import LoanStuff.Api.User;
+import LoanStuff.ViewModels.User;
 import LoanStuff.DB.DataStore;
 
 @RestController
