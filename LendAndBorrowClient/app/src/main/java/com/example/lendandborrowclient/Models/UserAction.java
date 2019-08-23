@@ -2,15 +2,22 @@ package com.example.lendandborrowclient.Models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UserActionData {
+import java.util.Date;
 
-    @JsonProperty("otherUsername")
-    public String OtherUsername;
+public class UserAction {
 
-    public String
+    @JsonProperty("ownerName")
+    public String OwnerName;
+
+    @JsonProperty("borrowerName")
+    public String BorrowerName;
 
     @JsonProperty("itemName")
     public String ItemName;
 
-    public
+    @JsonProperty("borrowDate")
+    public Date BorrowDate;
+
+    @JsonProperty("imagePath")
+    public String ImagePath;
 }

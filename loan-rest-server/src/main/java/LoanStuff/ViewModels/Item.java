@@ -7,15 +7,18 @@ public class Item {
     @JsonProperty("id")
     public int Id;
 
-    @JsonProperty("ownerId")
-    public String OwnerId;
-
     @JsonProperty("name")
     public String Name;
+
+    @JsonProperty("description")
+    public String Description;
+
+    @JsonProperty("owner")
+    public String Owner;
 
     @JsonProperty("category")
     public String Category;
 
-    @JsonProperty("image")
-    public Byte[] Image;
+    @JsonProperty("imagePath")
+    public String ImagePath;
 }

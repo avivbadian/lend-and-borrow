@@ -5,14 +5,44 @@
     android:layout_height="match_parent"
     tools:context=".MyActivityFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/items_you_borrowed_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My Activity fragment"
-        android:layout_centerInParent="true"
-        android:textSize="26sp"
+        android:text="Items you borrowed:"
+        android:textAlignment="textStart"
+        android:textSize="18dp"
         android:textStyle="bold"
+        android:gravity="start"
         />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@id/items_you_borrowed_title"
+        android:id="@+id/items_you_borrowed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        />
+
+    <TextView
+        android:layout_below="@id/items_you_borrowed"
+        android:id="@+id/items_you_lent_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Items you lent:"
+        android:textAlignment="textStart"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:gravity="start"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_below="@id/items_you_lent_title"
+        android:id="@+id/lent_items"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        />
+
 
 </RelativeLayout>

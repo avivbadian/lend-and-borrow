@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -98,8 +99,6 @@ public class RegisterActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     saveNewAccount();
-                    sendUserToMainActivity();
-                    Toast.makeText(RegisterActivity.this, "Account created successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     String message = task.getException().toString();
                     Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -129,6 +128,8 @@ public class RegisterActivity extends AppCompatActivity {
                     (Request.Method.POST, url, new JSONObject(json), new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
+                            sendUserToMainActivity();
+                            Toast.makeText(RegisterActivity.this, "Account created successfully", Toast.LENGTH_SHORT).show();
                         }
                     }, new Response.ErrorListener() {
                         @Override
@@ -136,6 +137,9 @@ public class RegisterActivity extends AppCompatActivity {
                             error.printStackTrace();
                         }
                     });
+            // Don't send request multiple times
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(Integer.MAX_VALUE,
+                    0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -4,107 +4,22 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/items_you_borrowed_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Items you borrowed:"
-        android:textAlignment="textStart"
-        android:textSize="18dp"
-        android:textStyle="bold"
-        android:gravity="start"
-        />
-
-
     <LinearLayout
-        android:id="@+id/items_you_borrowed"
+        android:id="@+id/items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:layout_below="@+id/items_you_borrowed_title"
         android:orientation="horizontal"
         >
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/borrowed_image"
-            android:layout_width="85dp"
-            android:layout_height="85dp"
-            android:src="@drawable/profile_image"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-
-                <TextView
-                    android:id="@+id/borrower_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="lender name:"
-                    android:textAlignment="textStart"
-                    android:textSize="18dp"
-                    android:textStyle="bold"
-                    android:gravity="start"
-                    />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-                <TextView
-                    android:id="@+id/borrowed_item_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="item name:"
-                    android:textAlignment="textStart"
-                    android:textSize="18sp"
-                    android:gravity="start"
-                    />
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/borrowed_item_image"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp">
-
-                </de.hdodenhof.circleimageview.CircleImageView>
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_below="@id/items_you_borrowed"
-        android:id="@+id/items_you_lent_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Items you lent:"
-        android:textAlignment="textStart"
-        android:textSize="18dp"
-        android:textStyle="bold"
-        android:gravity="start"
-        />
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:layout_below="@+id/items_you_lent"
-        android:orientation="horizontal"
-        >
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/users_profile_image"
+            android:id="@+id/item_image"
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:src="@drawable/profile_image"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -112,27 +27,19 @@
             android:orientation="vertical"
             >
 
-
-
             <TextView
-                android:id="@+id/users_profile_name"
+                android:id="@+id/user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="borrower name:"
+                android:text="user name:"
                 android:textAlignment="textStart"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 android:gravity="start"
                 />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
                 <TextView
-                    android:id="@+id/lent_item_name"
+                    android:id="@+id/item_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="item name:"
@@ -141,16 +48,15 @@
                     android:gravity="start"
                     />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/item_you_lent_image"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:visibility="invisible">
-
-                </de.hdodenhof.circleimageview.CircleImageView>
-
-
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/item_borrow_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="borrow date:"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp"
+                    android:gravity="start"
+                    />
 
         </LinearLayout>
 

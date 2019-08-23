@@ -12,12 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.lendandborrowclient.Models.User;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -81,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
                             if (!TextUtils.isEmpty(username)) {
                                 Toast.makeText(MainActivity.this, "Welcome " + username, Toast.LENGTH_SHORT).show();
                             } else {
-                                sendUserToSettingsActivity();
+//                                sendUserToSettingsActivity();
+                                viewPager.setCurrentItem(0);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -92,9 +92,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        sendUserToSettingsActivity();
+                        //sendUserToSettingsActivity();
+                        viewPager.setCurrentItem(0);
                     }
                 });
+
+        // Don't send request multiple times
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(Integer.MAX_VALUE,
+                0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         // Access the RequestQueue through the singleton accessor
         RequestsManager.getInstance(this).addToRequestQueue(jsonObjectRequest);
     }
@@ -113,12 +119,12 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.main_logout_option) {
             mAuth.signOut();
             sendUserToLoginActivity();
-        } else if (item.getItemId() == R.id.main_settings_option){
-            sendUserToSettingsActivity();
+//        } else if (item.getItemId() == R.id.main_settings_option){
+//            viewPager.setCurrentItem(0);
+////            sendUserToSettingsActivity();
         } else if (item.getItemId() == R.id.main_find_friends_option) {
 
         }
-
         return true;
     }
 
@@ -129,10 +135,10 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void sendUserToSettingsActivity() {
-        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(settingsIntent);
-        finish();
-    }
+//    private void sendUserToSettingsActivity() {
+//        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+//        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        startActivity(settingsIntent);
+//        finish();
+//    }
 }

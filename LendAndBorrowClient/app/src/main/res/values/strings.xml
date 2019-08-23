@@ -10,4 +10,5 @@
     <string name="user_status">user status</string>
     <string name="update">update</string>
     <string name="username">username</string>
+    <string name="title_activity_user_items">UserItemsActivity</string>
 </resources>

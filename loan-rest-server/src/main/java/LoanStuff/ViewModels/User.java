@@ -16,17 +16,8 @@ public class User {
     @JsonProperty("status")
     public String Status;
 
-    @JsonProperty("rank")
-    public String Rank;
-
-    @JsonProperty("borrowCount")
-    public int BorrowCount;
-
-    @JsonProperty("lendingCount")
-    public int LendingCount;
-
-    @JsonProperty("items")
-    public ArrayList<ItemPreview> Items;
+    @JsonProperty("imagePath")
+    public String ImagePath;
 
     // Must have default empty ctor for deserialize
 }

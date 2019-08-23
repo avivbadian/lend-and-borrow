@@ -27,8 +27,8 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
-    compile 'org.hibernate:hibernate-agroal:5.4.4.Final'
-    compile 'org.hibernate:hibernate-core:5.4.4.Final'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
+    compile group: 'postgresql', name: 'postgresql', version: '9.0-801.jdbc4'
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

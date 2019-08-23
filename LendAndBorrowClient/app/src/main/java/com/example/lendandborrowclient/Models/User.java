@@ -12,4 +12,7 @@ public class User {
 
     @JsonProperty("status")
     public String Status;
+
+    @JsonProperty("imagePath")
+    public String ImagePath;
 }

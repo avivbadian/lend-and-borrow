@@ -1,4 +1,4 @@
 package LoanStuff.ViewModels;
 
-public class BorrowedItem {
+public class BorrowedItem extends Item {
 }

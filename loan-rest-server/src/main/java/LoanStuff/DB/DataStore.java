@@ -24,7 +24,7 @@ public class DataStore {
         }
 
         // Loading the driver
-        Class.forName("org.postgresql.Driver");
+//        Class.forName("org.postgresql.Driver");
 
         conn = DriverManager.getConnection(
                 DbConfig.HOST + DbConfig.DB_NAME,

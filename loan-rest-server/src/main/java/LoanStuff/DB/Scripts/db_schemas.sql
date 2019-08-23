@@ -1,80 +1,95 @@
-﻿DROP TABLE IF EXISTS borrows;
-DROP TABLE IF EXISTS items;
-DROP TABLE IF EXISTS category;
-DROP TABLE IF EXISTS users;
+﻿--DROP TABLE IF EXISTS borrows;
+--DROP TABLE IF EXISTS items;
+--DROP TABLE IF EXISTS category;
+--DROP TABLE IF EXISTS users;
 
-CREATE TABLE "category"
+--CREATE TABLE "category"
+--(
+-- "id"   numeric NOT NULL,
+-- "name" char(50) NOT NULL
+--);
+--
+--CREATE UNIQUE INDEX "PK_category" ON "category"
+--(
+--  "id"
+--);
+
+--CREATE UNIQUE INDEX "PK_users" ON "users"
+--(
+-- "uid"
+--);
+
+
+--DROP TABLE borrowed_item;
+--DROP TABLE request;
+--DROP TABLE item;
+--DROP TABLE account;
+
+CREATE TABLE IF NOT EXISTS account
 (
- "id"   numeric NOT NULL,
- "name" char(50) NOT NULL
+  uid char(50) PRIMARY KEY,
+  username char(50),
+  status  char(50),
+  image_path text
 );
 
-CREATE UNIQUE INDEX "PK_category" ON "category"
+CREATE TABLE IF NOT EXISTS item
 (
-  "id"
+  iid SERIAL PRIMARY KEY,
+  holder char(50) NOT NULL,
+  item_name char(50) NOT NULL,
+  description char(50),
+  category  char(50) NOT NULL,
+  image_path text NOT NULL,
+  FOREIGN KEY (holder) REFERENCES account
 );
 
-CREATE TABLE "users"
+CREATE TABLE IF NOT EXISTS borrowed_item
 (
- "uid"      numeric NOT NULL,
- "username" char(50) NOT NULL,
- "status"   char(50) NOT NULL
-
+   iid SERIAL PRIMARY KEY,
+   borrower char(50) NOT NULL,
+   borrow_date date NOT NULL,
+   req_ret_date date NOT NULL,
+   ret_date date,
+   FOREIGN KEY(borrower) REFERENCES account,
+   FOREIGN KEY(iid) REFERENCES item
 );
 
-CREATE UNIQUE INDEX "PK_users" ON "users"
+CREATE TABLE IF NOT EXISTS request
 (
- "uid"
-);
+	requester char(50),
+	iid SERIAL,
+	req_date date,
+	req_ret_date date,
+	PRIMARY KEY(requester, iid),
+	FOREIGN KEY(requester) REFERENCES account,
+	FOREIGN KEY(iid) REFERENCES item
+)
 
-
-CREATE TABLE "items"
-(
- "iid"         numeric(18,0) NOT NULL,
- "ownerId"     numeric NOT NULL,
- "name"        char(50) NOT NULL,
- "description" char(50) NOT NULL,
- "categoryId"  numeric NOT NULL,
- CONSTRAINT "FK_11" FOREIGN KEY ( "ownerId" ) REFERENCES "users" ( "uid" ),
- CONSTRAINT "FK_37" FOREIGN KEY ( "categoryId" ) REFERENCES "category" ( "id" )
-);
-
-CREATE UNIQUE INDEX "PK_items" ON "items"
-(
- "iid"
-);
-
-CREATE INDEX "fkIdx_11" ON "items"
-(
- "ownerId"
-);
-
-CREATE INDEX "fkIdx_37" ON "items"
-(
- "categoryId"
-);
-
-CREATE TABLE "borrows"
-(
- "borrower"   numeric NOT NULL,
- "itemId"     numeric(18,0) NOT NULL,
- "borrowDate" date NOT NULL,
- "returnDate" date NOT NULL,
- "status"     numeric NOT NULL,
- CONSTRAINT "FK_56" FOREIGN KEY ( "borrower" ) REFERENCES "users" ( "uid" ),
- CONSTRAINT "FK_59" FOREIGN KEY ( "itemId" ) REFERENCES "items" ( "iid" )
-);
-
-
-CREATE INDEX "fkIdx_56" ON "borrows"
-(
- "borrower"
-);
-
-CREATE INDEX "fkIdx_59" ON "borrows"
-(
- "itemId"
-);
+--CREATE UNIQUE INDEX "PK_items" ON "items"
+--(
+-- "iid"
+--);
+--
+--CREATE INDEX "fkIdx_11" ON "items"
+--(
+-- "ownerId"
+--);
+--
+--CREATE INDEX "fkIdx_37" ON "items"
+--(
+-- "categoryId"
+--);
+--
+--CREATE INDEX "fkIdx_56" ON "borrows"
+--(
+-- "borrower"
+--);
+--
+--CREATE INDEX "fkIdx_59" ON "borrows"
+--(
+-- "itemId"
+--);
 
 
 

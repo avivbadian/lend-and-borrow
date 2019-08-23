@@ -8,10 +8,10 @@
         android:title="@string/find_friends"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/main_settings_option"
-        android:title="@string/settings"
-        app:showAsAction="never" />
+    <!--<item-->
+        <!--android:id="@+id/main_settings_option"-->
+        <!--android:title="@string/settings"-->
+        <!--app:showAsAction="never" />-->
 
     <item
         android:id="@+id/main_logout_option"
