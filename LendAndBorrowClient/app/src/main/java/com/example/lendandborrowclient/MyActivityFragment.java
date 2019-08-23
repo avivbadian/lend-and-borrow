@@ -60,66 +60,70 @@ public class MyActivityFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_activity, container, false);
 
-        // Firebase authentication.
-        mAuth = FirebaseAuth.getInstance();
-        currentUserId = mAuth.getCurrentUser().getUid();
-
-        borrowsRecyclerView = view.findViewById(R.id.items_you_borrowed);
-        lendingsRecyclerView = view.findViewById(R.id.lent_items);
-
-        // use a linear layout manager
-        borrowsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        lendingsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        objMapper = new ObjectMapper();
-
-        // GET ALL ACTIONS related to the current user
-        String borrowsUrl = "http://10.0.2.2:8080/users/" + currentUserId + "/borrows";
-        String lentsUrl = "http://10.0.2.2:8080/users/" + currentUserId + "/lents";;
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, borrowsUrl, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            ArrayList<UserAction> borrows = objMapper.readValue(response.toString(),
-                                    objMapper.getTypeFactory().constructCollectionType(List.class, UserAction.class));
-
-                            borrowsRecyclerView.setAdapter(new UserActionsAdapter(borrows, false));
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-        // Access the RequestQueue through the singleton accessor
-        RequestsManager.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
-
-        JsonObjectRequest lentsJsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, lentsUrl, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            ArrayList<UserAction> lents = objMapper.readValue(response.toString(),
-                                    objMapper.getTypeFactory().constructCollectionType(List.class, UserAction.class));
-
-                            borrowsRecyclerView.setAdapter(new UserActionsAdapter(lents, true));
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-        // Access the RequestQueue through the singleton accessor
-        RequestsManager.getInstance(getContext()).addToRequestQueue(lentsJsonObjectRequest);
+//        // Firebase authentication.
+//        mAuth = FirebaseAuth.getInstance();
+//        currentUserId = mAuth.getCurrentUser().getUid();
+//
+//        borrowsRecyclerView = view.findViewById(R.id.items_you_borrowed);
+//        lendingsRecyclerView = view.findViewById(R.id.lent_items);
+//
+//        // use a linear layout manager
+//        borrowsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        lendingsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//
+//        borrowsRecyclerView.setAdapter(new UserActionsAdapter(new ArrayList<UserAction>(), false));
+//        lendingsRecyclerView.setAdapter(new UserActionsAdapter(new ArrayList<UserAction>(), true));
+//
+//        objMapper = new ObjectMapper();
+//
+//        // GET ALL ACTIONS related to the current user
+//        String borrowsUrl = "http://10.0.2.2:8080/users/" + currentUserId + "/borrows";
+//        String lentsUrl = "http://10.0.2.2:8080/users/" + currentUserId + "/lents";;
+//
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+//                (Request.Method.GET, borrowsUrl, null, new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        try {
+//                            ArrayList<UserAction> borrows = objMapper.readValue(response.toString(),
+//                                    objMapper.getTypeFactory().constructCollectionType(List.class, UserAction.class));
+//
+//                            borrowsRecyclerView.setAdapter(new UserActionsAdapter(borrows, false));
+//
+//                        } catch (Exception e1) {
+//                            e1.printStackTrace();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        error.printStackTrace();
+//                    }
+//                });
+//        // Access the RequestQueue through the singleton accessor
+//        RequestsManager.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+//
+//        JsonObjectRequest lentsJsonObjectRequest = new JsonObjectRequest
+//                (Request.Method.GET, lentsUrl, null, new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        try {
+//                            ArrayList<UserAction> lents = objMapper.readValue(response.toString(),
+//                                    objMapper.getTypeFactory().constructCollectionType(List.class, UserAction.class));
+//
+//                            borrowsRecyclerView.setAdapter(new UserActionsAdapter(lents, true));
+//                        } catch (Exception e1) {
+//                            e1.printStackTrace();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        error.printStackTrace();
+//                    }
+//                });
+//        // Access the RequestQueue through the singleton accessor
+//        RequestsManager.getInstance(getContext()).addToRequestQueue(lentsJsonObjectRequest);
 
         return view;
     }
