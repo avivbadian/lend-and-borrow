@@ -11,10 +11,10 @@ import LoanStuff.ViewModels.User;
 import LoanStuff.DB.DataStore;
 
 @RestController
-public class UsersControllers {
+public class UsersController {
     private DataStore db;
 
-    public UsersControllers() throws SQLException, ClassNotFoundException {
+    public UsersController() throws SQLException, ClassNotFoundException {
         db = new DataStore();
     }
 
