@@ -6,18 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-
-    @JsonProperty("uid")
-    public String Uid;
-
     @JsonProperty("username")
     public String Username;
 
-    @JsonProperty("status")
-    public String Status;
+    @JsonProperty("bio")
+    public String Bio;
 
-    @JsonProperty("imagePath")
+    @JsonProperty("imagepath")
     public String ImagePath;
-
-    // Must have default empty ctor for deserialize
 }

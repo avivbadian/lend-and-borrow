@@ -29,11 +29,10 @@ public class UsersController {
         try {
             rs = db.execQuery("SELECT * FROM account");
             while(rs.next()) {
-                String uid = rs.getString(1).trim();
-                String userName = rs.getString(2).trim();
-                String status = rs.getString(3).trim();
-                String profileImagePath = rs.getString(4).trim();
-                users.add(new User(){{Uid = uid; Username = userName; Status = status; ImagePath = profileImagePath;}});
+                String userName = rs.getString(1).trim();
+                String bio = rs.getString(2).trim();
+                String profileImagePath = rs.getString(3).trim();
+                users.add(new User(){{Username = userName; Bio = bio; ImagePath = profileImagePath;}});
             }
         } catch (SQLException e) {
             // TODO: log or something
@@ -47,13 +46,12 @@ public class UsersController {
     public User getUserByUid(@PathVariable String id) {
         ResultSet rs;
         try {
-            rs = db.execQuery("SELECT * FROM account WHERE uid = '" + id + "'");
+            rs = db.execQuery("SELECT * FROM account WHERE username = '" + id + "'");
             if (rs.next()){
-                String uid = rs.getString(1).trim();
-                String userName = rs.getString(2).trim();
-                String status = rs.getString(3).trim();
-                String profileImagePath = rs.getString(4).trim();
-                return (new User(){{Uid = uid; Username = userName; Status = status; ImagePath = profileImagePath;}});
+                String userName = rs.getString(1).trim();
+                String bio = rs.getString(2).trim();
+                String profileImagePath = rs.getString(3).trim();
+                return (new User(){{ Username = userName; Bio = bio; ImagePath = profileImagePath;}});
             }
             // TODO: log not found
             return null;
@@ -67,9 +65,8 @@ public class UsersController {
     @PostMapping("/users")
     public User createUser(@RequestBody User newUser){
         Map vals = new HashMap();
-        vals.put("uid", newUser.Uid);
         vals.put("username", Objects.toString( newUser.Username, ""));
-        vals.put("status", Objects.toString( newUser.Status, ""));
+        vals.put("bio", Objects.toString( newUser.Bio, ""));
         vals.put("image_path", Objects.toString( newUser.ImagePath, ""));
         try {
             if (db.insert("account", vals) == 1) {
@@ -83,36 +80,17 @@ public class UsersController {
         return newUser;
     }
 
-    @PutMapping("users/{uid}")
-    User updateUser(@RequestBody User newUser, @PathVariable String uid){
-        Map vals = new HashMap();
-        if (Objects.toString(newUser.Username, "") != "")
-            vals.put("username", newUser.Username);
-        if (Objects.toString(newUser.Status, "") != "")
-            vals.put("status", newUser.Status);
-        if (Objects.toString(newUser.ImagePath, "") != "")
-            vals.put("image_path", newUser.ImagePath);
+    @DeleteMapping("users/{username}")
+    void deleteUser(@PathVariable String username){
         try {
-            db.update("account", String.format( "uid = '%s'", uid), vals);
-        } catch (SQLException e) {
-            // TODO: log or something
-            return null;
-        }
-
-        return newUser;
-    }
-
-    @DeleteMapping("users/{uid}")
-    void deleteUser(@PathVariable String uid){
-        try {
-            db.delete("account",  String.format("uid = '%s'", uid));
+            db.delete("account",  String.format("username = '%s'", uid));
         } catch (SQLException e) {
             // TODO: log or something
         }
     }
 
-    @GetMapping("users/{uid}/borrows")
-    ArrayList<UserAction> getUserBorrows(@PathVariable String uid){
+    @GetMapping("users/{username}/borrows")
+    ArrayList<UserAction> getUserBorrows(@PathVariable String username){
 
         ArrayList<UserAction> actions = new ArrayList<>();
         ResultSet rs;
@@ -122,7 +100,7 @@ public class UsersController {
                     "WHERE borrowed_item.iid = item.iid AND\n" +
                     "\t  a1.uid = item.holder AND\n" +
                     "\t  a2.uid = borrowed_item.borrower AND \n" +
-                    "\t  borrowed_item.borrower = '" + uid + "'");
+                    "\t  borrowed_item.borrower = '" + username + "'");
             while(rs.next()) {
                 UserAction cur = new UserAction();
                 cur.ImagePath = rs.getString(1).trim();
