@@ -20,10 +20,10 @@
 --);
 
 
---DROP TABLE borrowed_item;
+--DROP TABLE borrow;
 --DROP TABLE request;
---DROP TABLE item;
---DROP TABLE account;
+--DROP TABLE account CASCADE;
+--DROP TABLE item CASCADE;
 
 CREATE TABLE IF NOT EXISTS account
 (
@@ -44,13 +44,14 @@ CREATE TABLE IF NOT EXISTS item
   FOREIGN KEY (holder) REFERENCES account
 );
 
-CREATE TABLE IF NOT EXISTS borrowed_item
+CREATE TABLE IF NOT EXISTS borrow
 (
-   iid SERIAL PRIMARY KEY,
+   iid INTEGER,
    borrower char(50) NOT NULL,
    borrow_date date NOT NULL,
-   req_ret_date date NOT NULL,
-   ret_date date,
+   agreed_ret_date date NOT NULL,
+   actual_ret_date date,
+   PRIMARY KEY(borrower, iid),
    FOREIGN KEY(borrower) REFERENCES account,
    FOREIGN KEY(iid) REFERENCES item
 );
@@ -58,7 +59,7 @@ CREATE TABLE IF NOT EXISTS borrowed_item
 CREATE TABLE IF NOT EXISTS request
 (
 	requester char(50),
-	iid SERIAL,
+	iid INTEGER,
 	req_date date,
 	req_ret_date date,
 	PRIMARY KEY(requester, iid),
