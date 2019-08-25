@@ -13,14 +13,14 @@ CREATE TABLE IF NOT EXISTS account
 
 CREATE TABLE IF NOT EXISTS category
 (
- id  numeric NOT NULL,
+ id numeric NOT NULL,
  name char(50) NOT NULL,
  PRIMARY KEY(id)
 );
 
 CREATE TABLE IF NOT EXISTS item
 (
-  itemId SERIAL PRIMARY KEY,
+  item_id SERIAL PRIMARY KEY,
   owner_username char(50) NOT NULL,
   item_name char(50) NOT NULL,
   description char(500),
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS item
 
 CREATE TABLE IF NOT EXISTS borrow
 (
-   itemId INTEGER,
+   item_id INTEGER,
    borrower char(50) NOT NULL,
    borrow_date date NOT NULL,
    agreed_ret_date date NOT NULL,

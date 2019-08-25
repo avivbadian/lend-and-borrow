@@ -253,13 +253,4 @@ public class ProfileFragment extends Fragment {
         userStatus = view.findViewById(R.id.set_profile_status);
         userProfileImage = view.findViewById(R.id.set_profile_image);
     }
-
-//    private void sendUserToMainActivity() {
-//        Intent mainIntent = new Intent(getActivity(), MainActivity.class);
-//
-//        // Adds the new activity (main) to the lifecycle, removes the current (register activity) from the stack
-//        // This is to make sure that after logging in, pressing back won't redirect to login activity.
-//        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        startActivity(mainIntent);
-//    }
 }
