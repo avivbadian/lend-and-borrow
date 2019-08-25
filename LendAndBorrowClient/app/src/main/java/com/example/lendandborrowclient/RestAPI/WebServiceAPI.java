@@ -52,8 +52,8 @@ public interface WebServiceAPI {
     Single<List<UserAction>> GetUserActivity(@Path(RoutesConstants.Users.Username) String username);
 
     @POST(RoutesConstants.Users.ResourceName)
-    Single<String> CreateUser(@Body User user);
+    Single<Boolean> CreateUser(@Body User user);
 
     @POST(RoutesConstants.Users.Authenticate)
-    Single<String> ValidateUser(@Body User user);
+    Single<Boolean> ValidateUser(@Body User user);
 }

@@ -1,12 +1,26 @@
 package com.example.lendandborrowclient.Models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class User {
 
-    @JsonProperty("uid")
-    public String Uid;
+    private String user;
+    private String password;
 
-    @JsonProperty("username")
-    public String Username;
+    public User()
+    {  }
+
+    public User(String user, String password)
+    {
+        this.user = user;
+        this.password = password;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public String getUser()
+    {
+        return user;
+    }
 }

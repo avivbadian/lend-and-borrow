@@ -11,4 +11,13 @@
     <string name="update">update</string>
     <string name="username">username</string>
     <string name="title_activity_user_items">UserItemsActivity</string>
+    <string name="username_empty_message">Please choose a username</string>
+    <string name="password_invalid_error">Please choose a password with letters and numbers</string>
+    <string name="invalid_fields">Invalid fields detected</string>
+
+    <string name="activity_title_home">Items</string>
+    <string name="msg_no_items">No items found!</string>
+    <string name="lbl_new_item_title">New Item</string>
+    <string name="lbl_edit_item_title">Edit Item</string>
+    <string name="hint_enter_item">Enter your item!</string>
 </resources>

@@ -1,43 +1,62 @@
 package com.example.lendandborrowclient;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.lendandborrowclient.Models.User;
+import com.example.lendandborrowclient.RestAPI.LoansHttpService;
+import com.google.android.material.snackbar.Snackbar;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.adapter.TextViewStringAdapter;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Password;
 
-public class LoginActivity extends AppCompatActivity {
+import java.util.List;
 
-    // Firebase
-    private FirebaseAuth mAuth;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.functions.BiConsumer;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+
+public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener {
+
+    @BindView(R.id.login_button)
+    private Button loginButton;
+
+    @BindView(R.id.login_username) @NotEmpty(messageResId = R.string.username_empty_message)
+    private EditText username;
+
+    @BindView(R.id.login_password) @Password(scheme = Password.Scheme.ALPHA_NUMERIC, messageResId = R.string.password_invalid_error)
+    private EditText userPassword;
+
+    @BindView(R.id.need_new_account_link)
+    private TextView needNewAccountLink;
+
+    @BindView(android.R.id.content)
+    View parentView;
 
     private ProgressDialog loadingBar;
-    private Button logginButton, phoneLoginButton;
-    private EditText userEmail, userPassword;
-    private TextView needNewAccountLink, forgotPasswordLink;
+    private Validator validator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-
-        initializeFields();
+        loadingBar = new ProgressDialog(this);
 
         needNewAccountLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,36 +65,21 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        logginButton.setOnClickListener(new View.OnClickListener() {
+        // Setting fields validator
+        validator = new Validator(this);
+        validator.setValidationListener(this);
+        validator.registerAdapter(TextView.class, new TextViewStringAdapter());
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                tryLogIn();
+            public void onClick(View v) {
+                validator.validate();
             }
         });
     }
 
-    private void initializeFields() {
-        logginButton = findViewById(R.id.login_button);
-        userEmail = findViewById(R.id.login_email);
-        userPassword = findViewById(R.id.login_password);
-        needNewAccountLink = findViewById(R.id.need_new_account_link);
-        forgotPasswordLink = findViewById(R.id.forget_password_link);
-        loadingBar = new ProgressDialog(this);
-    }
-
     private void tryLogIn() {
-        String email = userEmail.getText().toString();
+        final String userNameVal = username.getText().toString();
         String password = userPassword.getText().toString();
-
-        // Validations
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Please enter email...", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Please enter password...", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         // Loading bar for signing in progress
         loadingBar.setTitle("Log in");
@@ -83,24 +87,64 @@ public class LoginActivity extends AppCompatActivity {
         loadingBar.setCanceledOnTouchOutside(true);
         loadingBar.show();
 
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    sendUserToMainActivity();
-                    Toast.makeText(LoginActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
-                } else {
-                    String message = task.getException().toString();
-                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
-                }
+        LoansHttpService.GetInstance().ValidateUser(new User(userNameVal, password))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BiConsumer<Boolean, Throwable>() {
+                    @Override
+                    public void accept(Boolean success, Throwable throwable) {
+                        loadingBar.dismiss();
+                        if (success)
+                            handleLoginSuccess(userNameVal);
+                        else {
+                            handleLoginFailed();
+                            Snackbar.make(parentView, "Login failed, user or password incorrect", Snackbar.LENGTH_INDEFINITE).show();
+                        }
+                    }
+                });
+    }
 
-                loadingBar.dismiss();
-            }
-        });
+
+    private void handleLoginSuccess(String userNameVal) {
+        // Saving username to sharedPreferences
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        settings.edit().putString("username", userNameVal).apply();
+        sendUserToMainActivity();
+    }
+
+    private void handleLoginFailed() {
+        Toast.makeText(this, "Login failed", Toast.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    public void onValidationSucceeded()
+    {
+        tryLogIn();
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        username.setError(null);
+        userPassword.setError(null);
+
+        for (ValidationError error : errors)
+        {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(this);
+
+            // Display error messages
+            if (view instanceof TextView)
+                ((TextView) view).setError(message);
+            else
+                Snackbar.make(parentView, message, Snackbar.LENGTH_LONG).show();
+        }
+
+        Snackbar.make(parentView, R.string.invalid_fields, Snackbar.LENGTH_LONG).show();
     }
 
     private void sendUserToMainActivity() {
-        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
+        Intent mainIntent = new Intent(this, MainActivity.class);
 
         // Adds the new activity (main) to the lifecycle, removes the current (register activity) from the stack
         // This is to make sure that after logging in, pressing back won't redirect to login activity.

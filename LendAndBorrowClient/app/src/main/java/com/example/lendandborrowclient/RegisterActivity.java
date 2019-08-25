@@ -1,54 +1,62 @@
 package com.example.lendandborrowclient;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.lendandborrowclient.Models.User;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.lendandborrowclient.RestAPI.LoansHttpService;
+import com.google.android.material.snackbar.Snackbar;
+import com.mobsandgeeks.saripaar.ValidationError;
+import com.mobsandgeeks.saripaar.Validator;
+import com.mobsandgeeks.saripaar.adapter.TextViewStringAdapter;
+import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Password;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.List;
 
-public class RegisterActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.BiConsumer;
+import io.reactivex.schedulers.Schedulers;
 
-    // Firebase
-    private FirebaseAuth mAuth;
+public class RegisterActivity extends AppCompatActivity implements Validator.ValidationListener {
 
+    @BindView(R.id.register_button)
     private Button createAccountButton;
-    private EditText userEmail, userPassword;
+
+    @BindView(R.id.register_email) @NotEmpty(messageResId = R.string.username_empty_message)
+    private EditText userEmail;
+
+    @BindView(R.id.login_password) @Password(scheme = Password.Scheme.ALPHA_NUMERIC, messageResId = R.string.password_invalid_error)
+    private EditText userPassword;
+
+    @BindView(R.id.already_have_account_link)
     private TextView alreadyHaveAccountLink;
+
+    @BindView(android.R.id.content)
+    View parentView;
+
     private ProgressDialog loadingBar;
+    private Validator validator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        ButterKnife.bind(this);
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-
-        initializeFields();
+        loadingBar = new ProgressDialog(this);
 
         alreadyHaveAccountLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,36 +65,21 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        // Setting fields validator
+        validator = new Validator(this);
+        validator.setValidationListener(this);
+        validator.registerAdapter(TextView.class, new TextViewStringAdapter());
         createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                createNewAccount();
+            public void onClick(View v) {
+                validator.validate();
             }
         });
     }
 
-
-    private void initializeFields() {
-        createAccountButton = findViewById(R.id.register_button);
-        userEmail = findViewById(R.id.register_email);
-        userPassword = findViewById(R.id.register_password);
-        alreadyHaveAccountLink = findViewById(R.id.already_have_account_link);
-        loadingBar = new ProgressDialog(this);
-    }
-
     private void createNewAccount() {
-        String email = userEmail.getText().toString();
+        final String username = userEmail.getText().toString();
         String password = userPassword.getText().toString();
-
-        // Validations
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Please enter email...", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Please enter password...", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         // Loading bar for account creation progress
         loadingBar.setTitle("Creating new account");
@@ -94,58 +87,57 @@ public class RegisterActivity extends AppCompatActivity {
         loadingBar.setCanceledOnTouchOutside(true);
         loadingBar.show();
 
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    saveNewAccount();
-                } else {
-                    String message = task.getException().toString();
-                    Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
-                }
-
-                loadingBar.dismiss();
-            }
-        });
+        LoansHttpService.GetInstance().CreateUser(new User(username, password))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BiConsumer<Boolean, Throwable>() {
+                    @Override
+                    public void accept(Boolean success, Throwable throwable) {
+                        loadingBar.dismiss();
+                        if (success)
+                            handleUserCreated(username);
+                        else {
+                            handleUserCreationFailed();
+                            Snackbar.make(parentView, "Login failed, user or password incorrect", Snackbar.LENGTH_INDEFINITE).show();
+                        }
+                    }
+                });
     }
 
-    private void saveNewAccount() {
-        final String currentUserId = mAuth.getCurrentUser().getUid();
-        String json = "";
-        User user = new User(){{Uid = currentUserId;}};
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        try {
-            json = ow.writeValueAsString(user);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+    private void handleUserCreationFailed() {
+        Toast.makeText(getBaseContext(), "Account creation failed", Toast.LENGTH_LONG).show();
+    }
+
+
+    private void handleUserCreated(String username) {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        settings.edit().putString("username", username).apply();
+        sendUserToMainActivity();
+    }
+
+    @Override
+    public void onValidationSucceeded() {
+        createNewAccount();
+    }
+
+    @Override
+    public void onValidationFailed(List<ValidationError> errors) {
+        userEmail.setError(null);
+        userPassword.setError(null);
+
+        for (ValidationError error : errors)
+        {
+            View view = error.getView();
+            String message = error.getCollatedErrorMessage(this);
+
+            // Display error messages
+            if (view instanceof TextView)
+                ((TextView) view).setError(message);
+            else
+                Snackbar.make(parentView, message, Snackbar.LENGTH_LONG).show();
         }
 
-        String url = "http://10.0.2.2:8080/users/";
-
-        JsonObjectRequest jsonObjectRequest = null;
-        try {
-            jsonObjectRequest = new JsonObjectRequest
-                    (Request.Method.POST, url, new JSONObject(json), new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            sendUserToMainActivity();
-                            Toast.makeText(RegisterActivity.this, "Account created successfully", Toast.LENGTH_SHORT).show();
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            error.printStackTrace();
-                        }
-                    });
-            // Don't send request multiple times
-            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(Integer.MAX_VALUE,
-                    0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        // Access the RequestQueue through the singleton accessor
-        RequestsManager.getInstance(this).addToRequestQueue(jsonObjectRequest);
+        Snackbar.make(parentView, R.string.invalid_fields, Snackbar.LENGTH_LONG).show();
     }
 
     private void sendUserToLoginActivity() {
