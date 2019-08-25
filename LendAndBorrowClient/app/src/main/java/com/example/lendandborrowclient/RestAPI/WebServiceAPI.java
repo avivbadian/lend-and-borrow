@@ -3,6 +3,7 @@ package com.example.lendandborrowclient.RestAPI;
 import com.example.lendandborrowclient.Models.Category;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.Models.ItemPreview;
+import com.example.lendandborrowclient.Models.User;
 import com.example.lendandborrowclient.Models.UserAction;
 
 import java.util.List;
@@ -51,5 +52,8 @@ public interface WebServiceAPI {
     Single<List<UserAction>> GetUserActivity(@Path(RoutesConstants.Users.Username) String username);
 
     @POST(RoutesConstants.Users.ResourceName)
-    Single<String> CreateUser(@Body String username, @Body String password);
+    Single<String> CreateUser(@Body User user);
+
+    @POST(RoutesConstants.Users.Authenticate)
+    Single<String> ValidateUser(@Body User user);
 }

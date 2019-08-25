@@ -9,10 +9,4 @@ public class User {
 
     @JsonProperty("username")
     public String Username;
-
-    @JsonProperty("status")
-    public String Status;
-
-    @JsonProperty("imagePath")
-    public String ImagePath;
 }

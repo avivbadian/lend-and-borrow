@@ -18,6 +18,7 @@ public class RoutesConstants {
         public final static String ResourceName = "users";
         public final static String Username = "username";
 
+        public final static String Authenticate = ResourceName + "/authenticate";
         public final static String UserByUsername = ResourceName + "/{" + Username + "}";
         public final static String GetUserActivity = ResourceName + "/{" + Username + "}/activity";
         public final static String GetUserProfile = ResourceName + "/{" + Username + "}/profile";
