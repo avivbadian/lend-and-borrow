@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS Borrows
   availability INTEGER REFERENCES availabilities(id),
   borrow_date date,
   return_date date,
-  borrower_phone char(50),
-  borrower_email char(50),
-  borrower_name char(50)
+  phone char(50),
+  email char(50),
+  first_name char(50),
+  last_name char(50)
 );

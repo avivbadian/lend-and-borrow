@@ -37,11 +37,11 @@ INSERT INTO availabilities VALUES
 (9,4, 2, '01/01/2019', '31/12/2019'),
 (10,4, 4, '01/01/2019', '31/12/2019');
 
---- id, availability, borrow_date, return_date, loaner_phone, loaner_email,lonaer_name
+--- id, availability, borrow_date, return_date, phone, email,first name, last name
 INSERT INTO Borrows VALUES
-(1, 1, '02/01/2019', '04/01/2019', '054-555666', 'theif@gmail.com', 'Gani Nav'),
-(2, 1, '02/02/2019', '04/12/2019', '053-123456', 'yossi@gmail.com', 'Yossi Luchim'),
-(3, 5, '15/03/2019', '16/03/2019', '052-777888', 'racheli@gmail.com', 'Racheli krakdfsdfki'),
-(4, 7, '09/07/2019', '09/08/2019', '050-409040', 'ronit@gmail.com', 'Ronit Gal-Or'),
-(5, 9, '12/12/2019', '31/12/2019', '04-8470475', 'eitan@gmail.com', 'Eitan Barak'),
-(6, 10, '05/05/2019', '06/06/2019', '058-401474', 'ahmed@gmail.com', 'Ahmed Abbas');
+(1, 1, '02/01/2019', '04/01/2019', '054-555666', 'theif@gmail.com', 'Gani', 'Nav'),
+(2, 1, '02/02/2019', '04/12/2019', '053-123456', 'yossi@gmail.com', 'Yossi', 'Luchim'),
+(3, 5, '15/03/2019', '16/03/2019', '052-777888', 'racheli@gmail.com', 'Racheli', 'krakdfsdfki'),
+(4, 7, '09/07/2019', '09/08/2019', '050-409040', 'ronit@gmail.com', 'Ronit', 'Gal-Or'),
+(5, 9, '12/12/2019', '31/12/2019', '04-8470475', 'eitan@gmail.com', 'Eitan', 'Barak'),
+(6, 10, '05/05/2019', '06/06/2019', '058-401474', 'ahmed@gmail.com', 'Ahmed', 'Abbas');
