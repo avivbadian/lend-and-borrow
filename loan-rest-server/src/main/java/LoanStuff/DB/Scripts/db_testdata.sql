@@ -1,9 +1,8 @@
 ﻿DELETE FROM admins;
+DELETE FROM loans;
 DELETE FROM availabilities;
 DELETE FROM items;
 DELETE FROM branches;
-DELETE FROM loans;
-
 
 --- username, password
 INSERT INTO admins VALUES
@@ -39,7 +38,7 @@ INSERT INTO availabilities VALUES
 (10,4, 4, '01/01/2019', '31/12/2019');
 
 --- id, availability, borrow_date, return_date, loaner_phone, loaner_email,lonaer_name
-INSERT INTO loans VALUES
+INSERT INTO Borrows VALUES
 (1, 1, '02/01/2019', '04/01/2019', '054-555666', 'theif@gmail.com', 'Gani Nav'),
 (2, 1, '02/02/2019', '04/12/2019', '053-123456', 'yossi@gmail.com', 'Yossi Luchim'),
 (3, 5, '15/03/2019', '16/03/2019', '052-777888', 'racheli@gmail.com', 'Racheli krakdfsdfki'),

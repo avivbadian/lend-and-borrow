@@ -2,7 +2,7 @@
 DROP TABLE items CASCADE;
 DROP TABLE branches CASCADE;
 DROP TABLE availabilities CASCADE;
-DROP TABLE loans CASCADE;
+DROP TABLE Borrows CASCADE;
 
 CREATE TABLE IF NOT EXISTS admins
 (
@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS branches
   address char(50)
 );
 
-
 CREATE TABLE IF NOT EXISTS availabilities
 (
   id SERIAL PRIMARY KEY,
@@ -35,13 +34,13 @@ CREATE TABLE IF NOT EXISTS availabilities
   end_date date
 );
 
-CREATE TABLE IF NOT EXISTS loans
+CREATE TABLE IF NOT EXISTS Borrows
 (
   id SERIAL PRIMARY KEY,
   availability INTEGER REFERENCES availabilities(id),
   borrow_date date,
   return_date date,
-  loaner_phone char(50),
-  loaner_email char(50),
-  loaner_name char(50)
+  borrower_phone char(50),
+  borrower_email char(50),
+  borrower_name char(50)
 );
