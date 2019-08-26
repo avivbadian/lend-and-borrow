@@ -1,42 +1,48 @@
-﻿DELETE FROM borrow;
-DELETE FROM request;
-DELETE FROM item;
-DELETE FROM account;
-DELETE FROM category;
-
---- username, bio, image_path
-INSERT INTO account VALUES
-('avivbadian', 'Piano enthusiats', 'aviv.jpeg'),
-('yanivkrim', 'Chess and wine fan', 'yaniv.jpeg'),
-('moshep', 'From Jerusalem' ,'moshe.jpeg'),
-('myoav', 'I love Tel Aviv', 'yoav.jpeg');
-
---- id, name
-INSERT INTO category VALUES
-(1, 'Camping Equipment'),
-(2, 'Musical instruments'),
-(3, 'Books'),
-(4, 'Board Games');
-
---- itemId, owner_username, item_name, descripition, category, image_path
-INSERT INTO item VALUES 
-(1, 'avivbadian', 'Harry Potter 3rd Edition', 'HP book in a good condition in hebrew', 3, '1.jpeg'),
-(2, 'avivbadian', 'Piano', 'Electrical piano, slightly damaged', 2, '2.jpeg'),
-(3, 'yanivkrim', 'Settlers Of Catan', 'A board game for people ages 3-99 in mint condition', 4, '3.jpeg'),
-(4, 'moshep', 'Chess set', '32 Pieces chess set with rubber board', 4, '4.jpeg'),
-(5, 'myoav', 'Keter Chair', 'Good for throwing', 1, '5.jpeg');
-
---- itemId, borrower, borrow_date, agreed_ret_date, actual_ret_date
-INSERT INTO borrow VALUES
-(1, 'myoav', '18/2/2019', '20/2/2019', NULL),
-(2, 'yanivkrim', '12/02/2019', '22/02/2019', '22/02/2019'),
-(3, 'moshep', '23/2/2014', '21/09/2019', NULL),
-(4, 'avivbadian', '21/12/2018', '22/12/2018', NULL);
-
--- requester, itemId, req_date, req_ret_date
-INSERT INTO request VALUES
-('avivbadian', 5 ,'21/12/2019', '22/12/2019'),
-('yanivkrim', 5 ,'21/12/2019', '22/12/2019'),
-('moshep', 5 ,'23/12/2019', '27/12/2019');
+﻿DELETE FROM admins;
+DELETE FROM availabilities;
+DELETE FROM items;
+DELETE FROM branches;
+DELETE FROM loans;
 
 
+--- username, password
+INSERT INTO admins VALUES
+('yanivkrim', '1234'),
+('avivbadian', 'KobiZNoti');
+	
+--- id, title, category, description
+INSERT INTO items VALUES
+(1,'Keter Chair', 'Camping Equipment', 'Original Keter chair'),
+(2, 'Harry Potter: The Philosophers stone', 'Books', 'Harry Potter book first book'),
+(3, 'Harry Potter: The Chamber of Secrets', 'Books', 'Harry Potter book second book'),
+(4, 'Harry Potter: The Prisoner of Azkaban', 'Books', 'Harry Potter book third book');
+
+
+-- id, title, address
+INSERT INTO branches VALUES
+(1, 'Haifa Main Branch', 'Kdoshey Yasi'),
+(2, 'Haifa: Downtown', 'Downtown'),
+(3, 'Tel Aviv: Dizengoff', 'Dizengoff 44'),
+(4, 'Disney', 'Paris');
+
+-- id, item_id, branch, start_date, end_date
+INSERT INTO availabilities VALUES
+(1,1, 1, '01/01/2019', '31/12/2019'),
+(2,2, 1, '01/01/2019', '31/12/2019'),
+(3,3, 1, '01/01/2019', '31/12/2019'),
+(4,4, 1, '01/01/2019', '31/12/2019'),
+(5,2, 2, '01/01/2019', '31/12/2019'),
+(6,2, 3, '01/01/2019', '31/12/2019'),
+(7,3, 3, '01/01/2019', '31/12/2019'),
+(8,3, 4, '01/01/2019', '31/12/2019'),
+(9,4, 2, '01/01/2019', '31/12/2019'),
+(10,4, 4, '01/01/2019', '31/12/2019');
+
+--- id, availability, borrow_date, return_date, loaner_phone, loaner_email,lonaer_name
+INSERT INTO loans VALUES
+(1, 1, '02/01/2019', '04/01/2019', '054-555666', 'theif@gmail.com', 'Gani Nav'),
+(2, 1, '02/02/2019', '04/12/2019', '053-123456', 'yossi@gmail.com', 'Yossi Luchim'),
+(3, 5, '15/03/2019', '16/03/2019', '052-777888', 'racheli@gmail.com', 'Racheli krakdfsdfki'),
+(4, 7, '09/07/2019', '09/08/2019', '050-409040', 'ronit@gmail.com', 'Ronit Gal-Or'),
+(5, 9, '12/12/2019', '31/12/2019', '04-8470475', 'eitan@gmail.com', 'Eitan Barak'),
+(6, 10, '05/05/2019', '06/06/2019', '058-401474', 'ahmed@gmail.com', 'Ahmed Abbas');
