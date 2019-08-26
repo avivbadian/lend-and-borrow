@@ -1,5 +1,5 @@
 ﻿DELETE FROM admins;
-DELETE FROM loans;
+DELETE FROM Borrows;
 DELETE FROM availabilities;
 DELETE FROM items;
 DELETE FROM branches;
