@@ -36,6 +36,10 @@ public class DataStore {
         return this.conn.createStatement().executeQuery(query);
     }
 
+    public int execUpdate(String query) throws SQLException {
+        return this.conn.createStatement().executeUpdate(query);
+    }
+
     public int insert(String table, Map<String, Object> values) throws SQLException {
 
         StringBuilder columns = new StringBuilder();
