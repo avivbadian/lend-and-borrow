@@ -33,16 +33,16 @@ import io.reactivex.schedulers.Schedulers;
 public class RegisterActivity extends AppCompatActivity implements Validator.ValidationListener {
 
     @BindView(R.id.register_button)
-    private Button createAccountButton;
+    Button createAccountButton;
 
     @BindView(R.id.register_email) @NotEmpty(messageResId = R.string.username_empty_message)
-    private EditText userEmail;
+    EditText userEmail;
 
     @BindView(R.id.login_password) @Password(scheme = Password.Scheme.ALPHA_NUMERIC, messageResId = R.string.password_invalid_error)
-    private EditText userPassword;
+    EditText userPassword;
 
     @BindView(R.id.already_have_account_link)
-    private TextView alreadyHaveAccountLink;
+    TextView alreadyHaveAccountLink;
 
     @BindView(android.R.id.content)
     View parentView;

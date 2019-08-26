@@ -2,14 +2,12 @@ package com.example.lendandborrowclient.RestAPI;
 
 import com.example.lendandborrowclient.Models.Category;
 import com.example.lendandborrowclient.Models.Item;
-import com.example.lendandborrowclient.Models.ItemPreview;
 import com.example.lendandborrowclient.Models.User;
 import com.example.lendandborrowclient.Models.UserAction;
 
 import java.util.List;
 
 import io.reactivex.Single;
-import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -21,19 +19,19 @@ public interface WebServiceAPI {
 
     // Items
     @GET(RoutesConstants.Items.ResourceName)
-    Single<List<ItemPreview>> GetAllItems();
+    Single<List<Item>> GetAllItems();
 
     @GET(RoutesConstants.Items.ItemById)
     Single<Item> GetItemById(@Path(RoutesConstants.Items.ItemId) int itemId);
 
     @PUT(RoutesConstants.Items.ItemById)
-    Single<ResponseBody> UpdateItem(@Path(RoutesConstants.Items.ItemId) int itemId);
+    Single<Boolean> UpdateItem(@Path(RoutesConstants.Items.ItemId) int itemId);
 
     @POST(RoutesConstants.Items.ResourceName)
-    Single<String> AddItem(@Body Item item);
+    Single<Integer> AddItem(@Body Item item);
 
     @DELETE(RoutesConstants.Items.ItemById)
-    Single<ResponseBody> DeleteItem(@Path(RoutesConstants.Items.ItemId) int itemId);
+    Single<Boolean> DeleteItem(@Path(RoutesConstants.Items.ItemId) int itemId);
 
 
     // Categories
@@ -46,7 +44,7 @@ public interface WebServiceAPI {
 
     // Users
     @GET(RoutesConstants.Users.GetUserItems)
-    Single<List<ItemPreview>> GetUserItems(@Path(RoutesConstants.Users.Username) String username);
+    Single<List<Item>> GetUserItems(@Path(RoutesConstants.Users.Username) String username);
 
     @GET(RoutesConstants.Users.GetUserActivity)
     Single<List<UserAction>> GetUserActivity(@Path(RoutesConstants.Users.Username) String username);

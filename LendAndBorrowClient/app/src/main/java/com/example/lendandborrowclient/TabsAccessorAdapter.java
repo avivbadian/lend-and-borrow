@@ -16,11 +16,11 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
 
         switch (position){
             case 0:
-                return new ProfileFragment();
-            case 1:
-                return new MyActivityFragment();
-            case 2:
-                return new RequestsFragment();
+                return new ItemsFragment();
+//            case 1:
+//                return new MyActivityFragment();
+//            case 2:
+//                return new RequestsFragment();
 
             default:
                 return null;
@@ -32,11 +32,11 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position){
             case 0:
-                return "Profile";
+                return "Items";
             case 1:
-                return "My activity";
-            case 2:
                 return "Requests";
+            case 2:
+                return "Search";
 
             default:
                 return null;

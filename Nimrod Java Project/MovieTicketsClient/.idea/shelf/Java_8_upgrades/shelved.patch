@@ -1,0 +1,354 @@
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"EntryPointsManager\">\n    <entry_points version=\"2.0\" />\n  </component>\n  <component name=\"NullableNotNullManager\">\n    <option name=\"myDefaultNullable\" value=\"android.support.annotation.Nullable\" />\n    <option name=\"myDefaultNotNull\" value=\"android.support.annotation.NonNull\" />\n    <option name=\"myNullables\">\n      <value>\n        <list size=\"4\">\n          <item index=\"0\" class=\"java.lang.String\" itemvalue=\"org.jetbrains.annotations.Nullable\" />\n          <item index=\"1\" class=\"java.lang.String\" itemvalue=\"javax.annotation.Nullable\" />\n          <item index=\"2\" class=\"java.lang.String\" itemvalue=\"edu.umd.cs.findbugs.annotations.Nullable\" />\n          <item index=\"3\" class=\"java.lang.String\" itemvalue=\"android.support.annotation.Nullable\" />\n        </list>\n      </value>\n    </option>\n    <option name=\"myNotNulls\">\n      <value>\n        <list size=\"4\">\n          <item index=\"0\" class=\"java.lang.String\" itemvalue=\"org.jetbrains.annotations.NotNull\" />\n          <item index=\"1\" class=\"java.lang.String\" itemvalue=\"javax.annotation.Nonnull\" />\n          <item index=\"2\" class=\"java.lang.String\" itemvalue=\"edu.umd.cs.findbugs.annotations.NonNull\" />\n          <item index=\"3\" class=\"java.lang.String\" itemvalue=\"android.support.annotation.NonNull\" />\n        </list>\n      </value>\n    </option>\n  </component>\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"false\">\n    <OptionsSetting value=\"true\" id=\"Add\" />\n    <OptionsSetting value=\"true\" id=\"Remove\" />\n    <OptionsSetting value=\"true\" id=\"Checkout\" />\n    <OptionsSetting value=\"true\" id=\"Update\" />\n    <OptionsSetting value=\"true\" id=\"Status\" />\n    <OptionsSetting value=\"true\" id=\"Edit\" />\n    <ConfirmationsSetting value=\"0\" id=\"Add\" />\n    <ConfirmationsSetting value=\"0\" id=\"Remove\" />\n  </component>\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_1_7\" default=\"true\" assert-keyword=\"true\" jdk-15=\"true\" project-jdk-name=\"1.8\" project-jdk-type=\"JavaSDK\">\n    <output url=\"file://$PROJECT_DIR$/build/classes\" />\n  </component>\n  <component name=\"ProjectType\">\n    <option name=\"id\" value=\"Android\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision 52c2a2cbc20954a79d61a651d86b4307850e4460)
++++ .idea/misc.xml	(revision )
+@@ -1,8 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="EntryPointsManager">
+-    <entry_points version="2.0" />
+-  </component>
+   <component name="NullableNotNullManager">
+     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
+     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
+@@ -27,17 +24,7 @@
+       </value>
+     </option>
+   </component>
+-  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+-    <OptionsSetting value="true" id="Add" />
+-    <OptionsSetting value="true" id="Remove" />
+-    <OptionsSetting value="true" id="Checkout" />
+-    <OptionsSetting value="true" id="Update" />
+-    <OptionsSetting value="true" id="Status" />
+-    <OptionsSetting value="true" id="Edit" />
+-    <ConfirmationsSetting value="0" id="Add" />
+-    <ConfirmationsSetting value="0" id="Remove" />
+-  </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>apply plugin: 'com.android.application'\n\nandroid {\n    compileSdkVersion 25\n\n    buildToolsVersion \"25.0.3\"\n\n    defaultConfig {\n        applicationId \"com.javaproject.pashnim.pashnimcinema\"\n        minSdkVersion 16\n        targetSdkVersion 25\n        versionCode 1\n        versionName \"1.0\"\n        testInstrumentationRunner \"android.support.test.runner.AndroidJUnitRunner\"\n    }\n\n    buildTypes {\n        release {\n            minifyEnabled false\n            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'\n        }\n    }\n\n    packagingOptions {\n        exclude 'META-INF/DEPENDENCIES'\n        exclude 'META-INF/NOTICE'\n        exclude 'META-INF/LICENSE'\n        exclude 'META-INF/LICENSE.txt'\n        exclude 'META-INF/NOTICE.txt'\n    }\n}\n\ndependencies {\n    compile fileTree(dir: 'libs', include: ['*.jar'])\n    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {\n        exclude group: 'com.android.support', module: 'support-annotations'\n    })\n    compile 'com.android.support:appcompat-v7:25.3.1'\n    compile 'com.android.support.constraint:constraint-layout:1.0.2'\n    testCompile 'junit:junit:4.12'\n    compile 'com.android.support:cardview-v7:25.3.1'\n    compile 'com.loopj.android:android-async-http:1.4.9'\n    compile 'com.android.support:recyclerview-v7:25.3.1'\n    compile 'com.google.code.gson:gson:2.8.1'\n    compile 'com.squareup.retrofit2:retrofit:2.3.0'\n    compile 'com.squareup.retrofit2:converter-gson:2.3.0'\n    compile 'com.squareup.retrofit2:converter-jackson:2.3.0'\n    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'\n    compile 'io.reactivex.rxjava2:rxjava:2.1.0'\n}\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/build.gradle	(revision 52c2a2cbc20954a79d61a651d86b4307850e4460)
++++ app/build.gradle	(revision )
+@@ -7,7 +7,7 @@
+ 
+     defaultConfig {
+         applicationId "com.javaproject.pashnim.pashnimcinema"
+-        minSdkVersion 16
++        minSdkVersion 24
+         targetSdkVersion 25
+         versionCode 1
+         versionName "1.0"
+@@ -28,6 +28,10 @@
+         exclude 'META-INF/LICENSE.txt'
+         exclude 'META-INF/NOTICE.txt'
+     }
++    compileOptions {
++        targetCompatibility 1.8
++        sourceCompatibility 1.8
++    }
+ }
+ 
+ dependencies {
+Index: app/src/main/java/com/javaproject/pashnim/cinema/WebInterfaces/WebApiConstants.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.javaproject.pashnim.cinema.WebInterfaces;\n\n/**\n * Created by Nimrod on 15/06/2017.\n */\n\npublic final class WebApiConstants\n{\n    public final static String BaseUrl = \"http://10.100.102.12:8081/webapi/\";\n\n    public final class Movies\n    {\n        public final static String MovieId = \"id\";\n        public final static String BaseMoviesUrl = \"movies\";\n        public final static String GetAllMovies = BaseMoviesUrl;\n        public final static String GetMovie = BaseMoviesUrl + \"/{\" + MovieId + \"}\";\n        public final static String GetMovieScreenings = BaseMoviesUrl + GetMovie + \"/screenings\";\n    }\n\n    public final class Screenings\n    {\n        public final static String BaseScreeningsUrl = \"screenings\";\n        public final static String GetSpecificScreening = BaseScreeningsUrl + \"/{id}\";\n    }\n\n    public final class Images\n    {\n        public final static String BaseImagesUrl = \"images\";\n        public final static String ImageName = \"name\";\n        public final static String GetImage = BaseImagesUrl + \"/{\" + ImageName + \"}\";\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/javaproject/pashnim/cinema/WebInterfaces/WebApiConstants.java	(revision 52c2a2cbc20954a79d61a651d86b4307850e4460)
++++ app/src/main/java/com/javaproject/pashnim/cinema/WebInterfaces/WebApiConstants.java	(revision )
+@@ -6,7 +6,7 @@
+ 
+ public final class WebApiConstants
+ {
+-    public final static String BaseUrl = "http://10.100.102.12:8081/webapi/";
++    public final static String BaseUrl = "http://10.100.102.12:8080/api/";
+ 
+     public final class Movies
+     {
+Index: gradle/wrapper/gradle-wrapper.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#Sat Jun 10 12:16:47 IDT 2017\ndistributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-3.3-all.zip\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>windows-1252
+===================================================================
+--- gradle/wrapper/gradle-wrapper.properties	(revision 52c2a2cbc20954a79d61a651d86b4307850e4460)
++++ gradle/wrapper/gradle-wrapper.properties	(revision )
+@@ -1,6 +1,6 @@
+-#Sat Jun 10 12:16:47 IDT 2017
++#Sat Jun 17 02:34:01 IDT 2017
+ distributionBase=GRADLE_USER_HOME
+ distributionPath=wrapper/dists
+ zipStoreBase=GRADLE_USER_HOME
+ zipStorePath=wrapper/dists
+-distributionUrl=https\://services.gradle.org/distributions/gradle-3.3-all.zip
++distributionUrl=https\://services.gradle.org/distributions/gradle-4.0-rc-1-all.zip
+Index: build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\n\nbuildscript {\n    repositories {\n        jcenter()\n    }\n    dependencies {\n        classpath 'com.android.tools.build:gradle:2.3.3'\n\n        // NOTE: Do not place your application dependencies here; they belong\n        // in the individual module build.gradle files\n    }\n}\n\nallprojects {\n    repositories {\n        jcenter()\n    }\n}\n\ntask clean(type: Delete) {\n    delete rootProject.buildDir\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- build.gradle	(revision 52c2a2cbc20954a79d61a651d86b4307850e4460)
++++ build.gradle	(revision )
+@@ -5,7 +5,7 @@
+         jcenter()
+     }
+     dependencies {
+-        classpath 'com.android.tools.build:gradle:2.3.3'
++        classpath 'com.android.tools.build:gradle:3.0.0-alpha4'
+ 
+         // NOTE: Do not place your application dependencies here; they belong
+         // in the individual module build.gradle files
+Index: app/src/main/java/com/javaproject/pashnim/cinema/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.javaproject.pashnim.cinema;\n\nimport android.content.Intent;\nimport android.content.res.Resources;\nimport android.graphics.Bitmap;\nimport android.graphics.BitmapFactory;\nimport android.graphics.Rect;\nimport android.os.Bundle;\nimport android.support.v7.app.AppCompatActivity;\nimport android.support.v7.widget.DefaultItemAnimator;\nimport android.support.v7.widget.GridLayoutManager;\nimport android.support.v7.widget.RecyclerView;\nimport android.util.Log;\nimport android.util.TypedValue;\nimport android.view.Menu;\nimport android.view.MenuInflater;\nimport android.view.MenuItem;\nimport android.view.View;\nimport android.widget.ProgressBar;\nimport android.widget.Toast;\n\nimport com.javaproject.pashnim.cinema.DisplayObjects.MovieView;\nimport com.javaproject.pashnim.cinema.Objects.MovieDetails;\nimport com.javaproject.pashnim.cinema.WebInterfaces.MoviesServiceAPI;\nimport com.javaproject.pashnim.cinema.WebInterfaces.MoviesServiceFactory;\n\nimport java.io.IOException;\nimport java.util.ArrayList;\nimport java.util.List;\n\nimport io.reactivex.Observable;\nimport io.reactivex.ObservableEmitter;\nimport io.reactivex.ObservableOnSubscribe;\nimport io.reactivex.Single;\nimport io.reactivex.SingleEmitter;\nimport io.reactivex.SingleOnSubscribe;\nimport io.reactivex.android.schedulers.AndroidSchedulers;\nimport io.reactivex.annotations.NonNull;\nimport io.reactivex.disposables.Disposable;\nimport io.reactivex.functions.Consumer;\nimport io.reactivex.observers.DisposableObserver;\nimport io.reactivex.observers.DisposableSingleObserver;\nimport io.reactivex.schedulers.Schedulers;\nimport okhttp3.ResponseBody;\n\npublic class MainActivity extends AppCompatActivity {\n\n    RecyclerView m_moviesList;\n    MoviesListAdapter m_moviesAdapter;\n    ProgressBar m_progressBar;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_main);\n\n        getSupportActionBar().setDisplayShowTitleEnabled(false);\n\n        m_progressBar = (ProgressBar) findViewById(R.id.pb_movies);\n\n        m_moviesAdapter = new MoviesListAdapter();\n\n        m_moviesList = (RecyclerView) findViewById(R.id.rv_movies);\n        m_moviesList.setAdapter(m_moviesAdapter);\n        m_moviesList.setLayoutManager(new GridLayoutManager(this, 2));\n        m_moviesList.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));\n        m_moviesList.setItemAnimator(new DefaultItemAnimator());\n\n        ShowMoviesList();\n    }\n\n    public void ShowMoviesList()\n    {\n        Single.create(new SingleOnSubscribe<List<MovieDetails>>()\n        {\n            @Override\n            public void subscribe(@NonNull SingleEmitter<List<MovieDetails>> emitter) throws Exception\n            {\n                final MoviesServiceAPI moviesService = MoviesServiceFactory.GetInstance();\n\n                emitter.onSuccess(moviesService.GetAllMovies().execute().body());\n            }\n        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).doOnSubscribe(\n                new Consumer<Disposable>()\n                {\n                    @Override\n                    public void accept(@NonNull Disposable disposable) throws Exception\n                    {\n                        m_progressBar.setVisibility(View.VISIBLE);\n                    }\n                }\n        ).subscribeWith(new DisposableSingleObserver<List<MovieDetails>>()\n        {\n\n            @Override\n            public void onSuccess(@NonNull List<MovieDetails> moviesDetails)\n            {\n                List<MovieView> movieViews = new ArrayList<>(moviesDetails.size());\n\n                for (MovieDetails movie : moviesDetails)\n                    movieViews.add(new MovieView(movie, null));\n\n                m_moviesAdapter.SetData(movieViews);\n\n                LoadMoviesImages(moviesDetails);\n\n                m_progressBar.setVisibility(View.INVISIBLE);\n            }\n\n            @Override\n            public void onError(@NonNull Throwable throwable)\n            {\n                Log.d(\"Movies\", \"Error retrieving the movies\");\n            }\n        });\n    }\n\n    public void LoadMoviesImages(final List<MovieDetails> movies)\n    {\n        Observable.create(new ObservableOnSubscribe<MovieImageArrivedEvent>()\n        {\n            @Override\n            public void subscribe(@NonNull ObservableEmitter<MovieImageArrivedEvent> emitter) throws Exception\n            {\n                MoviesServiceAPI movieService = MoviesServiceFactory.GetInstance();\n\n                for (int i = 0; i < movies.size(); i++)\n                {\n                    final MovieDetails currentMovie = movies.get(i);\n\n                    // Fetching the movie image\n                    ResponseBody body = movieService.GetMoviePicture(currentMovie.ImageName).execute().body();\n\n                    byte[] imageBytes = new byte[0];\n\n                    try\n                    {\n                        imageBytes = body.bytes();\n                    } catch (IOException e)\n                    {\n                        emitter.onError(null);\n\n                        e.printStackTrace();\n                    }\n\n                    Bitmap movieImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);\n\n                    if (movieImage != null)\n                        emitter.onNext(new MovieImageArrivedEvent(movieImage, i));\n                    else\n                        emitter.onError(null);\n                }\n            }\n        }).observeOn(AndroidSchedulers.mainThread())\n                .subscribeOn(Schedulers.io())\n                .subscribeWith(new DisposableObserver<MovieImageArrivedEvent>()\n                {\n                    @Override\n                    public void onNext(@NonNull MovieImageArrivedEvent movieImageArrivedEvent)\n                    {\n                        m_moviesAdapter.SetImageAt(movieImageArrivedEvent.image, movieImageArrivedEvent.position);\n                    }\n\n                    @Override\n                    public void onError(Throwable throwable)\n                    {\n                        Log.d(\"Movies\", \"Failed loading image\");// of movie: \" + currentMovie.Name);\n                    }\n\n                    @Override\n                    public void onComplete()\n                    {\n                    }\n                });\n    }\n\n    public class MovieImageArrivedEvent\n    {\n        public final Bitmap image;\n        public final int position;\n\n        public MovieImageArrivedEvent(Bitmap image, int position)\n        {\n            this.image = image;\n            this.position = position;\n        }\n    }\n\n//    public void LoadMovieImages(List<MovieDetails> movies)\n//    {\n//        List<MovieView> movieViews = new ArrayList<>(movies.size());\n//\n//        MoviesServiceAPI movieService = MoviesServiceFactory.GetInstance();\n//\n//        for (int i = 0; i < movies.size(); i++)\n//        {\n//            final MovieDetails currentMovie = movies.get(i);\n//            final int currentIndex = i;\n//\n//            // Fetching the movie image\n//            movieService.GetMoviePicture(currentMovie.ImageName).enqueue(new Callback<ResponseBody>()\n//            {\n//                @Override\n//                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response)\n//                {\n//                    ResponseBody body = response.body();\n//\n//                    byte[] imageBytes = new byte[0];\n//                    try\n//                    {\n//                        imageBytes = body.bytes();\n//                    } catch (IOException e)\n//                    {\n//                        e.printStackTrace();\n//                    }\n//\n//                    Bitmap movieImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);\n//\n//                    if (movieImage != null)\n//                        m_moviesAdapter.SetImageAt(movieImage, currentIndex);\n//                    else\n//                        Log.d(\"Movies\", \"Failed loading image of movie: \" + currentMovie.Name);\n//                }\n//\n//                @Override\n//                public void onFailure(Call<ResponseBody> call, Throwable t)\n//                {\n//\n//                }\n//            });\n//        }\n//    }\n\n    @Override\n    public boolean onCreateOptionsMenu(Menu menu)\n    {\n        MenuInflater inflater = getMenuInflater();\n        inflater.inflate(R.menu.menu_main_page,menu);\n        return super.onCreateOptionsMenu(menu);\n    }\n\n    @Override\n    public boolean onOptionsItemSelected(MenuItem item)\n    {\n        switch (item.getItemId())\n        {\n            case R.id.home:\n            {\n                Toast.makeText(MainActivity.this, \"HOME\", Toast.LENGTH_SHORT).show();\n                Intent goToNextActivity = new Intent(MainActivity.this, MainActivity.class);\n                startActivity(goToNextActivity);\n\n                break;\n            }\n            case R.id.admin_action:\n            {\n                Toast.makeText(MainActivity.this, \"Admin\", Toast.LENGTH_SHORT).show();\n\n                break;\n            }\n            case R.id.refresh_action:\n            {\n                ShowMoviesList();\n\n                break;\n            }\n            default:\n                return super.onOptionsItemSelected(item);\n        }\n\n        return true;\n    }\n\n    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {\n\n        private int spanCount;\n        private int spacing;\n        private boolean includeEdge;\n\n        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {\n            this.spanCount = spanCount;\n            this.spacing = spacing;\n            this.includeEdge = includeEdge;\n        }\n\n        @Override\n        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {\n            int position = parent.getChildAdapterPosition(view); // item position\n            int column = position % spanCount; // item column\n\n            if (includeEdge) {\n                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)\n                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)\n\n                if (position < spanCount) { // top edge\n                    outRect.top = spacing;\n                }\n                outRect.bottom = spacing; // item bottom\n            } else {\n                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)\n                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)\n                if (position >= spanCount) {\n                    outRect.top = spacing; // item top\n                }\n            }\n        }\n    }\n\n    /**\n     * Converting dp to pixel\n     */\n    private int dpToPx(int dp) {\n        Resources r = getResources();\n        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));\n    }\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/javaproject/pashnim/cinema/MainActivity.java	(revision 52c2a2cbc20954a79d61a651d86b4307850e4460)
++++ app/src/main/java/com/javaproject/pashnim/cinema/MainActivity.java	(revision )
+@@ -27,17 +27,14 @@
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.List;
++import java.util.stream.Collectors;
+ 
+ import io.reactivex.Observable;
+-import io.reactivex.ObservableEmitter;
+ import io.reactivex.ObservableOnSubscribe;
+ import io.reactivex.Single;
+-import io.reactivex.SingleEmitter;
+ import io.reactivex.SingleOnSubscribe;
+ import io.reactivex.android.schedulers.AndroidSchedulers;
+ import io.reactivex.annotations.NonNull;
+-import io.reactivex.disposables.Disposable;
+-import io.reactivex.functions.Consumer;
+ import io.reactivex.observers.DisposableObserver;
+ import io.reactivex.observers.DisposableSingleObserver;
+ import io.reactivex.schedulers.Schedulers;
+@@ -71,85 +68,71 @@
+ 
+     public void ShowMoviesList()
+     {
+-        Single.create(new SingleOnSubscribe<List<MovieDetails>>()
++        Single.create((SingleOnSubscribe<List<MovieDetails>>) emitter ->
+         {
+-            @Override
+-            public void subscribe(@NonNull SingleEmitter<List<MovieDetails>> emitter) throws Exception
+-            {
+-                final MoviesServiceAPI moviesService = MoviesServiceFactory.GetInstance();
++            final MoviesServiceAPI moviesService = MoviesServiceFactory.GetInstance();
+ 
+-                emitter.onSuccess(moviesService.GetAllMovies().execute().body());
+-            }
+-        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).doOnSubscribe(
+-                new Consumer<Disposable>()
++            emitter.onSuccess(moviesService.GetAllMovies().execute().body());
++
++        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
++                .doOnSubscribe(consumer -> m_progressBar.setVisibility(View.VISIBLE))
++                .subscribeWith(
++                new DisposableSingleObserver<List<MovieDetails>>()
+                 {
+                     @Override
+-                    public void accept(@NonNull Disposable disposable) throws Exception
+-                    {
+-                        m_progressBar.setVisibility(View.VISIBLE);
+-                    }
+-                }
+-        ).subscribeWith(new DisposableSingleObserver<List<MovieDetails>>()
+-        {
+-
+-            @Override
+-            public void onSuccess(@NonNull List<MovieDetails> moviesDetails)
+-            {
+-                List<MovieView> movieViews = new ArrayList<>(moviesDetails.size());
+-
+-                for (MovieDetails movie : moviesDetails)
+-                    movieViews.add(new MovieView(movie, null));
+-
+-                m_moviesAdapter.SetData(movieViews);
++                    public void onSuccess(@NonNull List<MovieDetails> moviesDetails)
++                    {
++                        m_moviesAdapter.SetData(moviesDetails
++                                .stream()
++                                .map(details -> new MovieView(details, null))
++                                .collect(Collectors.toList()));
+ 
+-                LoadMoviesImages(moviesDetails);
++                        LoadMoviesImages(moviesDetails);
+ 
+-                m_progressBar.setVisibility(View.INVISIBLE);
+-            }
++                        m_progressBar.setVisibility(View.INVISIBLE);
++                    }
+ 
+-            @Override
+-            public void onError(@NonNull Throwable throwable)
+-            {
+-                Log.d("Movies", "Error retrieving the movies");
+-            }
+-        });
++                    @Override
++                    public void onError(@NonNull Throwable throwable)
++                    {
++                        Log.d("Movies", "Error retrieving the movies");
++
++                        m_progressBar.setVisibility(View.INVISIBLE);
++                    }
++                });
+     }
+ 
+     public void LoadMoviesImages(final List<MovieDetails> movies)
+     {
+-        Observable.create(new ObservableOnSubscribe<MovieImageArrivedEvent>()
++        Observable.create((ObservableOnSubscribe<MovieImageArrivedEvent>) emitter ->
+         {
+-            @Override
+-            public void subscribe(@NonNull ObservableEmitter<MovieImageArrivedEvent> emitter) throws Exception
+-            {
+-                MoviesServiceAPI movieService = MoviesServiceFactory.GetInstance();
++            MoviesServiceAPI movieService = MoviesServiceFactory.GetInstance();
+ 
+-                for (int i = 0; i < movies.size(); i++)
+-                {
+-                    final MovieDetails currentMovie = movies.get(i);
++            for (int i = 0; i < movies.size(); i++)
++            {
++                final MovieDetails currentMovie = movies.get(i);
+ 
+-                    // Fetching the movie image
+-                    ResponseBody body = movieService.GetMoviePicture(currentMovie.ImageName).execute().body();
++                // Fetching the movie image
++                ResponseBody body = movieService.GetMoviePicture(currentMovie.ImageName).execute().body();
+ 
+-                    byte[] imageBytes = new byte[0];
++                byte[] imageBytes = new byte[0];
+ 
+-                    try
+-                    {
+-                        imageBytes = body.bytes();
+-                    } catch (IOException e)
+-                    {
+-                        emitter.onError(null);
++                try
++                {
++                    imageBytes = body.bytes();
++                } catch (IOException e)
++                {
++                    emitter.onError(null);
+ 
+-                        e.printStackTrace();
+-                    }
++                    e.printStackTrace();
++                }
+ 
+-                    Bitmap movieImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
++                Bitmap movieImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+ 
+-                    if (movieImage != null)
+-                        emitter.onNext(new MovieImageArrivedEvent(movieImage, i));
+-                    else
+-                        emitter.onError(null);
+-                }
++                if (movieImage != null)
++                    emitter.onNext(new MovieImageArrivedEvent(movieImage, i));
++                else
++                    emitter.onError(null);
+             }
+         }).observeOn(AndroidSchedulers.mainThread())
+                 .subscribeOn(Schedulers.io())
+@@ -176,61 +159,16 @@
+ 
+     public class MovieImageArrivedEvent
+     {
+-        public final Bitmap image;
+-        public final int position;
++        final Bitmap image;
++        final int position;
+ 
+-        public MovieImageArrivedEvent(Bitmap image, int position)
++        MovieImageArrivedEvent(Bitmap image, int position)
+         {
+             this.image = image;
+             this.position = position;
+         }
+     }
+ 
+-//    public void LoadMovieImages(List<MovieDetails> movies)
+-//    {
+-//        List<MovieView> movieViews = new ArrayList<>(movies.size());
+-//
+-//        MoviesServiceAPI movieService = MoviesServiceFactory.GetInstance();
+-//
+-//        for (int i = 0; i < movies.size(); i++)
+-//        {
+-//            final MovieDetails currentMovie = movies.get(i);
+-//            final int currentIndex = i;
+-//
+-//            // Fetching the movie image
+-//            movieService.GetMoviePicture(currentMovie.ImageName).enqueue(new Callback<ResponseBody>()
+-//            {
+-//                @Override
+-//                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response)
+-//                {
+-//                    ResponseBody body = response.body();
+-//
+-//                    byte[] imageBytes = new byte[0];
+-//                    try
+-//                    {
+-//                        imageBytes = body.bytes();
+-//                    } catch (IOException e)
+-//                    {
+-//                        e.printStackTrace();
+-//                    }
+-//
+-//                    Bitmap movieImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+-//
+-//                    if (movieImage != null)
+-//                        m_moviesAdapter.SetImageAt(movieImage, currentIndex);
+-//                    else
+-//                        Log.d("Movies", "Failed loading image of movie: " + currentMovie.Name);
+-//                }
+-//
+-//                @Override
+-//                public void onFailure(Call<ResponseBody> call, Throwable t)
+-//                {
+-//
+-//                }
+-//            });
+-//        }
+-//    }
+-
+     @Override
+     public boolean onCreateOptionsMenu(Menu menu)
+     {
+@@ -277,7 +215,7 @@
+         private int spacing;
+         private boolean includeEdge;
+ 
+-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
++        GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+             this.spanCount = spanCount;
+             this.spacing = spacing;
+             this.includeEdge = includeEdge;

@@ -19,5 +19,11 @@
     <string name="msg_no_items">No items found!</string>
     <string name="lbl_new_item_title">New Item</string>
     <string name="lbl_edit_item_title">Edit Item</string>
-    <string name="hint_enter_item">Enter your item!</string>
+    <string name="hint_enter_item">Enter item name!</string>
+    <string name="add_item_btn">Add item</string>
+    <string name="item_picture">Item name</string>
+    <string name="item_name">Item Name</string>
+    <string name="item_name_hint">Name</string>
+    <string name="add_items">Add Item:</string>
+    <string name="hint_enter_item_descritpion">Enter item description!</string>
 </resources>

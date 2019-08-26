@@ -33,16 +33,16 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener {
 
     @BindView(R.id.login_button)
-    private Button loginButton;
+    Button loginButton;
 
     @BindView(R.id.login_username) @NotEmpty(messageResId = R.string.username_empty_message)
-    private EditText username;
+    EditText username;
 
     @BindView(R.id.login_password) @Password(scheme = Password.Scheme.ALPHA_NUMERIC, messageResId = R.string.password_invalid_error)
-    private EditText userPassword;
+    EditText userPassword;
 
     @BindView(R.id.need_new_account_link)
-    private TextView needNewAccountLink;
+    TextView needNewAccountLink;
 
     @BindView(android.R.id.content)
     View parentView;
