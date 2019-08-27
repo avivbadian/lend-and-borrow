@@ -12,12 +12,6 @@ public class Borrow {
     @JsonProperty("availability")
     public int Availability;
 
-    @JsonProperty("borrow_date")
-    public Date Borrow_date;
-
-    @JsonProperty("return_date")
-    public Date Return_date;
-
     @JsonProperty("phone")
     public String Phone;
 

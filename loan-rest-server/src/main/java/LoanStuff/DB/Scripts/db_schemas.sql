@@ -36,8 +36,6 @@ CREATE TABLE IF NOT EXISTS Borrows
 (
   id SERIAL PRIMARY KEY,
   availability INTEGER REFERENCES availabilities(id) ON DELETE CASCADE,
-  borrow_date date,
-  return_date date,
   phone char(50),
   email char(50),
   first_name char(50),
