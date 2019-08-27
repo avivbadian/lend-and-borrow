@@ -5,10 +5,7 @@ import LoanStuff.ViewModels.Branch;
 import LoanStuff.ViewModels.Item;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,6 +48,17 @@ public class BranchesController {
             db.execUpdate(String.format("INSERT INTO branches VALUES (DEFAULT, '%s', '%s')", newBranch.Title, newBranch.Address));
 
             return new ResponseEntity(HttpStatus.CREATED);
+        } catch (SQLException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/branches/{id}")
+    public ResponseEntity deleteBranch(@PathVariable int id) {
+        try {
+            db.execUpdate(String.format("DELETE FROM branches WHERE id='%s'", id));
+
+            return new ResponseEntity(HttpStatus.OK);
         } catch (SQLException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
