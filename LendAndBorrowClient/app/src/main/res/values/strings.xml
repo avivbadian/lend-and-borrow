@@ -27,7 +27,7 @@
     <string name="phone_number_error">Phone number is invalid</string>
     <string name="card_number_error">Credit card number is invalid</string>
     <string name="purchase_confirm_error">בצע רכישה</string>
-    <string name="choose_screening_button">Choose Availability</string>
+    <string name="choose_screening_button">Choose dates</string>
     <string name="branch_not_selected">Branch was not selected</string>
     <string name="screening_selection_canceled">Canceled screening selection</string>
 

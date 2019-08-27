@@ -18,9 +18,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.lendandborrowclient.MainActivity;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
+import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
@@ -37,9 +39,6 @@ import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-/**
- * Created by Nimrod on 24/06/2017.
- */
 
 public class BorrowRequestFragment extends Fragment
 {
@@ -51,9 +50,7 @@ public class BorrowRequestFragment extends Fragment
     private Branch _selectedBranch;
     private Availability _selectedAvailability;
 
-    MonthAdapter.CalendarDay _selectedDay;
     DatePickerDialog initialDatePickerDialog;
-    DatePickerDialog endDatePickerDialog;
     ArrayAdapter<Branch> _branchesSpinnerAdapter;
 
     @BindView(R.id.iv_item_image) ImageView _itemImage;
