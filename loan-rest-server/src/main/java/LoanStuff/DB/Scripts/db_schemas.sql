@@ -20,8 +20,7 @@ CREATE TABLE IF NOT EXISTS items
 
 CREATE TABLE IF NOT EXISTS branches
 (
-  id SERIAL PRIMARY KEY,
-  title char(50),
+  title char(50) PRIMARY KEY,
   address char(50)
 );
 
@@ -29,7 +28,6 @@ CREATE TABLE IF NOT EXISTS availabilities
 (
   id SERIAL PRIMARY KEY,
   item_id INTEGER REFERENCES items(id) ON DELETE CASCADE,
-  branch INTEGER REFERENCES branches(id) ON DELETE CASCADE,
   start_date date,
   end_date date
 );

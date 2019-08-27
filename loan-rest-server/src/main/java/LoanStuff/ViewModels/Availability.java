@@ -11,9 +11,6 @@ public class Availability {
     @JsonProperty("item_id")
     public int Item_id;
 
-    @JsonProperty("branch")
-    public int Branch;
-
     @JsonProperty("start_date")
     public Date Start_date;
 

@@ -28,9 +28,8 @@ public class BranchesController {
             while (rs.next()) {
                 //-- id, title, address
                 Branch branch = new Branch();
-                branch.Id = rs.getInt(1);
-                branch.Title = rs.getString(2).trim();
-                branch.Address = rs.getString(3).trim();
+                branch.Title = rs.getString(1).trim();
+                branch.Address = rs.getString(2).trim();
 
                 branches.add(branch);
             }
@@ -45,7 +44,7 @@ public class BranchesController {
     @PostMapping("/branches")
     public ResponseEntity postAddBranch(@RequestBody Branch newBranch) {
         try {
-            db.execUpdate(String.format("INSERT INTO branches VALUES (DEFAULT, '%s', '%s')", newBranch.Title, newBranch.Address));
+            db.execUpdate(String.format("INSERT INTO branches VALUES ('%s', '%s')", newBranch.Title, newBranch.Address));
 
             return new ResponseEntity(HttpStatus.CREATED);
         } catch (SQLException e) {
@@ -53,10 +52,10 @@ public class BranchesController {
         }
     }
 
-    @DeleteMapping("/branches/{id}")
-    public ResponseEntity deleteBranch(@PathVariable int id) {
+    @DeleteMapping("/branches/{title}")
+    public ResponseEntity deleteBranch(@PathVariable String title) {
         try {
-            db.execUpdate(String.format("DELETE FROM branches WHERE id='%s'", id));
+            db.execUpdate(String.format("DELETE FROM branches WHERE title='%s'", title));
 
             return new ResponseEntity(HttpStatus.OK);
         } catch (SQLException e) {

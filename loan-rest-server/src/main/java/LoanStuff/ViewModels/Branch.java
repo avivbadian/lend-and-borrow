@@ -2,12 +2,7 @@ package LoanStuff.ViewModels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
-
 public class Branch {
-    @JsonProperty("id")
-    public int Id;
-
     @JsonProperty("title")
     public String Title;
 

@@ -17,25 +17,25 @@ INSERT INTO items VALUES
 (DEFAULT, 'Harry Potter: The Prisoner of Azkaban', 'Books', 'Harry Potter book third book');
 
 
--- id, title, address
+-- title, address
 INSERT INTO branches VALUES
-(DEFAULT, 'Haifa Main Branch', 'Kdoshey Yasi'),
-(DEFAULT, 'Haifa: Downtown', 'Downtown'),
-(DEFAULT, 'Tel Aviv: Dizengoff', 'Dizengoff 44'),
-(DEFAULT, 'Disney', 'Paris');
+('Haifa-Main', 'Kdoshey Yasi'),
+('Haifa:Downtown', 'Downtown'),
+('Tel-Aviv:Dizengoff', 'Dizengoff 44'),
+('Disney', 'Paris');
 
--- id, item_id, branch, start_date, end_date
+-- id, item_id, start_date, end_date
 INSERT INTO availabilities VALUES
-(DEFAULT,1, 1, '01/01/2019', '31/12/2019'),
-(DEFAULT,2, 1, '01/01/2019', '31/12/2019'),
-(DEFAULT,3, 1, '01/01/2019', '31/12/2019'),
-(DEFAULT,4, 1, '01/01/2019', '31/12/2019'),
-(DEFAULT,2, 2, '01/01/2019', '31/12/2019'),
-(DEFAULT,2, 3, '01/01/2019', '31/12/2019'),
-(DEFAULT,3, 3, '01/01/2019', '31/12/2019'),
-(DEFAULT,3, 4, '01/01/2019', '31/12/2019'),
-(DEFAULT,4, 2, '01/01/2019', '31/12/2019'),
-(DEFAULT,4, 4, '01/01/2019', '31/12/2019');
+(DEFAULT,1, '01/01/2019', '31/12/2019'),
+(DEFAULT,2, '01/01/2019', '31/12/2019'),
+(DEFAULT,3, '01/01/2019', '31/12/2019'),
+(DEFAULT,4, '01/01/2019', '31/12/2019'),
+(DEFAULT,2, '01/01/2019', '31/12/2019'),
+(DEFAULT,2, '01/01/2019', '31/12/2019'),
+(DEFAULT,3, '01/01/2019', '31/12/2019'),
+(DEFAULT,3, '01/01/2019', '31/12/2019'),
+(DEFAULT,4, '01/01/2019', '31/12/2019'),
+(DEFAULT,4, '01/01/2019', '31/12/2019');
 
 --- id, availability, borrow_date, return_date, phone, email,first name, last name
 INSERT INTO Borrows VALUES

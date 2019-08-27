@@ -89,9 +89,8 @@ public class ItemsController {
                 Availability newAval = new Availability();
                 newAval.Id = rs.getInt(1);
                 newAval.Item_id = id;
-                newAval.Branch = rs.getInt(3);
-                newAval.Start_date = rs.getDate(4);
-                newAval.End_date = rs.getDate(5);
+                newAval.Start_date = rs.getDate(2);
+                newAval.End_date = rs.getDate(3);
 
                 availability.add(newAval);
             }
@@ -105,7 +104,7 @@ public class ItemsController {
 
 
     @DeleteMapping("/items/{id}")
-    public ResponseEntity deleteBranch(@PathVariable int id) {
+    public ResponseEntity deleteItem(@PathVariable int id) {
         try {
             db.execUpdate(String.format("DELETE FROM items WHERE id='%s'", id));
 
