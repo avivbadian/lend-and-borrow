@@ -88,9 +88,9 @@ public class ItemsController {
             while (rs.next()) {
                 Availability newAval = new Availability();
                 newAval.Id = rs.getInt(1);
-                newAval.Item_id = id;
-                newAval.Start_date = rs.getDate(2);
-                newAval.End_date = rs.getDate(3);
+                newAval.Item_id = rs.getInt(2);
+                newAval.Start_date = rs.getDate(3);
+                newAval.End_date = rs.getDate(4);
 
                 availability.add(newAval);
             }
