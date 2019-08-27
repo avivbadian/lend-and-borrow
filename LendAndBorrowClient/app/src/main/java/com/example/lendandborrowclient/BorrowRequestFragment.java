@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lendandborrowclient.Models.Availability;
-import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
@@ -47,11 +46,11 @@ public class BorrowRequestFragment extends Fragment
     Item m_displayedItem;
 
     List<Availability> _allAvailabilities;
-    List<Availability> _selectedDayPossibleAvailabilities;
     List<Branch> _allBranches;
-    Branch _selectedBranch;
 
-    Borrow _requestedBorrow;
+    private Branch _selectedBranch;
+    private Availability _selectedAvailability;
+
     MonthAdapter.CalendarDay _selectedDay;
     DatePickerDialog initialDatePickerDialog;
     DatePickerDialog endDatePickerDialog;
@@ -91,7 +90,7 @@ public class BorrowRequestFragment extends Fragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        m_displayedItem = ((MainActivity)getActivity()).getSelectedItem();
+        m_displayedItem = ((MainActivity)getActivity()).GetSelectedItem();
 //        m_savedImageBitmap = ((MainActivity)getActivity()).getSelectedMovieImage();
 
         PopulateFields();
@@ -109,8 +108,7 @@ public class BorrowRequestFragment extends Fragment
                         _branchesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         _branchesSpinner.setAdapter(_branchesSpinnerAdapter);
                         _branchesSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
-                            _selectedBranch = (Branch) _branchesSpinner.getSelectedItem();
-                            _selectedAvailability.Branch = _selectedBranch.Id;
+                             _selectedBranch = (Branch) _branchesSpinner.getSelectedItem();
                         });
                     }
                     else
@@ -121,20 +119,15 @@ public class BorrowRequestFragment extends Fragment
     @OnClick(R.id.btn_date)
     void OnDatePickerButtonClicked()
     {
-         _allAvailabilities.sort((a1, a2) -> a1.Start_date.compareTo(a2.Start_date));
-         Calendar minCal = toCalendar( _allAvailabilities.get(0).Start_date);
-
-         if (minCal.before(Calendar.getInstance())) {
-             minCal = Calendar.getInstance();
-         }
+        Calendar now = Calendar.getInstance();
 
         initialDatePickerDialog = DatePickerDialog.newInstance(new initialDatePicker(),
-                minCal.get(Calendar.YEAR),
-                minCal.get(Calendar.MONTH),
-                minCal.get(Calendar.DAY_OF_MONTH));
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH));
 
-        _allAvailabilities.sort((a1, a2) -> a1.End_date.compareTo(a2.End_date));
-        initialDatePickerDialog.setMaxDate(toCalendar( _allAvailabilities.get(_allAvailabilities.size()-1).End_date));
+        initialDatePickerDialog.setSelectableDays(_allAvailabilities.stream().map(
+                availability -> toCalendar( availability.Start_date)).toArray(Calendar[]::new));
 
         if (_allAvailabilities != null && _allAvailabilities.size() != 0)
         {
@@ -162,11 +155,12 @@ public class BorrowRequestFragment extends Fragment
 
     private void PopulateFields()
     {
+        _selectedAvailability = new Availability();
+        _selectedBranch = new Branch();
         _itemTitle.setText(m_displayedItem.Title);
         _itemCategory.setText(String.format(getString(R.string.genres), m_displayedItem.Category));
         Picasso.get().load(FirebaseStorage.getInstance().getReference().child("Items images").child(m_displayedItem.Id + ".jpg").getPath()).into(_itemImage);
         _itemDescription.setText(String.format(getString(R.string.description_format), m_displayedItem.Description));
-        _selectedAvailability = new Availability();
 
         //_itemYear.setText(String.format("%s %s", getString(R.string.release_date), m_displayedMovie.ReleaseDate.toString(getString(R.string.release_date_time_pattern))));
         //_itemImage.setImageBitmap(m_savedImageBitmap);
@@ -180,24 +174,10 @@ public class BorrowRequestFragment extends Fragment
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
             Calendar cur = Calendar.getInstance();
             cur.set(year, monthOfYear, dayOfMonth);
-            _selectedAvailability.Start_date = new java.sql.Date(cur.getTimeInMillis());
-            endDatePickerDialog = DatePickerDialog.newInstance(new endDatePicker(),
-                    year,
-                    monthOfYear,
-                    dayOfMonth);
+            java.sql.Date sqlDate = new java.sql.Date(cur.getTimeInMillis());
 
-            _allAvailabilities.sort((a1,a2) -> a1.End_date.compareTo(a2.End_date));
-            endDatePickerDialog.setMaxDate(toCalendar(_allAvailabilities.get(_allAvailabilities.size()-1).End_date));
-            endDatePickerDialog.show(getFragmentManager(), "Datepickeridialog");
-        }
-    }
-
-    class endDatePicker implements DatePickerDialog.OnDateSetListener{
-        @Override
-        public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-            Calendar cur = Calendar.getInstance();
-            cur.set(year, monthOfYear, dayOfMonth);
-            _selectedAvailability.End_date = new java.sql.Date(cur.getTimeInMillis());
+            _selectedAvailability = _allAvailabilities.stream().filter((availability -> availability.Start_date == sqlDate)).
+                    findFirst().orElse(new Availability());
         }
     }
 
@@ -227,22 +207,21 @@ public class BorrowRequestFragment extends Fragment
             }
             case R.id.next_action:
             {
-                if (_selectedAvailability != null) {
+                if (_selectedAvailability.Id != 0) {
 
-                    if (_selectedAvailability.Branch == 0) {
+                    if (_selectedBranch.Title.equals("")) {
                         Toast.makeText(getContext(), "Please choose a branch", Toast.LENGTH_LONG).show();
                         return true;
                     }
                     try  {
-                        HandyServiceFactory.GetInstance().Borrow(new Borrow())
-                        ((MainActivity) getActivity()).ShowPurchaseDetailsFragment(selectedSeats, selectionId);
-                    } catch (Exception e)                    {
+                        ((MainActivity) getActivity()).ShowBorrowConfirmDialog(_selectedBranch, _selectedAvailability);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
 
                 else
-                    Toast.makeText(getContext(), R.string.screening_wasnt_selected, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.branch_not_selected, Toast.LENGTH_LONG).show();
 
                 return true;
             }

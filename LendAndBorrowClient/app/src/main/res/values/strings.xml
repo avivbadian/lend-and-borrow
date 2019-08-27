@@ -10,12 +10,13 @@
 
     // Purchase fields Hints
     <string name="last_name">Last Name</string>
+    <string name="first_name">First Name</string>
     <string name="given_name">Given Name</string>
     <string name="email">Email</string>
     <string name="card_expiration">Expiry Date</string>
     <string name="phone_number">Phone Number</string>
     <string name="card_number">Credit Card Number</string>
-    <string name="purchase_confirm">Complete Purchase</string>
+    <string name="purchase_confirm">Submit borrow</string>
 
     // Purchase fields Error Messages
     <string name="empty_field_error">Field should not be empty</string>
@@ -27,7 +28,7 @@
     <string name="card_number_error">Credit card number is invalid</string>
     <string name="purchase_confirm_error">בצע רכישה</string>
     <string name="choose_screening_button">Choose Availability</string>
-    <string name="screening_wasnt_selected">Screening was not selected</string>
+    <string name="branch_not_selected">Branch was not selected</string>
     <string name="screening_selection_canceled">Canceled screening selection</string>
 
     // Movie details and screening selection
@@ -42,7 +43,7 @@
     <string name="selected_screening">Selected Screening: %s</string>search_hint
     <string name="description_format">Description: %s</string>
     <string name="search_hint">Movie Search</string>
-    <string name="purchase_approval_text">Order Number: %s\n Purchase summery sent to:\n%s</string>
+    <string name="borrow_approval_text">Request Number: %s\n Borrow information sent to:\n%s</string>
     <string name="movie_search">Movie Search</string>
     <string name="add_movie_btn">Add Movie</string>
     <string name="delete_movie_btn">Delete Movie</string>

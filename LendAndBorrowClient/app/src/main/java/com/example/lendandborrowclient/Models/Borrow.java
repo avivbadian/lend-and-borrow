@@ -27,6 +27,9 @@ public class Borrow {
     @JsonProperty("last_name")
     public String Last_name;
 
-    @JsonProperty("branchId")
-    public int BranchId;
+    @JsonProperty("branch_title")
+    public String BranchTitle;
+
+    @JsonProperty("availabilityId")
+    public int AvailabilityId;
 }

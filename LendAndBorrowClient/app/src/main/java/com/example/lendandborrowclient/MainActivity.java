@@ -14,12 +14,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.lendandborrowclient.Models.Availability;
+import com.example.lendandborrowclient.Models.Borrow;
+import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
 
 public class MainActivity extends AppCompatActivity
 {
     private Item _selectedItem;
     private Availability _selectedAvailability;
+    private Branch _selectedBranch;
+    private Borrow _requestedBorrow;
 
     // TODO : Save Fragments here so we can HIDE/SHOW them on back
     // TODO : Change transaction to hide previous, add new and commit instead of current replace
@@ -110,12 +114,36 @@ public class MainActivity extends AppCompatActivity
     public void ShowSelectAvailabilityFragment(Item item)
     {
         _selectedItem = item;
-
-//        getFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.container, new BorrowRequestFragment())
-//                .addToBackStack(null).commit();
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, new BorrowRequestFragment())
+                .addToBackStack(null).commit();
     }
+
+    public void ShowBorrowConfirmDialog(Branch selectedBranch, Availability selectedAvailability) {
+        _selectedBranch = selectedBranch;
+        _selectedAvailability = selectedAvailability;
+
+        BorrowConfirmFragment frag = new BorrowConfirmFragment();
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.container, frag)
+                .addToBackStack(null).commit();
+    }
+
+    public Item GetSelectedItem(){
+        return _selectedItem;
+    }
+
+    public Availability GetSelectedAvailability(){
+        return _selectedAvailability;
+    }
+
+    public Branch GetSelectedBranch() {
+        return _selectedBranch;
+    }
+
 
 //    public void ShowPurchaseDetailsFragment(List<Seat> selectedSeats, String selectionId) throws Exception
 //    {
@@ -129,40 +157,4 @@ public class MainActivity extends AppCompatActivity
 //        // Passing the required data for the fragment
 //        frag.PassData(_selectedScreening, _selectedMovie.MovieDetails, selectedSeats, selectionId);
 //    }
-
-//    public void ShowSelectSeatsFragment(Screening screening) throws Exception
-//    {
-//        _selectedScreening = screening;
-//
-//        SeatsSelectionFragment frag = new SeatsSelectionFragment();
-//
-//        getFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.container, frag)
-//                .addToBackStack(null).commit();
-//
-//        frag.PassData(screening, _selectedMovie.MovieDetails);
-//
-//        // TODO : we can use add function instead of replace with a unique TAG and then hide the fragment with the tag;
-////        getFragmentManager()
-////                .beginTransaction()
-////                .hide(getFragmentManager().findFragmentById(R.id.container))
-////                .show(new SeatsSelectionFragment())
-////                .addToBackStack(null).commit();
-//    }
-
-    public Item getSelectedItem()
-    {
-        return _selectedItem;
-    }
-
-//    public Bitmap getSelectedMovieImage()
-//    {
-//        return _selectedMovie.MoviePicture;
-//    }
-
-    public Availability getSelectedAvailability()
-    {
-        return _selectedAvailability;
-    }
 }
