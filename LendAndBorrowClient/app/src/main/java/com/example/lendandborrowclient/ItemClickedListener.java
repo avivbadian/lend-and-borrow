@@ -1,12 +1,8 @@
-package com.javaproject.nimrod.cinema;
+package com.example.lendandborrowclient;
 
-import com.javaproject.nimrod.cinema.Objects.MovieDisplay;
+import com.example.lendandborrowclient.Models.Item;
 
-/**
- * Created by Nimrod on 18/06/2017.
- */
-
-public interface MovieClickedListener
+public interface ItemClickedListener
 {
-    void OnMovieItemClicked(MovieDisplay movie);
+    void OnItemClicked(Item item);
 }

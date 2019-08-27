@@ -6,21 +6,12 @@ public class Item {
     @JsonProperty("id")
     public int Id;
 
-    @JsonProperty("name")
-    public String Name;
-
-    @JsonProperty("description")
-    public String Description;
-
-    @JsonProperty("owner")
-    public String Owner;
+    @JsonProperty("title")
+    public String Title;
 
     @JsonProperty("category")
     public String Category;
 
-    @JsonProperty("imagePath")
-    public String ImagePath;
-
-    @JsonProperty("isAvailable")
-    public Boolean IsAvailable;
+    @JsonProperty("description")
+    public String Description;
 }

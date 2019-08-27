@@ -42,9 +42,6 @@
                 android:padding="@dimen/movie_title_padding"
                 android:textColor="@color/movie_title"
                 android:textSize="@dimen/movie_title"/>
-            <!--android:paddingLeft="@dimen/movie_title_padding"-->
-            <!--android:paddingRight="@dimen/movie_title_padding"-->
-            <!--android:paddingTop="@dimen/movie_title_padding"-->
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

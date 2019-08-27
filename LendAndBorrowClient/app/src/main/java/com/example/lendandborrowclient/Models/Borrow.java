@@ -9,9 +9,6 @@ public class Borrow {
     @JsonProperty("id")
     public int Id;
 
-    @JsonProperty("availability")
-    public int Availability;
-
     @JsonProperty("borrow_date")
     public Date Borrow_date;
 
@@ -30,4 +27,6 @@ public class Borrow {
     @JsonProperty("last_name")
     public String Last_name;
 
+    @JsonProperty("branchId")
+    public int BranchId;
 }

@@ -1,4 +1,4 @@
-package com.javaproject.nimrod.cinema.Validation;
+package com.example.lendandborrowclient.Validation;
 
 import android.support.design.widget.TextInputLayout;
 

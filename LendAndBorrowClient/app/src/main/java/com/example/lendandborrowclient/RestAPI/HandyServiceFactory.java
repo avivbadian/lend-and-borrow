@@ -9,15 +9,15 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public final class LoansHttpService
+public final class HandyServiceFactory
 {
-    private static WebServiceAPI m_service = null;
+    private static HandyServiceAPI m_service = null;
 
-    private LoansHttpService()
+    private HandyServiceFactory()
     {
     }
 
-    public static WebServiceAPI GetInstance()
+    public static HandyServiceAPI GetInstance()
     {
         if (m_service == null)
         {
@@ -25,7 +25,7 @@ public final class LoansHttpService
             GsonBuilder gson = new GsonBuilder();
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(RoutesConstants.BaseURL)
+                    .baseUrl(WebApiConstants.BaseUrl)
                     .client(new OkHttpClient.Builder().writeTimeout(20, TimeUnit.SECONDS)
                             .readTimeout(20, TimeUnit.SECONDS).build())
                     .addConverterFactory(ScalarsConverterFactory.create())
@@ -33,7 +33,7 @@ public final class LoansHttpService
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
 
-            m_service = retrofit.create(WebServiceAPI.class);
+            m_service = retrofit.create(HandyServiceAPI.class);
         }
 
         return m_service;

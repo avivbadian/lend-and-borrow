@@ -1,24 +1,23 @@
 package com.example.lendandborrowclient;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lendandborrowclient.Models.User;
-import com.example.lendandborrowclient.RestAPI.LoansHttpService;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.lendandborrowclient.Models.Admin;
+import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
-import com.mobsandgeeks.saripaar.adapter.TextViewStringAdapter;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Password;
 
@@ -26,107 +25,98 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.functions.BiConsumer;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
-public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener {
+public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener
+{
+    private static final String TAG = "LoginActivity";
 
-    @BindView(R.id.login_button)
-    Button loginButton;
-
-    @BindView(R.id.login_username) @NotEmpty(messageResId = R.string.username_empty_message)
-    EditText username;
-
-    @BindView(R.id.login_password) @Password(scheme = Password.Scheme.ALPHA_NUMERIC, messageResId = R.string.password_invalid_error)
-    EditText userPassword;
-
-    @BindView(R.id.need_new_account_link)
-    TextView needNewAccountLink;
+    @BindView(R.id.til_input_username) @NotEmpty(messageResId = R.string.empty_field_error)
+    TextInputLayout _userText;
+    @BindView(R.id.til_input_password) @Password(scheme = Password.Scheme.ALPHA_NUMERIC, messageResId = R.string.password_invalid_error)
+    TextInputLayout _passwordText;
+    @BindView(R.id.btn_login) Button _loginButton;
 
     @BindView(android.R.id.content)
-    View parentView;
+    View _rootView;
 
-    private ProgressDialog loadingBar;
-    private Validator validator;
+    private Validator _validator;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
-        loadingBar = new ProgressDialog(this);
-
-        needNewAccountLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendUserToRegisterActivity();
-            }
-        });
+        setTitle("Login");
 
         // Setting fields validator
-        validator = new Validator(this);
-        validator.setValidationListener(this);
-        validator.registerAdapter(TextView.class, new TextViewStringAdapter());
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                validator.validate();
-            }
-        });
+        _validator = new Validator(this);
+        _validator.setValidationListener(this);
+        _validator.registerAdapter(TextInputLayout.class, new TextInputLayoutDataAdapter());
+        _loginButton.setOnClickListener(v -> _validator.validate());
     }
 
-    private void tryLogIn() {
-        final String userNameVal = username.getText().toString();
-        String password = userPassword.getText().toString();
+    public void Login()
+    {
+        Log.d(TAG, "Login");
 
-        // Loading bar for signing in progress
-        loadingBar.setTitle("Log in");
-        loadingBar.setMessage("Please wait while you are being logged in");
-        loadingBar.setCanceledOnTouchOutside(true);
-        loadingBar.show();
+        _loginButton.setEnabled(false);
 
-        LoansHttpService.GetInstance().ValidateUser(new User(userNameVal, password))
+        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+                android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        progressDialog.show();
+
+        String userName = _userText.getEditText().getText().toString();
+        String password = _passwordText.getEditText().getText().toString();
+
+        HandyServiceFactory.GetInstance().ValidateUser(new Admin(userName, password))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BiConsumer<Boolean, Throwable>() {
-                    @Override
-                    public void accept(Boolean success, Throwable throwable) {
-                        loadingBar.dismiss();
-                        if (success)
-                            handleLoginSuccess(userNameVal);
-                        else {
-                            handleLoginFailed();
-                            Snackbar.make(parentView, "Login failed, user or password incorrect", Snackbar.LENGTH_INDEFINITE).show();
-                        }
+                .subscribe((user, throwable) ->
+                {
+                    progressDialog.dismiss();
+
+                    if (user != null)
+                        OnLoginSuccess();
+                    else
+                    {
+                        OnLoginFailed();
+
+                        Snackbar.make(_rootView, "Login failed, user or password incorrect", Snackbar.LENGTH_INDEFINITE).show();
                     }
                 });
     }
 
-
-    private void handleLoginSuccess(String userNameVal) {
-        // Saving username to sharedPreferences
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        settings.edit().putString("username", userNameVal).apply();
-        sendUserToMainActivity();
+    public void OnLoginSuccess()
+    {
+//        _loginButton.setEnabled(true);
+//
+//        startActivity(new Intent(this, ManagementActivity.class));
+//
+//        finish();
     }
 
-    private void handleLoginFailed() {
-        Toast.makeText(this, "Login failed", Toast.LENGTH_LONG).show();
-    }
+    public void OnLoginFailed()
+    {
+        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
+        _loginButton.setEnabled(true);
+    }
 
     @Override
     public void onValidationSucceeded()
     {
-        tryLogIn();
+        Login();
     }
 
     @Override
-    public void onValidationFailed(List<ValidationError> errors) {
-        username.setError(null);
-        userPassword.setError(null);
+    public void onValidationFailed(List<ValidationError> errors)
+    {
+        ClearErrorOnAllFields();
 
         for (ValidationError error : errors)
         {
@@ -134,29 +124,21 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
             String message = error.getCollatedErrorMessage(this);
 
             // Display error messages
-            if (view instanceof TextView)
-                ((TextView) view).setError(message);
+            if (view instanceof TextInputLayout)
+                ((TextInputLayout) view).setError(message);
             else
-                Snackbar.make(parentView, message, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(_rootView, message, Snackbar.LENGTH_LONG).show();
         }
 
-        Snackbar.make(parentView, R.string.invalid_fields, Snackbar.LENGTH_LONG).show();
+        Snackbar.make(_rootView, R.string.illegal_fields, Snackbar.LENGTH_LONG).show();
     }
 
-    private void sendUserToMainActivity() {
-        Intent mainIntent = new Intent(this, MainActivity.class);
-
-        // Adds the new activity (main) to the lifecycle, removes the current (register activity) from the stack
-        // This is to make sure that after logging in, pressing back won't redirect to login activity.
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(mainIntent);
-
-        // onPause() -> onStop() -> onDestroy() are called in that order.
-        finish();
+    private void ClearErrorOnAllFields()
+    {
+        _userText.setError(null);
+        _passwordText.setError(null);
+        _userText.setErrorEnabled(false);
+        _passwordText.setErrorEnabled(false);
     }
 
-    private void sendUserToRegisterActivity() {
-        Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-        startActivity(registerIntent);
-    }
 }

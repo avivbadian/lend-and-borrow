@@ -1,96 +1,168 @@
 package com.example.lendandborrowclient;
 
+import android.app.ActionBar;
+import android.app.FragmentManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
+import com.example.lendandborrowclient.Models.Availability;
+import com.example.lendandborrowclient.Models.Item;
 
-import com.google.android.material.tabs.TabLayout;
+public class MainActivity extends AppCompatActivity
+{
+    private Item _selectedItem;
+    private Availability _selectedAvailability;
 
-public class MainActivity extends AppCompatActivity {
-
-    private Toolbar mToolBar;
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-    private TabsAccessorAdapter tabsAccessorAdapter;
-
-    private SharedPreferences settings;
+    // TODO : Save Fragments here so we can HIDE/SHOW them on back
+    // TODO : Change transaction to hide previous, add new and commit instead of current replace
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        mToolBar = findViewById(R.id.main_page_toolbar);
-        setSupportActionBar(mToolBar);
-        getSupportActionBar().setTitle("Handy");
-
-        // Setting main tabs using pager adapter
-        viewPager = findViewById(R.id.main_tabs_pager);
-        tabsAccessorAdapter = new TabsAccessorAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(tabsAccessorAdapter);
-        tabLayout = findViewById(R.id.main_tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        ShowItemsListFragment();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        String currentUser = settings.getString("username", "");
-        if (currentUser == "") {
-            sendUserToLoginActivity();
-        } else {
-            Toast.makeText(MainActivity.this, "Welcome " + currentUser, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.options_menu, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main_page,menu);
+
+        // Create search bar in the action bar
+        MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        SearchView searchView  = (SearchView) searchItem.getActionView();
+        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.START));
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        if(null != searchManager )
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setIconifiedByDefault(false);
+
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        super.onOptionsItemSelected(item);
-
-        if (item.getItemId() == R.id.main_logout_option) {
-            signOut();
-            sendUserToLoginActivity();
-        } else if (item.getItemId() == R.id.main_find_friends_option) {
-            // Not supported
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+            {
+                // Let the child fragment on focus to handle this!!!
+                return false;
+            }
+            case R.id.admin_action:
+            {
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
         return true;
     }
 
-    private void signOut() {
-        settings.edit().remove("username").apply();
-        sendUserToLoginActivity();
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            // TODO : Ask the current fragment to handle the back press and then pop
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
-    private void sendUserToLoginActivity() {
-        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-        loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(loginIntent);
-        finish();
+    // TODO: set here another function like backpressed but one that doesnt get called by the back button, call this when we really wanna go back.
+
+    public void CloseAllFragments()
+    {
+        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
-//    private void sendUserToSettingsActivity() {
-//        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-//        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        startActivity(settingsIntent);
-//        finish();
+    public void ShowItemsListFragment()
+    {
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.container, new ItemsListFragment())
+                /*.addToBackStack(null)*/.commit();
+    }
+
+    public void ShowSelectAvailabilityFragment(Item item)
+    {
+        _selectedItem = item;
+
+//        getFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.container, new BorrowRequestFragment())
+//                .addToBackStack(null).commit();
+    }
+
+//    public void ShowPurchaseDetailsFragment(List<Seat> selectedSeats, String selectionId) throws Exception
+//    {
+//        PurchaseFinishFragment frag = new PurchaseFinishFragment();
+//
+//        getFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.container, frag)
+//                .addToBackStack(null).commit();
+//
+//        // Passing the required data for the fragment
+//        frag.PassData(_selectedScreening, _selectedMovie.MovieDetails, selectedSeats, selectionId);
 //    }
+
+//    public void ShowSelectSeatsFragment(Screening screening) throws Exception
+//    {
+//        _selectedScreening = screening;
+//
+//        SeatsSelectionFragment frag = new SeatsSelectionFragment();
+//
+//        getFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.container, frag)
+//                .addToBackStack(null).commit();
+//
+//        frag.PassData(screening, _selectedMovie.MovieDetails);
+//
+//        // TODO : we can use add function instead of replace with a unique TAG and then hide the fragment with the tag;
+////        getFragmentManager()
+////                .beginTransaction()
+////                .hide(getFragmentManager().findFragmentById(R.id.container))
+////                .show(new SeatsSelectionFragment())
+////                .addToBackStack(null).commit();
+//    }
+
+    public Item getSelectedItem()
+    {
+        return _selectedItem;
+    }
+
+//    public Bitmap getSelectedMovieImage()
+//    {
+//        return _selectedMovie.MoviePicture;
+//    }
+
+    public Availability getSelectedAvailability()
+    {
+        return _selectedAvailability;
+    }
 }

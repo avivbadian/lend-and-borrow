@@ -1,8 +1,11 @@
 package com.example.lendandborrowclient.Models;
 
+import android.support.annotation.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDate;
 
 public class Availability {
     @JsonProperty("id")

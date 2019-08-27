@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -14,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,7 +28,6 @@ import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.date.MonthAdapter;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +42,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Nimrod on 24/06/2017.
  */
 
-public class AvailabilitySelectionFragment extends Fragment
+public class BorrowRequestFragment extends Fragment
 {
     Item m_displayedItem;
 
@@ -54,7 +51,7 @@ public class AvailabilitySelectionFragment extends Fragment
     List<Branch> _allBranches;
     Branch _selectedBranch;
 
-    Availability _selectedAvailability;
+    Borrow _requestedBorrow;
     MonthAdapter.CalendarDay _selectedDay;
     DatePickerDialog initialDatePickerDialog;
     DatePickerDialog endDatePickerDialog;
@@ -81,7 +78,7 @@ public class AvailabilitySelectionFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.fragment_availability_selection, container, false);
+        View v = inflater.inflate(R.layout.fragment_borrow_request, container, false);
         ButterKnife.bind(this, v);
 
         _itemDescription.setMovementMethod(ScrollingMovementMethod.getInstance());

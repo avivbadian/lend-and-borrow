@@ -1,110 +1,262 @@
 package com.example.lendandborrowclient;
 
-import android.content.Context;
-import android.net.Uri;
+import android.app.Fragment;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ItemsListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ItemsListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ItemsListFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import com.example.lendandborrowclient.Models.Item;
+import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+import java.util.List;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
-    private OnFragmentInteractionListener mListener;
 
-    public ItemsListFragment() {
-        // Required empty public constructor
-    }
+public class ItemsListFragment extends Fragment implements ItemClickedListener
+{
+    // Views
+    @BindView(R.id.pb_items) ProgressBar _progressBar;
+    @BindView(R.id.rv_items) RecyclerView m_itemsListRecyclerView;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ItemsListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ItemsListFragment newInstance(String param1, String param2) {
-        ItemsListFragment fragment = new ItemsListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    // Variables
+    List<Item> _itemDisplays;
+    ItemsListAdapter _itemsAdapter;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        setHasOptionsMenu(true);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
+    {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        View v = inflater.inflate(R.layout.fragment_items_list, container, false);
+        ButterKnife.bind(this, v);
+        // TODO : remember to unbind all on destroy!!!! check syntax on butterknife site
+
+        _itemsAdapter = new ItemsListAdapter(this);
+
+        m_itemsListRecyclerView.setAdapter(_itemsAdapter);
+        m_itemsListRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 3));
+        m_itemsListRecyclerView.addItemDecoration(new ItemsListFragment.GridSpacingItemDecoration(3, dpToPx(10), true));
+        m_itemsListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        LoadItemsList();
+
+        return v;
+    }
+
+    public void LoadItemsList()
+    {
+        LoadItemsList(false);
+    }
+
+    public void LoadItemsList(boolean forceLoad)
+    {
+        if (forceLoad || _itemDisplays == null)
+            HandyServiceFactory.GetInstance().GetAllItems()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .doOnSubscribe(
+                            disposable ->
+                            {
+                                _progressBar.setVisibility(View.VISIBLE);
+                                m_itemsListRecyclerView.setVisibility(View.GONE);
+                            }
+                    ).subscribe((itemsDetails, throwable) ->
+            {
+                _progressBar.setVisibility(View.GONE);
+                m_itemsListRecyclerView.setVisibility(View.VISIBLE);
+
+                if (itemsDetails != null)
+                {
+                    _itemDisplays = itemsDetails;
+                    _itemsAdapter.SetData(_itemDisplays);
+                    //LoadMoviesImages(moviesDetails);
+                }
+                else
+                {
+                    Log.d("Items", "Error retrieving the items");
+
+                    Snackbar.make(getView(),
+                            "Failed Loading Items", Toast.LENGTH_SHORT)
+                            .setAction(R.string.retry, v -> LoadItemsList(true))
+                            .show();
+                }
+            });
+        else
+            _itemsAdapter.SetData(_itemDisplays);
+    }
+
+//    public void LoadMoviesImages(final List<MovieDetails> movies)
+//    {
+//        Observable.create((ObservableOnSubscribe<MovieImageArrivedEvent>) emitter ->
+//        {
+//            for (int i = 0; i < movies.size(); i++)
+//            {
+//                final MovieDetails currentMovie = movies.get(i);
+//
+//                Bitmap movieImage = Picasso
+//                        .with(getActivity())
+//                        .load(WebApiConstants.Images.Url + "/" + currentMovie.ImageName)
+//                        .get();
+//
+//                if (movieImage != null)
+//                    emitter.onNext(new MovieImageArrivedEvent(movieImage, i));
+//                else
+//                    emitter.onError(null);
+//            }
+//        }).observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(movieImageArrivedEvent ->
+//                                _moviesAdapter.SetImageAt(movieImageArrivedEvent.image, movieImageArrivedEvent.position),
+//                        exception -> Log.d("Movies", "Failed loading image: " + exception.getMessage()));
+//
+//    }
+
+    @Override
+    public void OnItemClicked(Item item) {
+        ((com.example.lendandborrowclient.MainActivity)getActivity()).ShowSelectAvailabilityFragment(item);
+    }
+
+//    public class MovieImageArrivedEvent
+//    {
+//        public final Bitmap image;
+//        public final int position;
+//
+//        public MovieImageArrivedEvent(Bitmap image, int position)
+//        {
+//            this.image = image;
+//            this.position = position;
+//        }
+//    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        //inflater.inflate(R.menu.menu_ticket_order_process,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+        MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) searchItem.getActionView();
+
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener()
+        {
+            @Override
+            public boolean onQueryTextSubmit(String query)
+            {
+                _itemsAdapter.FilterDataByItemName(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText)
+            {
+                if (TextUtils.isEmpty(newText)){
+                    _itemsAdapter.ClearFilteredData();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_items_list, container, false);
-    }
+    public void onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        MenuItem nextItem = menu.findItem(R.id.next_action);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+        nextItem.setVisible(false);
+        searchItem.setVisible(true);
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.refresh_action:
+            {
+                LoadItemsList(true);
+
+                break;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
+
+    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+
+        private int spanCount;
+        private int spacing;
+        private boolean includeEdge;
+
+        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+            this.spanCount = spanCount;
+            this.spacing = spacing;
+            this.includeEdge = includeEdge;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view); // item position
+            int column = position % spanCount; // item column
+
+            if (includeEdge) {
+                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+
+                if (position < spanCount) { // top edge
+                    outRect.top = spacing;
+                }
+                outRect.bottom = spacing; // item bottom
+            } else {
+                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
+                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+                if (position >= spanCount) {
+                    outRect.top = spacing; // item top
+                }
+            }
+        }
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Converting dp to pixel
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private int dpToPx(int dp) {
+        Resources r = getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 }

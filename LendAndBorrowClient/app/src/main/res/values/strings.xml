@@ -1,0 +1,141 @@
+<resources>
+    <string name="app_name">Handy</string>
+    <string name="mainTitle">Welcome to Handy</string>
+
+    <string name="management_action">Management</string>
+    <string name="refresh_action">Refresh</string>
+    <string name="next_action">Next</string>
+    <string name="back_action">Back</string>
+    <string name="movie_picture">Item Picture</string>
+
+    // Purchase fields Hints
+    <string name="last_name">Last Name</string>
+    <string name="given_name">Given Name</string>
+    <string name="email">Email</string>
+    <string name="card_expiration">Expiry Date</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="card_number">Credit Card Number</string>
+    <string name="purchase_confirm">Complete Purchase</string>
+
+    // Purchase fields Error Messages
+    <string name="empty_field_error">Field should not be empty</string>
+    <string name="last_name_error">שם משפחה</string>
+    <string name="given_name_error">שם פרטי</string>
+    <string name="email_error">Email address is invalid</string>
+    <string name="card_expiration_error">Expiration date is invalid</string>
+    <string name="phone_number_error">Phone number is invalid</string>
+    <string name="card_number_error">Credit card number is invalid</string>
+    <string name="purchase_confirm_error">בצע רכישה</string>
+    <string name="choose_screening_button">Choose Availability</string>
+    <string name="screening_wasnt_selected">Screening was not selected</string>
+    <string name="screening_selection_canceled">Canceled screening selection</string>
+
+    // Movie details and screening selection
+    <string name="choose_screening_time">Choose Screening Time</string>
+    <string name="release_date_time_pattern">dd/MM/yyyy</string>
+    <string name="release_date">Release Date:</string>
+    <string name="actors">Actors: %s</string>
+    <string name="duration">Duration: %s minutes</string>
+    <string name="genres">Genres: %s</string>
+    <string name="director">Director: %s</string>
+    <string name="illegal_fields">Illegal fields exists</string>
+    <string name="selected_screening">Selected Screening: %s</string>search_hint
+    <string name="description_format">Description: %s</string>
+    <string name="search_hint">Movie Search</string>
+    <string name="purchase_approval_text">Order Number: %s\n Purchase summery sent to:\n%s</string>
+    <string name="movie_search">Movie Search</string>
+    <string name="add_movie_btn">Add Movie</string>
+    <string name="delete_movie_btn">Delete Movie</string>
+
+    ///////////////////////////////////////////////////////////////////
+    //// General use
+    <string name="retry">Retry</string>
+
+
+    ///////////////////////////////////////////////////////////////////
+    //// Movies Management
+
+    // General
+    <string name="toggle_add_remove">Toggle Add/Remove</string>
+
+    // Movie fields Hints
+    <string name="movie_name_hint">Name</string>
+    <string name="duration_hint">Duration</string>
+    <string name="actors_hint">Actors</string>
+    <string name="director_hint">Director</string>
+    <string name="release_date_hint">Release Year</string>
+    <string name="genres_hint">Genres</string>
+    <string name="description_hint">Description</string>
+    <string name="movie_delete_confirmation">Are you sure you want to delete?  Warning! Related screenings will be removed!</string>
+
+    // Success
+    <string name="operation_success_add_movie">Movie added successfully</string>
+    <string name="operation_success_delete_movie">The Movie \"%s\" deleted successfully</string>
+
+    // Errors
+    <string name="actors_field_error">Actors should be names separated by \' , \'</string>
+    <string name="duration_field_error">Duration should be in minuts with 2/3 digits</string>
+    <string name="genres_field_error">Genres should be genre names separated by \' , \'</string>
+    <string name="failed_adding_movie">Failed adding movie</string>
+    <string name="failed_deleting_movie">Failed adding movie</string>
+
+
+    /// Screening Management /////////////////////////////////////////////////
+    // hints
+    <string name="price_hint">Ticket Price</string>
+    <string name="screening_time_hint">Screening Time</string>
+    <string name="screening_date_hint">Screening Date</string>
+    <string name="add_screening_btn">Add Screening</string>
+    <string name="release_date_format">dd/MM/yyyy</string>
+    <string name="delete_screening_btn">Delete Screening</string>
+    <string name="screening_delete_confirmation">Are you sure you want to delete?</string>
+
+    // Success
+    <string name="operation_success_add_screening">Screening added successfully</string>
+    <string name="operation_success_delete_screening">Screening deleted successfully</string>
+
+    // Errors
+    <string name="failed_adding_screening">Failed adding screening</string>
+    <string name="price_field_error">Price can be maximum 3 digits</string>
+    <string name="failed_deleting_screening">Failed deleting screening</string>
+
+
+    ///////////////////////////////////////////////////////////////////
+    /// Halls management
+
+    // General
+    <string name="delete_hall_btn">Delete Hall</string>
+    <string name="add_hall_btn">Add Hall</string>
+    <string name="hall_id_hint">Hall Number</string>
+    <string name="seat_count_hint">Seats Count</string>
+    <string name="rows_count_hint">Rows Count</string>
+    <string name="hall_delete_confirmation">Are you sure you want to delete?  Warning! Related screenings will be removed!</string>
+
+    // Success
+    <string name="operation_success_add_hall">Hall created successfully</string>
+    <string name="operation_success_delete_hall">Hall deleted successfully</string>
+
+    // Error
+    <string name="failed_adding_hall">Failed adding hall</string>
+    <string name="row_col_count_field_error">Should be a value between 5 to 30</string>
+    <string name="purchase_view_action">View Purchase</string>
+    <string name="failed_deleting_hall">Failed deleting hall</string>
+    <string name="password_invalid_error">Password must be with numbers and letters</string>
+    <string name="login_user_hint">User</string>
+    <string name="login_password_hint">Password</string>
+
+    /////////////////////////////////////////////////////////////////////
+
+    <string-array name="Date_of_Screen">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

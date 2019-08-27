@@ -1,6 +1,5 @@
 package com.example.lendandborrowclient;
 
-import android.graphics.Bitmap;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,22 +9,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lendandborrowclient.Models.Item;
-import com.javaproject.nimrod.cinema.Objects.MovieDisplay;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-/**
- * Created by Nimrod on 13/06/2017.
- */
 
 public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.ItemsAdapterViewHolder>
 {
@@ -43,7 +38,7 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
     {
         return new ItemsAdapterViewHolder(
                 LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.movie_list_item, viewGroup, false));
+                        .inflate(R.layout.items_list_item, viewGroup, false));
     }
 
     @Override
@@ -72,32 +67,27 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
         notifyDataSetChanged();
     }
 
-    public void FilterDataByMovieName(String query)
+    public void FilterDataByItemName(String query)
     {
         _displayedItems = _itemsList.
                 stream().
-                filter(new Predicate<Item>() {
-                    @Override
-                    public boolean test(Item item) {
-                        return item.Title.toLowerCase().contains(query.toLowerCase());
-                    }
-                }).
+                filter(item -> item.Title.toLowerCase().contains(query.toLowerCase())).
                 collect(Collectors.toList());
 
         notifyDataSetChanged();
     }
 
-    public void SetImageAt(Bitmap image, int position)
-    {
-        if (position < _moviesList.size())
-            _moviesList.get(position).MoviePicture = image;
-
-        notifyItemChanged(position);
-    }
+//    public void SetImageAt(Bitmap image, int position)
+//    {
+//        if (position < _itemsList.size())
+//            _itemsList.get(position).MoviePicture = image;
+//
+//        notifyItemChanged(position);
+//    }
 
     public void ClearFilteredData()
     {
-        _displayedMovies = _moviesList;
+        _displayedItems = _itemsList;
 
         notifyDataSetChanged();
     }
@@ -105,31 +95,37 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
     class ItemsAdapterViewHolder extends RecyclerView.ViewHolder
     {
         @BindView(R.id.tv_movie_desc_preview)
-        TextView _movieTitle;
+        TextView _itemTitle;
         @BindView(R.id.iv_movie_image_preview)
-        ImageView _moviePicture;
+        ImageView _itemPicture;
         @BindView(R.id.card_view) CardView _cardView;
 
-        MoviesAdapterViewHolder(View view)
+        private StorageReference _itemsImagesRef;
+
+        ItemsAdapterViewHolder(View view)
         {
             super(view);
-
+            _itemsImagesRef = FirebaseStorage.getInstance().getReference().child("Items images");
             ButterKnife.bind(this, view);
         }
 
         @OnClick({R.id.card_view, R.id.iv_movie_image_preview, R.id.tv_movie_desc_preview})
-        public void OnChooseMovieClicked()
+        public void OnChooseItemClicked()
         {
-            m_listener.OnMovieItemClicked(_displayedMovies.get(getAdapterPosition()));
+            m_listener.OnItemClicked(_displayedItems.get(getAdapterPosition()));
         }
 
-        public void bind(final MovieDisplay movie)
+        public void bind(final Item item)
         {
-            _movieTitle.setText(movie.MovieDetails.Name);
+            _itemTitle.setText(item.Title);
 
-            if (movie.MoviePicture != null)
-                _moviePicture.setImageBitmap(movie.MoviePicture);
+            try {
+                String imagePath = _itemsImagesRef.child(item.Id + ".jpg").getPath();
+                if (!imagePath.equals(""))
+                    Picasso.get().load(imagePath).into(_itemPicture);
+            } catch (Exception ex){
+
+            }
         }
-
     }
 }
