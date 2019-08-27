@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS branches
 CREATE TABLE IF NOT EXISTS availabilities
 (
   id SERIAL PRIMARY KEY,
-  item_id INTEGER REFERENCES items(id),
-  branch INTEGER REFERENCES branches(id),
+  item_id INTEGER REFERENCES items(id) ON DELETE CASCADE,
+  branch INTEGER REFERENCES branches(id) ON DELETE CASCADE,
   start_date date,
   end_date date
 );
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS availabilities
 CREATE TABLE IF NOT EXISTS Borrows
 (
   id SERIAL PRIMARY KEY,
-  availability INTEGER REFERENCES availabilities(id),
+  availability INTEGER REFERENCES availabilities(id) ON DELETE CASCADE,
   borrow_date date,
   return_date date,
   phone char(50),
