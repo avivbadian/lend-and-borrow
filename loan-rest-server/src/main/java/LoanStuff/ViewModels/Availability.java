@@ -1,19 +1,15 @@
 package LoanStuff.ViewModels;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import java.io.Serializable;
 import java.util.Date;
 
-public class Availability {
-    @JsonProperty("id")
+public class Availability implements Serializable {
+
     public int Id;
 
-    @JsonProperty("item_id")
     public int Item_id;
 
-    @JsonProperty("start_date")
     public Date Start_date;
 
-    @JsonProperty("end_date")
     public Date End_date;
 }

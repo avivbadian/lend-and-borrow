@@ -1,11 +1,9 @@
 package LoanStuff.ViewModels;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
 
-public class Branch {
-    @JsonProperty("title")
+public class Branch implements Serializable {
     public String Title;
 
-    @JsonProperty("address")
     public String Address;
 }
