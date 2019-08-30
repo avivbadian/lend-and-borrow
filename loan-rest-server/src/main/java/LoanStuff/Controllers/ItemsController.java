@@ -80,7 +80,7 @@ public class ItemsController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/items/{id}/availability")
+    @GetMapping("/items/{id}/availabilities")
     public ArrayList<Availability> getAllItemAvailabilities(@PathVariable int id)
     {
         ArrayList<Availability> availability = new ArrayList<>();
