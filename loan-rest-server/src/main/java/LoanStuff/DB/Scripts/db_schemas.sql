@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS Borrows
 (
   id SERIAL PRIMARY KEY,
   availability INTEGER REFERENCES availabilities(id) ON DELETE CASCADE,
-  branch INTEGER REFERENCES branches(title) ON DELETE CASCADE,
+  branch char(50) REFERENCES branches(title) ON DELETE CASCADE,
   phone char(50),
   email char(50),
   first_name char(50),
