@@ -19,7 +19,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin")
-    public ResponseEntity getIsValidAdmin(@RequestBody Admin admin) {
+    public ResponseEntity validateAdmin(@RequestBody Admin admin) {
         if (admin == null)
             return new ResponseEntity(HttpStatus.FORBIDDEN);
 
