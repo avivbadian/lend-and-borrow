@@ -90,12 +90,8 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         Branch branch = ((MainActivity)getActivity()).GetSelectedBranch();
         Availability availability = ((MainActivity)getActivity()).GetSelectedAvailability();
 
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        String startDate = df.format(availability.Start_date);
-        String endDate = df.format(availability.End_date);
-
         builder.append(item.Title).append(", Category: ").append(item.Category)
-                .append("\n during: ").append(startDate).append(" to: ").append(endDate)
+                .append("\n" + availability)
                 .append("\n from branch: ").append(branch.Title).append("(").append(branch.Address).append(")");
 
         return builder.toString();

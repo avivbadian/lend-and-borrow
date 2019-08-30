@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity
         // Create search bar in the action bar
         MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         SearchView searchView  = (SearchView) searchItem.getActionView();
-        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.START));
+        searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.CENTER));
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         if(null != searchManager )

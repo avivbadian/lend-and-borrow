@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/btn_date"
-            android:padding="10dp"
+            android:padding="15dp"
             android:text="@string/choose_screening_button"
             android:gravity="center"
             android:layout_weight="0"/>
@@ -125,7 +125,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0"
-            android:visibility="gone"/>
+            android:padding="10dp"
+            />
 
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

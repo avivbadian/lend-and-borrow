@@ -18,16 +18,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lendandborrowclient.MainActivity;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
-import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import com.wdullaer.materialdatetimepicker.date.MonthAdapter;
 
 import org.joda.time.DateTimeComparator;
 
@@ -135,8 +132,9 @@ public class BorrowRequestFragment extends Fragment
 
         if (_allAvailabilities != null && _allAvailabilities.size() != 0)
         {
-            initialDatePickerDialog.setSelectableDays(_allAvailabilities.stream().map(
-                    availability -> toCalendar(availability.Start_date)).toArray(Calendar[]::new));
+            Calendar[] selectableDays = _allAvailabilities.stream().map(
+                    availability -> toCalendar(availability.Start_date)).toArray(Calendar[]::new);
+            initialDatePickerDialog.setSelectableDays(selectableDays);
             initialDatePickerDialog.show(getFragmentManager(), "Datepickerdialog");
         }
 
@@ -172,6 +170,8 @@ public class BorrowRequestFragment extends Fragment
             _selectedAvailability = _allAvailabilities.stream().filter((availability) ->
                 comparator.compare(availability.Start_date, date) == 0
             ).findFirst().orElse(new Availability());
+
+            _selectedAvailabilityView.setText(_selectedAvailability.toString());
         }
     }
 
