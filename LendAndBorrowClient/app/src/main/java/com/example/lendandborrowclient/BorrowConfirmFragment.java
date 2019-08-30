@@ -20,12 +20,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.lendandborrowclient.MainActivity;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
-import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
 import com.mobsandgeeks.saripaar.ValidationError;
@@ -120,7 +118,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         borrow.Last_name = _lastName.getEditText().getText().toString();
         borrow.Phone = _phoneNumber.getEditText().getText().toString();
         borrow.BranchTitle = ((MainActivity)getActivity()).GetSelectedBranch().Title;
-        borrow.AvailabilityId = ((MainActivity)getActivity()).GetSelectedAvailability().Id;
+        borrow.Availability = ((MainActivity)getActivity()).GetSelectedAvailability().Id;
 
         final ProgressDialog progressDialog = new ProgressDialog(getContext(),
                 android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);

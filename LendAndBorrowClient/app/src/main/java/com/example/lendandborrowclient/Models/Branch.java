@@ -1,14 +1,18 @@
 package com.example.lendandborrowclient.Models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import android.support.annotation.NonNull;
 
-import java.util.Date;
+import java.io.Serializable;
 
-public class Branch {
+public class Branch implements Serializable {
 
-    @JsonProperty("title")
     public String Title;
 
-    @JsonProperty("address")
     public String Address;
+
+    @NonNull
+    @Override
+    public String toString() {
+        return Title + ": " + Address;
+    }
 }

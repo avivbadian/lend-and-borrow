@@ -42,11 +42,11 @@
     <string name="illegal_fields">Illegal fields exists</string>
     <string name="selected_screening">Selected Screening: %s</string>search_hint
     <string name="description_format">Description: %s</string>
-    <string name="search_hint">Movie Search</string>
+    <string name="search_hint">Item Search</string>
     <string name="borrow_approval_text">Request Number: %s\n Borrow information sent to:\n%s</string>
-    <string name="movie_search">Movie Search</string>
-    <string name="add_movie_btn">Add Movie</string>
-    <string name="delete_movie_btn">Delete Movie</string>
+    <string name="movie_search">Item Search</string>
+    <string name="add_movie_btn">Add Item</string>
+    <string name="delete_movie_btn">Delete Item</string>
 
     ///////////////////////////////////////////////////////////////////
     //// General use

@@ -1,14 +1,14 @@
 package com.example.lendandborrowclient.Models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
 
-public class Admin {
-    @JsonProperty("username")
+public class Admin implements Serializable {
+
     public String Username;
 
-    @JsonProperty("password")
     public String Password;
 
+    // Used for deserialize
     public Admin()
     { }
 

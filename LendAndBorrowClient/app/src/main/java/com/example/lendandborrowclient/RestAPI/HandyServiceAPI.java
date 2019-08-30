@@ -35,7 +35,7 @@ public interface HandyServiceAPI {
 //    Call<ResponseBody> GetMoviePicture(@Path(WebApiConstants.Images.ImageName) String name);
 
     @GET(WebApiConstants.Items.GetItemAvailabilities)
-    Single<List<Availability>> GetItemAvailabilities(@Path(WebApiConstants.Items.ItemId) int id, @Query("future") boolean futureScreening);
+    Single<List<Availability>> GetItemAvailabilities(@Path(WebApiConstants.Items.ItemId) int id);
 //
 //    @POST(WebApiConstants.Screenings.SaveSeats)
 //    Single<String> SaveSelectedSeats(@Path(WebApiConstants.Screenings.ScreeningId) String screeningId, @Body List<Seat> seats);

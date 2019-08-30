@@ -27,7 +27,7 @@ public final class HandyServiceFactory
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(WebApiConstants.BaseUrl)
                     .client(new OkHttpClient.Builder().writeTimeout(20, TimeUnit.SECONDS)
-                            .readTimeout(20, TimeUnit.SECONDS).build())
+                            .readTimeout(60, TimeUnit.SECONDS).build())
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create(gson.create()))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

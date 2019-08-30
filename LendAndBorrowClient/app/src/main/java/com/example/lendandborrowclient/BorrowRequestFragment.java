@@ -29,6 +29,8 @@ import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.date.MonthAdapter;
 
+import org.joda.time.DateTimeComparator;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,7 +49,6 @@ public class BorrowRequestFragment extends Fragment
     List<Availability> _allAvailabilities;
     List<Branch> _allBranches;
 
-    private Branch _selectedBranch;
     private Availability _selectedAvailability;
 
     DatePickerDialog initialDatePickerDialog;
@@ -101,45 +102,18 @@ public class BorrowRequestFragment extends Fragment
                 {
                     if (branches != null) {
                         _allBranches = branches;
-                        _branchesSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, branches);
+                        _branchesSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item,
+                                _allBranches);
                         _branchesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         _branchesSpinner.setAdapter(_branchesSpinnerAdapter);
-                        _branchesSpinner.setOnItemClickListener((adapterView, view, i, l) -> {
-                             _selectedBranch = (Branch) _branchesSpinner.getSelectedItem();
-                        });
-                    }
-                    else
+                    } else
                         Toast.makeText(getContext(), "Failed Loading branches", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    @OnClick(R.id.btn_date)
-    void OnDatePickerButtonClicked()
-    {
-        Calendar now = Calendar.getInstance();
-
-        initialDatePickerDialog = DatePickerDialog.newInstance(new initialDatePicker(),
-                now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH));
-
-        initialDatePickerDialog.setSelectableDays(_allAvailabilities.stream().map(
-                availability -> toCalendar( availability.Start_date)).toArray(Calendar[]::new));
-
-        if (_allAvailabilities != null && _allAvailabilities.size() != 0)
-        {
-            initialDatePickerDialog.show(getFragmentManager(), "Datepickerdialog");
-        }
-        else
-        {
-            Log.d("Availabilities", "availabilities were not found while trying to init date picker");
-            Snackbar.make(getView(), "No available dates", Snackbar.LENGTH_LONG).show();
-        }
-    }
-
     private void LoadAvailabilities()
     {
-        HandyServiceFactory.GetInstance().GetItemAvailabilities(m_displayedItem.Id, true)
+        HandyServiceFactory.GetInstance().GetItemAvailabilities(m_displayedItem.Id)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe((availabilities, throwable) ->
                 {
@@ -150,10 +124,31 @@ public class BorrowRequestFragment extends Fragment
                 });
     }
 
+    @OnClick(R.id.btn_date)
+    void OnDatePickerButtonClicked() {
+        Calendar now = Calendar.getInstance();
+
+        initialDatePickerDialog = DatePickerDialog.newInstance(new initialDatePicker(),
+                    now.get(Calendar.YEAR),
+                    now.get(Calendar.MONTH),
+                    now.get(Calendar.DAY_OF_MONTH));
+
+        if (_allAvailabilities != null && _allAvailabilities.size() != 0)
+        {
+            initialDatePickerDialog.setSelectableDays(_allAvailabilities.stream().map(
+                    availability -> toCalendar(availability.Start_date)).toArray(Calendar[]::new));
+            initialDatePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+        }
+
+        else {
+            Log.d("Availabilities", "availabilities were not found");
+            Snackbar.make(getView(), "No available dates", Snackbar.LENGTH_LONG).show();
+        }
+    }
+
     private void PopulateFields()
     {
         _selectedAvailability = new Availability();
-        _selectedBranch = new Branch();
         _itemTitle.setText(m_displayedItem.Title);
         _itemCategory.setText(String.format(getString(R.string.genres), m_displayedItem.Category));
         Picasso.get().load(FirebaseStorage.getInstance().getReference().child("Items images").child(m_displayedItem.Id + ".jpg").getPath()).into(_itemImage);
@@ -171,10 +166,12 @@ public class BorrowRequestFragment extends Fragment
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
             Calendar cur = Calendar.getInstance();
             cur.set(year, monthOfYear, dayOfMonth);
-            java.sql.Date sqlDate = new java.sql.Date(cur.getTimeInMillis());
+            Date date = new Date(cur.getTimeInMillis());
+            DateTimeComparator comparator = DateTimeComparator.getDateOnlyInstance();
 
-            _selectedAvailability = _allAvailabilities.stream().filter((availability -> availability.Start_date == sqlDate)).
-                    findFirst().orElse(new Availability());
+            _selectedAvailability = _allAvailabilities.stream().filter((availability) ->
+                comparator.compare(availability.Start_date, date) == 0
+            ).findFirst().orElse(new Availability());
         }
     }
 
@@ -206,12 +203,13 @@ public class BorrowRequestFragment extends Fragment
             {
                 if (_selectedAvailability.Id != 0) {
 
-                    if (_selectedBranch.Title.equals("")) {
+                    Branch selectedBranch = (Branch)_branchesSpinner.getSelectedItem();
+                    if (selectedBranch == null || selectedBranch.Title.equals("")) {
                         Toast.makeText(getContext(), "Please choose a branch", Toast.LENGTH_LONG).show();
                         return true;
                     }
                     try  {
-                        ((MainActivity) getActivity()).ShowBorrowConfirmDialog(_selectedBranch, _selectedAvailability);
+                        ((MainActivity) getActivity()).ShowBorrowConfirmDialog(selectedBranch, _selectedAvailability);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
