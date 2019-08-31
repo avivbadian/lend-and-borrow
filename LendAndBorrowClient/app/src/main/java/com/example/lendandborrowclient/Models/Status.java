@@ -1,4 +1,4 @@
-package LoanStuff.ViewModels;
+package com.example.lendandborrowclient.Models;
 
 import java.io.Serializable;
 

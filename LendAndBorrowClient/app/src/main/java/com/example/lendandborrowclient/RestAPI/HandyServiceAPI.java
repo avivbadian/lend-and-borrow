@@ -45,7 +45,7 @@ public interface HandyServiceAPI {
 //    Single<ResponseBody> CancelSeatSelection(@Path(WebApiConstants.Screenings.ScreeningId) String screeningId, @Field("selectionId") String selectionId);
 
     @POST(WebApiConstants.Borrows.RelativeUrl)
-    Single<String> Borrow(@Body Borrow request);
+    Single<Borrow> Borrow(@Body Borrow request);
 
 //    @Multipart
 //    @POST(WebApiConstants.Images.RelativeUrl)

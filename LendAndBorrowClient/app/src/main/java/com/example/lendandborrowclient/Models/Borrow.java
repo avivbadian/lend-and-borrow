@@ -18,4 +18,6 @@ public class Borrow implements Serializable {
     public String BranchTitle;
 
     public int Availability;
+
+    public Status Status;
 }

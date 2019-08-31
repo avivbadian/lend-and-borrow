@@ -127,23 +127,23 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         HandyServiceFactory.GetInstance().Borrow(borrow).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
-                subscribe((s, throwable) -> {
+                subscribe((borrow, throwable) -> {
                             progressDialog.dismiss();
 
-                            if (s != null)
-                                ShowBorrowCompletionDialog(s);
+                            if (borrow != null)
+                                ShowBorrowCompletionDialog(borrow);
                             else
                                 Snackbar.make(getView(), "Failed submitting borrow", Snackbar.LENGTH_LONG).show();
                         }
                 );
     }
 
-    private void ShowBorrowCompletionDialog(String selectionId)
+    private void ShowBorrowCompletionDialog(Borrow borrow)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
 
         TextView messageText = new TextView(getContext());
-        messageText.setText(String.format(getString(R.string.borrow_approval_text), selectionId, _emailAddress.getEditText().getText().toString()));
+        messageText.setText(String.format(getString(R.string.borrow_approval_text), borrow.Id, _phoneNumber.getEditText().getText().toString()));
         messageText.setTextSize(20f);
         messageText.setGravity(Gravity.CENTER);
 
