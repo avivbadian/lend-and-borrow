@@ -2,12 +2,15 @@ package LoanStuff.Controllers;
 
 import LoanStuff.DB.DataStore;
 import LoanStuff.ViewModels.Borrow;
+import LoanStuff.ViewModels.Item;
+import LoanStuff.ViewModels.Status;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @RestController
 public class BorrowsController {
@@ -17,8 +20,56 @@ public class BorrowsController {
         db = new DataStore();
     }
 
+    @GetMapping("/borrows")
+    public ArrayList<Borrow> getAllBorrows() {
+        ArrayList<Borrow> borrows = new ArrayList<>();
+        ResultSet rs;
+        try {
+            rs = db.execQuery("SELECT * FROM borrows");
+            while (rs.next()) {
+                Borrow borrow = new Borrow();
+                borrow.Id = rs.getInt(1);
+                borrow.Availability = rs.getInt(2);
+                borrow.Branch = rs.getString(3).trim();
+                borrow.Phone = rs.getString(4).trim();
+                borrow.Email = rs.getString(5).trim();
+                borrow.First_name = rs.getString(6).trim();
+                borrow.Last_name = rs.getString(7).trim();
+                borrow.Status = Status.valueOf(rs.getString(8).trim());
+                borrows.add(borrow);
+            }
+        } catch (SQLException e) {
+            // TODO: log or something
+            return null;
+        }
+
+        return borrows;
+    }
+
     @PostMapping("/borrows")
-    public ResponseEntity postBorrowItem(@RequestBody Borrow borrow){
-        return null;
+    public ResponseEntity postBorrowItem(@RequestBody Borrow borrow) {
+        borrow.Status = Status.pending;
+        try {
+            db.execUpdate(String.format("INSERT INTO borrows (availability, branch, phone, email, first_name, last_name, status) VALUES ('%s','%s','%s','%s','%s','%s','%s')",
+                    borrow.Availability,
+                    borrow.Branch,
+                    borrow.Phone,
+                    borrow.Email,
+                    borrow.First_name,
+                    borrow.Last_name,
+                    borrow.Status.toString()));
+
+            return new ResponseEntity(HttpStatus.CREATED);
+        } catch (SQLException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/borrows/{id}/{status}")
+    public ResponseEntity postChangeBorrowStatus(@PathVariable int id, @PathVariable Status status) {
+        
+
+
+        return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 }

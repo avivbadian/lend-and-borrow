@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS items CASCADE;
 DROP TABLE IF EXISTS branches CASCADE;
 DROP TABLE IF EXISTS availabilities CASCADE;
 DROP TABLE IF EXISTS Borrows CASCADE;
+DROP TYPE IF EXISTS status CASCADE;
 
 CREATE TABLE IF NOT EXISTS admins
 (
@@ -32,7 +33,9 @@ CREATE TABLE IF NOT EXISTS availabilities
   end_date date
 );
 
-CREATE TABLE IF NOT EXISTS Borrows
+CREATE TYPE status AS ENUM ('pending', 'approved', 'declined');
+
+CREATE TABLE IF NOT EXISTS borrows
 (
   id SERIAL PRIMARY KEY,
   availability INTEGER REFERENCES availabilities(id) ON DELETE CASCADE,
@@ -41,5 +44,5 @@ CREATE TABLE IF NOT EXISTS Borrows
   email char(50),
   first_name char(50),
   last_name char(50),
-  is_approved boolean
+  status status
 );

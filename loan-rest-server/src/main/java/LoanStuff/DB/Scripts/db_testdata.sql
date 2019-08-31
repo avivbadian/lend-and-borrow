@@ -44,6 +44,6 @@ INSERT INTO availabilities (item_id, start_date, end_date) VALUES
   ((SELECT id from items WHERE title = 'Harry Potter: The Prisoner of Azkaban'), '10/11/2019', '12/11/2019');
 
 --- id, availability, phone, email,first name, last name
-INSERT INTO Borrows (availability, branch, phone, email, first_name, last_name, is_approved) VALUES
-  ((SELECT max(id) from availabilities), 'Haifa-Main', '054-555666', 'theif@gmail.com', 'Gani', 'Nav', false),
-  ((SELECT min(id) from availabilities), 'Haifa-Main', '053-123456', 'yossi@gmail.com', 'Yossi', 'Luchim', false)
+INSERT INTO borrows (availability, branch, phone, email, first_name, last_name, status) VALUES
+  ((SELECT max(id) from availabilities), 'Haifa-Main', '054-555666', 'theif@gmail.com', 'Gani', 'Nav', 'pending'),
+  ((SELECT min(id) from availabilities), 'Haifa-Main', '053-123456', 'yossi@gmail.com', 'Yossi', 'Luchim', 'pending')
