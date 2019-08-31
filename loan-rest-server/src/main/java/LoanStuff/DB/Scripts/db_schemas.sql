@@ -1,8 +1,8 @@
-﻿DROP TABLE admins CASCADE;
-DROP TABLE items CASCADE;
-DROP TABLE branches CASCADE;
-DROP TABLE availabilities CASCADE;
-DROP TABLE Borrows CASCADE;
+﻿DROP TABLE IF EXISTS admins CASCADE;
+DROP TABLE IF EXISTS items CASCADE;
+DROP TABLE IF EXISTS branches CASCADE;
+DROP TABLE IF EXISTS availabilities CASCADE;
+DROP TABLE IF EXISTS Borrows CASCADE;
 
 CREATE TABLE IF NOT EXISTS admins
 (
@@ -40,5 +40,6 @@ CREATE TABLE IF NOT EXISTS Borrows
   phone char(50),
   email char(50),
   first_name char(50),
-  last_name char(50)
+  last_name char(50),
+  is_approved boolean
 );
