@@ -46,4 +46,6 @@ INSERT INTO availabilities (item_id, start_date, end_date) VALUES
 --- id, availability, phone, email,first name, last name
 INSERT INTO borrows (availability, branch, phone, email, first_name, last_name, status) VALUES
   ((SELECT max(id) from availabilities), 'Haifa-Main', '054-555666', 'theif@gmail.com', 'Gani', 'Nav', 'pending'),
-  ((SELECT min(id) from availabilities), 'Haifa-Main', '053-123456', 'yossi@gmail.com', 'Yossi', 'Luchim', 'pending')
+  ((SELECT min(id) from availabilities), 'Haifa-Main', '053-123456', 'yossi@gmail.com', 'Yossi', 'Luchim', 'pending'),
+  ((SELECT min(id) from availabilities), 'Haifa-Main', '00', 'ff', 'a', 'b', 'pending'),
+  ((SELECT min(id) from availabilities), 'Haifa-Main', '11', 'ee', 'c', 'd', 'pending');

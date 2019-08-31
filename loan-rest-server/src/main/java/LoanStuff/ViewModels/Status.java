@@ -9,6 +9,6 @@ public enum Status implements Serializable {
     pending,
     @JsonProperty("approved")
     approved,
-    @JsonProperty("rejected")
-    rejected
+    @JsonProperty("declined")
+    declined
 }

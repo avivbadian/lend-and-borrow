@@ -67,8 +67,21 @@ public class BorrowsController {
 
     @GetMapping("/borrows/{id}/{status}")
     public ResponseEntity postChangeBorrowStatus(@PathVariable int id, @PathVariable Status status) {
-        
+        try {
+            // Update the status
+            db.execUpdate(String.format("UPDATE borrows SET status='%s' WHERE id='%s'", status, id));
 
+            // If the request is approved, decline all other borrow requests to the same
+            // availability
+            if (status == Status.approved) {
+                ResultSet rs = db.execQuery(String.format("SELECT availability FROM borrows WHERE id='%d'", id));
+                rs.next();
+                int availabilityId = rs.getInt(1);
+                db.execUpdate(String.format("UPDATE borrows SET status='declined' WHERE availability='%s' AND id <> '%s'", availabilityId, id));
+
+            }
+        } catch (SQLException e) {
+        }
 
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }

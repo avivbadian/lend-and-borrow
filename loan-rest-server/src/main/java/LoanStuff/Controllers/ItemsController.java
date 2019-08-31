@@ -80,13 +80,15 @@ public class ItemsController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
+
     @GetMapping("/items/{id}/availabilities")
-    public ArrayList<Availability> getAllItemAvailabilities(@PathVariable int id)
-    {
+    public ArrayList<Availability> getAllItemAvailabilities(@PathVariable int id) {
         ArrayList<Availability> availability = new ArrayList<>();
         ResultSet rs;
         try {
-            rs = db.execQuery(String.format("SELECT * FROM availabilities WHERE item_id='%d'", id));
+            rs = db.execQuery(String.format("SELECT * " +
+                    "FROM availabilities " +
+                    "WHERE item_id='%s' AND (select count(*) FROM borrows WHERE availabilities.id = availability AND status='approved') = 0", id));
             while (rs.next()) {
                 Availability newAval = new Availability();
                 newAval.Id = rs.getInt(1);
