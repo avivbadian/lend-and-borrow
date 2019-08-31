@@ -4,6 +4,8 @@ DELETE FROM availabilities;
 DELETE FROM items;
 DELETE FROM branches;
 
+set datestyle TO "ISO, DMY";
+
 --- username, password
 INSERT INTO admins VALUES
   ('yanivkrim', '1234'),
