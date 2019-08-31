@@ -8,8 +8,8 @@ set datestyle TO "ISO, DMY";
 
 --- username, password
 INSERT INTO admins VALUES
-  ('yanivkrim', '1234'),
-  ('avivbadian', 'KobiZNoti');
+  ('yanivkrim', 'Aa123456'),
+  ('avivbadian', 'Aa123456');
 
 --- id, title, category, description
 INSERT INTO items (title, category, description) VALUES

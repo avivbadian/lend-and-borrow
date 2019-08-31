@@ -29,7 +29,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:scaleType="fitXY"
-                android:contentDescription="@string/movie_picture"
+                android:contentDescription="@string/item_picture"
                 android:background="?attr/selectableItemBackground"/>
 
             <TextView
