@@ -19,7 +19,7 @@ public class DataStore {
 
     // Connects to the specified database
     public boolean connect() throws SQLException, ClassNotFoundException {
-        if (DbConfig.HOST.isEmpty() || DbConfig.DB_NAME.isEmpty() || DbConfig.USER.isEmpty() || DbConfig.PASS.isEmpty()) {
+        if (DbConfig.Instance.HOST.isEmpty() || DbConfig.Instance.DB_NAME.isEmpty() || DbConfig.Instance.USER.isEmpty() || DbConfig.Instance.PASS.isEmpty()) {
             throw new SQLException("Database credentials missing");
         }
 
@@ -27,8 +27,8 @@ public class DataStore {
 //        Class.forName("org.postgresql.Driver");
 
         conn = DriverManager.getConnection(
-                DbConfig.HOST + DbConfig.DB_NAME,
-                DbConfig.USER, DbConfig.PASS);
+                DbConfig.Instance.HOST + DbConfig.Instance.DB_NAME,
+                DbConfig.Instance.USER, DbConfig.Instance.PASS);
         return true;
     }
 

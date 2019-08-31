@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<settings>
+    <db-host>jdbc:postgresql://localhost:5432/</db-host>
+    <db-name>lend_and_borrow</db-name>
+    <db-user>postgres</db-user>
+    <db-password>Aa123456</db-password>
+</settings>
