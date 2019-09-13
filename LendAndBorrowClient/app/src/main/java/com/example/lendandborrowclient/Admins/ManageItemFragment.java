@@ -2,78 +2,52 @@ package com.example.lendandborrowclient.Admins;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Fragment;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.provider.OpenableColumns;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.javaproject.nimrod.cinema.DataInterfaces.MoviesChangedListener;
-import com.javaproject.nimrod.cinema.Objects.MovieDetails;
-import com.javaproject.nimrod.cinema.Validation.TextInputLayoutDataAdapter;
-import com.javaproject.nimrod.cinema.WebInterfaces.MoviesServiceFactory;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnFocusChange;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * Created by Nimrod on 17/08/2017.
- */
 
 public class ManageItemFragment extends Fragment implements Validator.ValidationListener
 {
     private List<Item> _itemsList;
-    private static MoviesChangedListener _moviesChangedListener;
+    private static ItemsChangedListener _itemsChangedListener;
 
     // Expandable Views
     @BindView(R.id.expl_add_item)
@@ -82,8 +56,8 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     ExpandableLayout _deleteItemLayout;
 
     // Layout fields
-    @BindView(R.id.til_movie_name) @NotEmpty(messageResId = R.string.empty_field_error)
-    TextInputLayout _movieName;
+    @BindView(R.id.til_item_name) @NotEmpty(messageResId = R.string.empty_field_error)
+    TextInputLayout _itemName;
     @BindView(R.id.til_category) @NotEmpty(messageResId = R.string.empty_field_error)
     TextInputLayout _category;
     @BindView(R.id.til_description) @NotEmpty(messageResId = R.string.empty_field_error)
@@ -95,11 +69,9 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     Spinner _itemsSpinner;
 
     private Validator _validator;
-    private Bitmap _movieImage;
-    private byte[] _selectedImageData;
-    private boolean _wasImageUploaded;
     private ArrayAdapter<Item> _itemsSpinnerAdapter;
-
+    private StorageReference imagesRef = FirebaseStorage.getInstance().getReference().child("Items");
+    private Uri currentUri;
 
     public static Fragment newInstance()
     {
@@ -118,12 +90,12 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         _validator.setValidationListener(this);
         _validator.registerAdapter(TextInputLayout.class, new TextInputLayoutDataAdapter());
 
-        LoadMovies();
+        LoadItems();
 
         return v;
     }
 
-    public void LoadMovies()
+    public void LoadItems()
     {
         HandyServiceFactory.GetInstance().GetAllItems()
                 .subscribeOn(Schedulers.io())
@@ -133,7 +105,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                     if (throwable == null)
                     {
                         _itemsList = items;
-                        _itemsSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, movieDetails);
+                        _itemsSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, items);
                         _itemsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                         _itemsSpinner.setAdapter(_itemsSpinnerAdapter);
@@ -158,7 +130,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
     private void StartGallery()
     {
-        Intent cameraIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent cameraIntent = new Intent(Intent.ACTION_PICK);
         cameraIntent.setType("image/*");
         if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             startActivityForResult(cameraIntent, 1000);
@@ -173,115 +145,44 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         {
             if (requestCode == 1000)
             {
-                Uri returnUri = data.getData();
-                try
-                {
-                    _imageName.setText(GetImageNameFromUri(getActivity().getContentResolver(), returnUri));
-
-                    // TODO: save image
-//                    FirebaseStorage.getInstance().getReference();
-//
-//                    // Create a child reference
-//                    StorageReference imagesRef = FirebaseStorage.getInstance().getReference().child("Items");
-//
-//// Child references can also take paths
-//// spaceRef now points to "images/space.jpg
-//// imagesRef still points to "images"
-//                    StorageReference spaceRef = storageRef.child("images/space.jpg");
-
-//                    InputStream stream = getActivity().getContentResolver().openInputStream(returnUri);
-//
-//                    int size = stream.available();
-//                    byte[] bytes = new byte[size];
-//
-//                    if (stream.read(bytes) == 0)
-//                        Log.d("Upload Image", "0 bytes were read!");
-//
-//                    _selectedImageData = bytes;
-//
-//                    // Indicating that the image was not uploaded yet
-//                    _wasImageUploaded = false;
-//
-//                    // Upload the movie image
-//                    UploadMovieImage(bytes);
-                }
-                catch (IOException e)
-                {
-                    Snackbar.make(getView(), "Failed loading image", Snackbar.LENGTH_LONG)
-                            .setAction(R.string.retry, v -> OnChooseMoviePicture()).show();
-
-                    e.printStackTrace();
-                }
+                currentUri = data.getData();
+                Toast.makeText(getContext(), "Image selected successfully", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private String GetImageNameFromUri(ContentResolver resolver, Uri uri) {
-        Cursor returnCursor =
-                resolver.query(uri, null, null, null, null);
-        assert returnCursor != null;
-        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-        returnCursor.moveToFirst();
-        String name = returnCursor.getString(nameIndex);
-        returnCursor.close();
-        return name;
-    }
-
-    @OnFocusChange(R.id.tiet_release_date)
-    public void OnChooseDateClicked(View v, boolean focusGained)
+    private void DeleteSelectedItem()
     {
-        // Skip if were leaving the date field
-        if (!focusGained)
-            return;
-
-        // Prevent keyboard from appearing since we show a date dialog
-        ((EditText)v).setShowSoftInputOnFocus(false);
-
-        Calendar now = Calendar.getInstance();
-
-        DatePickerDialog datePicker = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Light_Dialog_MinWidth,(view, year, month, dayOfMonth) ->
-                _releaseDate.getEditText().setText(String.format("%02d/%02d/%d", dayOfMonth, month + 1, year)), now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH));
-
-        datePicker.getDatePicker().setMinDate(now.getTimeInMillis());
-        datePicker.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        datePicker.show();
-    }
-
-    private void DeleteSelectedMovie()
-    {
-        MoviesServiceFactory.GetInstance().DeleteMovie(((MovieDetails) _itemsSpinner.getSelectedItem()).Id)
+        HandyServiceFactory.GetInstance().DeleteItem(((Item) _itemsSpinner.getSelectedItem()).Id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((responseBody, throwable) ->
                 {
                     if (throwable != null)
                     {
-                        Snackbar snack = Snackbar.make(getView(), R.string.failed_deleting_movie, Snackbar.LENGTH_LONG);
-                        snack.setAction(R.string.retry, v -> OnDeleteMovieClicked());
+                        Snackbar snack = Snackbar.make(getView(), R.string.failure_deleting_item, Snackbar.LENGTH_LONG);
+                        snack.setAction(R.string.retry, v -> OnDeleteItemClicked());
                         snack.show();
                     }
                     else
                     {
-                        MovieDetails selectedItem = ((MovieDetails) _itemsSpinner.getSelectedItem());
+                        Item selectedItem = ((Item) _itemsSpinner.getSelectedItem());
 
                         Snackbar.make(getView(),
-                                String.format(getString(R.string.operation_success_delete_movie), selectedItem.Name),
+                                String.format(getString(R.string.success_msg_delete_item), selectedItem.Title),
                                 Snackbar.LENGTH_LONG).show();
                         ClearAll();
 
                         _itemsSpinnerAdapter.remove(selectedItem);
                         _itemsSpinnerAdapter.notifyDataSetChanged();
-                        _moviesList.remove(selectedItem);
-                        _moviesChangedListener.MoviesChanged(_moviesList);
+                        _itemsList.remove(selectedItem);
+                        _itemsChangedListener.ItemsChanged(_itemsList);
                     }
                 });
     }
 
-    @OnClick(R.id.btn_delete_movie)
-    public void OnDeleteMovieClicked()
+    @OnClick(R.id.btn_delete_item)
+    public void OnDeleteItemClicked()
     {
         if (_itemsSpinnerAdapter.getCount() == 0)
         {
@@ -291,10 +192,10 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setTitle("Delete");
-        alert.setMessage(R.string.movie_delete_confirmation);
+        alert.setMessage(R.string.item_delete_confirm);
         alert.setPositiveButton("Yes", (dialog, which) ->
         {
-            DeleteSelectedMovie();
+            DeleteSelectedItem();
             dialog.dismiss();
         });
 
@@ -304,107 +205,78 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     }
 
     @OnClick(R.id.btn_add_item)
-    public void OnAddMovieClicked()
+    public void OnAddItemClicked()
     {
-        if (_wasImageUploaded)
-            _validator.validate();
-        else
-            Snackbar.make(getView(), "Image did not upload yet", Snackbar.LENGTH_LONG).show();
+        // if (_wasImageUploaded)
+        _validator.validate();
+        // Snackbar.make(getView(), "Image did not upload yet", Snackbar.LENGTH_LONG).show();
     }
 
     /**
-     * When validation on adding a movie fields passed
+     * When validation on adding item fields passed
      */
     @Override
     public void onValidationSucceeded()
     {
         ClearErrorOnAllFields();
 
-        AddMovie();
+        AddItem();
     }
 
-    private void AddMovie()
+    private void AddItem()
     {
-        MovieDetails movie = CreateMovieDetails();
+        Item newItem = CreateNewItem();
 
-        MoviesServiceFactory.GetInstance().AddMovie(movie)
+        HandyServiceFactory.GetInstance().AddItem(newItem)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((movieId, throwable) -> {
+                .subscribe((itemId, throwable) -> {
 
                     if (throwable != null)
                     {
-                        Snackbar addMovieSnack = Snackbar.make(getView(), R.string.failed_adding_movie, Snackbar.LENGTH_LONG);
-                        addMovieSnack.setAction(R.string.retry, v -> OnAddMovieClicked());
-                        addMovieSnack.show();
+                        Snackbar addItemSnack = Snackbar.make(getView(), R.string.failure_adding_item, Snackbar.LENGTH_LONG);
+                        addItemSnack.setAction(R.string.retry, v -> OnAddItemClicked());
+                        addItemSnack.show();
                     }
                     else
                     {
-                        Snackbar.make(getView(), R.string.operation_success_add_movie, Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(getView(), R.string.success_msg_add_item, Snackbar.LENGTH_LONG).show();
                         ClearAll();
 
                         // Add the new movie to all the lists and notify everyone for changes
-                        movie.Id = movieId;
+                        newItem.Id = itemId;
 
-                        // Adding the movie to the list, THIS IS THE SPINNERS DATA so we dont have to add to adapter too.
-                        _moviesList.add(movie);
+                        SaveItemImage(itemId);
+
+                        // Adding item to list = SPINNERS DATA so no need to add to adapter too.
+                        _itemsList.add(newItem);
 
                         // Notify other fragments and ourselves
                         _itemsSpinnerAdapter.notifyDataSetChanged();
-                        _moviesChangedListener.MoviesChanged(_moviesList);
+                        _itemsChangedListener.ItemsChanged(_itemsList);
                     }
                 });
     }
 
-    private void UploadMovieImage(byte[] imageData)
-    {
-        if (imageData.length == 0)
-        {
-            Log.d("Management", "Cannot upload empty image");
-            return;
-        }
-
-        // Constructing a multipart for uploading a photo
-        RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), imageData);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("upload", _imageName.getText().toString().toLowerCase(), reqFile);
-
-        // Uploading the image async
-        MoviesServiceFactory.GetInstance().UploadImage(body).
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread())
-                .subscribe((responseBody1, throwable1) ->
-                {
-                    if (throwable1 != null)
-                    {
-                        Log.d("Management", "Failed uploading image");
-
-                        Snackbar imageUploadSnack = Snackbar.make(getView(), "Failed uploading image", Snackbar.LENGTH_LONG);
-                        imageUploadSnack.setAction(R.string.retry, v ->
-                                Single.create(e -> OnChooseMoviePicture()).subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(o ->
-                                                UploadMovieImage(_selectedImageData)));
-                    }
-                    else
-                    {
-                        Snackbar.make(getView(), "Image uploaded", Snackbar.LENGTH_LONG).show();
-                        _wasImageUploaded = true;
-                    }
-                });
+    private void SaveItemImage(int itemId) {
+        StorageReference imagePath = imagesRef.child(itemId + ".jpg");
+        imagePath.putFile(currentUri).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                //
+            } else {
+                String err = task.getException().toString();
+                Toast.makeText(getContext(), "Failed saving item image. Error: " + err, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private MovieDetails CreateMovieDetails()
+    private Item CreateNewItem()
     {
-        return new MovieDetails(
-                _movieName.getEditText().getText().toString(),
-                _description.getEditText().getText().toString(),
-                _imageName.getText().toString(),
-                _category.getEditText().getText().toString(),
-                _actors.getEditText().getText().toString(),
-                LocalDate.parse(_releaseDate.getEditText().getText().toString(),
-                        DateTimeFormat.forPattern(getString(R.string.release_date_format))),
-                _genres.getEditText().getText().toString(),
-                Integer.parseInt(_duration.getEditText().getText().toString()));
+        Item newItem = new Item();
+        newItem.Title =_itemName.getEditText().getText().toString();
+        newItem.Description = _description.getEditText().getText().toString();
+        newItem.Category = _category.getEditText().getText().toString();
+        return newItem;
     }
 
     @Override
@@ -429,33 +301,21 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
     private void ClearErrorOnAllFields()
     {
-        _movieName.setError(null);
-        _actors.setError(null);
-        _releaseDate.setError(null);
-        _duration.setError(null);
+        _itemName.setError(null);
         _category.setError(null);
-        _genres.setError(null);
+        _description.setError(null);
 
-        _movieName.setErrorEnabled(false);
-        _actors.setErrorEnabled(false);
-        _releaseDate.setErrorEnabled(false);
-        _duration.setErrorEnabled(false);
+        _itemName.setErrorEnabled(false);
         _category.setErrorEnabled(false);
-        _genres.setErrorEnabled(false);
+        _description.setErrorEnabled(false);
     }
 
     private void ClearAll()
     {
         // Clear fields
-        _movieName.getEditText().setText("");
-        _actors.getEditText().setText("");
-        _releaseDate.getEditText().setText("");
-        _duration.getEditText().setText("");
+        _itemName.getEditText().setText("");
         _category.getEditText().setText("");
-        _wasImageUploaded = false;
         _imageName.setText("");
-        _selectedImageData = null;
-        _genres.getEditText().setText("");
         _description.getEditText().setText("");
 
         // Lose focus from everything

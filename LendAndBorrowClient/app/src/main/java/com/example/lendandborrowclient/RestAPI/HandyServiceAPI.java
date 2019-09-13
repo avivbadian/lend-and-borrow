@@ -26,7 +26,7 @@ public interface HandyServiceAPI {
     Call<Item> GetItem(@Path(WebApiConstants.Items.ItemId) int id);
 
     @POST(WebApiConstants.Items.RelativeUrl)
-    Single<String> AddItem(@Body Item item);
+    Single<Integer> AddItem(@Body Item item);
 
     @DELETE(WebApiConstants.Items.SpecificItem)
     Single<ResponseBody> DeleteItem(@Path(WebApiConstants.Items.ItemId) int itemId);

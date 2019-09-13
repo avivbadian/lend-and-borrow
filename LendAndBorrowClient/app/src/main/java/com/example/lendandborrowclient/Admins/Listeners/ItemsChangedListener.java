@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ItemsChangedListener
 {
-    void HallsChanged(List<Item> items);
+    void ItemsChanged(List<Item> items);
 }

@@ -10,17 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
-import com.example.lendandborrowclient.Admins.Listeners.AvailabilitiesChangedListener;
-import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
-import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
-import com.javaproject.nimrod.cinema.DataInterfaces.DataReceiver;
-import com.javaproject.nimrod.cinema.DataInterfaces.HallsChangedListener;
-import com.javaproject.nimrod.cinema.DataInterfaces.MoviesChangedListener;
-import com.javaproject.nimrod.cinema.Objects.Hall;
-import com.javaproject.nimrod.cinema.Objects.MovieDetails;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,7 +75,8 @@ public class ManagementActivity extends AppCompatActivity /*implements ItemsChan
                 case ITEM_FRAGMENT:
                     return ManageItemFragment.newInstance();
                 case AVAILABILITY_FRAGMENT:
-                    return ManageAvailabilityFragment.newInstance();
+                    return null;
+//                    return ManageAvailabilityFragment.newInstance();
 //                case REQUEST_FRAGMENT:
 //                    return ManageHallFragment.newInstance(hallsListener);
                 default:
