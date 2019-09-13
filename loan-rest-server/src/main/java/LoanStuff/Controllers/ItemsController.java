@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.GET)
 @RestController
@@ -70,14 +71,26 @@ public class ItemsController {
     }
 
     @PostMapping("/items")
-    public ResponseEntity postAddItem(@RequestBody Item newItem) {
+    public int postAddItem(@RequestBody Item newItem) {
         try {
-            db.execUpdate(String.format("INSERT INTO items (title, category, description) VALUES\n(DEFAULT,'%s','%s','%s')",
+            db.execUpdate(String.format("INSERT INTO items (id, title, category, description) VALUES\n(DEFAULT,'%s','%s','%s')",
                     newItem.Title, newItem.Category, newItem.Description));
 
-            return new ResponseEntity(HttpStatus.CREATED);
+            ArrayList<Item> allItems = getAllItems();
+            Optional<Item> createdNewItem = allItems.
+                    stream().
+                    filter(item -> item.Title.equals(newItem.Title) &&
+                            item.Category.equals(newItem.Category) &&
+                            item.Description.equals(newItem.Description)).
+                    findFirst();
+
+
+            if (createdNewItem.isPresent())
+                return createdNewItem.get().Id;
+            else
+                return -1;
         } catch (SQLException e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return -1;
         }
     }
 
