@@ -127,11 +127,11 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         HandyServiceFactory.GetInstance().Borrow(borrow).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
-                subscribe((borrow, throwable) -> {
+                subscribe((borrowReq, throwable) -> {
                             progressDialog.dismiss();
 
-                            if (borrow != null)
-                                ShowBorrowCompletionDialog(borrow);
+                            if (borrowReq != null)
+                                ShowBorrowCompletionDialog(borrowReq);
                             else
                                 Snackbar.make(getView(), "Failed submitting borrow", Snackbar.LENGTH_LONG).show();
                         }

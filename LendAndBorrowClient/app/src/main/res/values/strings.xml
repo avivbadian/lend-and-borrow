@@ -89,13 +89,13 @@
     <string name="screening_delete_confirmation">Are you sure you want to delete?</string>
 
     // Success
-    <string name="operation_success_add_screening">Screening added successfully</string>
-    <string name="operation_success_delete_screening">Screening deleted successfully</string>
+    <string name="operation_success_add_availability">Availability added successfully</string>
+    <string name="operation_success_delete_availability">Availability deleted successfully</string>
 
     // Errors
-    <string name="failed_adding_screening">Failed adding screening</string>
+    <string name="failure_adding_availability">Failed adding availability</string>
     <string name="price_field_error">Price can be maximum 3 digits</string>
-    <string name="failed_deleting_screening">Failed deleting screening</string>
+    <string name="failure_deleting_availability">Failed deleting availability</string>
 
 
     ///////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@
     <string name="hall_id_hint">Hall Number</string>
     <string name="seat_count_hint">Seats Count</string>
     <string name="rows_count_hint">Rows Count</string>
-    <string name="hall_delete_confirmation">Are you sure you want to delete?  Warning! Related screenings will be removed!</string>
+    <string name="availability_delete_confirmation">Are you sure you want to delete?</string>
 
     // Success
     <string name="operation_success_add_hall">Hall created successfully</string>
@@ -124,6 +124,9 @@
 
     /////////////////////////////////////////////////////////////////////
 
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
     <string-array name="Date_of_Screen">
         <item>Sunday</item>
         <item>Monday</item>
@@ -133,7 +136,4 @@
         <item>Friday</item>
         <item>Saturday</item>
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -25,7 +25,7 @@ public class ManagementActivity extends AppCompatActivity /*implements ItemsChan
 
     private static final int ITEM_FRAGMENT = 0;
     private static final int AVAILABILITY_FRAGMENT = 1;
-    private static final int REQUEST_FRAGMENT = 2;
+    private static final int REQUESTS_FRAGMENT = 2;
 
     @BindView(R.id.vp_management)
     ViewPager _viewPager;
@@ -75,10 +75,9 @@ public class ManagementActivity extends AppCompatActivity /*implements ItemsChan
                 case ITEM_FRAGMENT:
                     return ManageItemFragment.newInstance();
                 case AVAILABILITY_FRAGMENT:
-                    return null;
-//                    return ManageAvailabilityFragment.newInstance();
-//                case REQUEST_FRAGMENT:
-//                    return ManageHallFragment.newInstance(hallsListener);
+                    return ManageAvailabilityFragment.newInstance();
+                case REQUESTS_FRAGMENT:
+//                    return ManageRequestsFragment.newInstance(hallsListener);
                 default:
                     return null;
             }

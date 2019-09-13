@@ -24,7 +24,7 @@
             app:el_duration="500"
             app:el_expanded="false"
             app:el_parallax="0.5">
-            <include layout="@layout/delete_movie"/>
+            <include layout="@layout/delete_item"/>
         </net.cachapa.expandablelayout.ExpandableLayout>
         <net.cachapa.expandablelayout.ExpandableLayout
             android:id="@+id/expl_add_item"
@@ -33,7 +33,7 @@
             app:el_duration="500"
             app:el_expanded="true"
             app:el_parallax="0.5">
-            <include layout="@layout/add_movie"/>
+            <include layout="@layout/add_item"/>
         </net.cachapa.expandablelayout.ExpandableLayout>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

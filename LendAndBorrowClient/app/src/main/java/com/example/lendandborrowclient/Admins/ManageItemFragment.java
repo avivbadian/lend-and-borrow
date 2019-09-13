@@ -65,7 +65,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     @BindView(R.id.tv_imageName)
     @NotEmpty (message = "Image missing")
     TextView _imageName;
-    @BindView(R.id.sp_items_for_del)
+    @BindView(R.id.sp_items)
     Spinner _itemsSpinner;
 
     private Validator _validator;
