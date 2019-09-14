@@ -55,7 +55,7 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
 
     public class ManagementFragmentsAdapter extends FragmentPagerAdapter
     {
-        private final static int NUM_ITEMS = 3;
+        private final static int NUM_ITEMS = 2;
         private final ItemsChangedListener itemsListener;
         SparseArray<Fragment> registeredFragments = new SparseArray<>(NUM_ITEMS);
 

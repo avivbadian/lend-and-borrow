@@ -178,7 +178,7 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
         Calendar now = Calendar.getInstance();
 
         DatePickerDialog endDatePickerDialog =
-                DatePickerDialog.newInstance(new initialDatePicker(),
+                DatePickerDialog.newInstance(new endDatePicker(),
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH));
