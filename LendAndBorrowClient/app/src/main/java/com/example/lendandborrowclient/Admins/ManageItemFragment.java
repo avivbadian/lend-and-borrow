@@ -264,9 +264,11 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     }
 
     private void SaveItemImage(int itemId) {
+        // TODO: Generate unique id and upload file to firebase
         StorageReference imagePath = _imagesRef.child(itemId + ".jpg");
         imagePath.putFile(_currentUri).addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
+                //
                 String err = Objects.requireNonNull(task.getException()).toString();
                 Toast.makeText(getContext(), "Failed saving item image. Error: " + err, Toast.LENGTH_SHORT).show();
             } else {

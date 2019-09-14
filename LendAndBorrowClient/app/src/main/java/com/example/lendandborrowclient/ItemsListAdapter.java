@@ -99,37 +99,38 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
         notifyDataSetChanged();
     }
 
-    class ItemsAdapterViewHolder extends RecyclerView.ViewHolder
-    {
+    class ItemsAdapterViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_item_desc_preview)
         TextView _itemTitle;
         @BindView(R.id.iv_item_image_preview)
         ImageView _itemPicture;
-        @BindView(R.id.card_view) CardView _cardView;
+        @BindView(R.id.card_view)
+        CardView _cardView;
 
         private StorageReference _itemsImagesRef;
 
-        ItemsAdapterViewHolder(View view)
-        {
+        ItemsAdapterViewHolder(View view) {
             super(view);
-            _itemsImagesRef = FirebaseStorage.getInstance().getReference().child("Items images");
+            _itemsImagesRef = FirebaseStorage.getInstance().getReference().child("Items");
             ButterKnife.bind(this, view);
         }
 
         @OnClick({R.id.card_view, R.id.iv_item_image_preview, R.id.tv_item_desc_preview})
-        public void OnChooseItemClicked()
-        {
+        public void OnChooseItemClicked() {
             m_listener.OnItemClicked(_displayedItems.get(getAdapterPosition()));
         }
 
-        public void bind(final Item item)
-        {
+        public void bind(final Item item) {
             _itemTitle.setText(item.Title);
 
-            _itemsImagesRef.child(item.Id + ".jpg").getDownloadUrl().addOnSuccessListener((OnSuccessListener<UploadTask.TaskSnapshot>) taskSnapshot -> {
-                String image = taskSnapshot.getDownloadUrl().toString();
-                Picasso.get().load(image).into(_itemPicture);
-            });
-
+            // TODO: Add item image download link to database
+            //_itemsImagesRef.child(item.Id + ".jpg").getDownloadUrl().addOnSuccessListener(uri -> {
+                try {
+                    Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F12.jpg?alt=media&token=d795442f-f69e-4b89-830d-0c206033e9fc").into(_itemPicture);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+           // });
+        }
     }
 }
