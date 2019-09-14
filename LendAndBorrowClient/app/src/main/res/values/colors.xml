@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#3a3a3a</color>
     <color name="colorAccent">#ff8f4a</color>
     <color name="viewBg">#e3e3e3</color>
-    <color name="movie_title">#272525</color>
+    <color name="item_name">#272525</color>
     <color name="fragmentBackground">#979797</color>
     <color name="movie_details_text">#272525</color>
 

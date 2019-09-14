@@ -1,5 +1,7 @@
 package com.example.lendandborrowclient.Models;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class Item implements Serializable {
@@ -11,4 +13,10 @@ public class Item implements Serializable {
     public String Category;
 
     public String Description;
+
+    @NonNull
+    @Override
+    public String toString() {
+        return Title;
+    }
 }

@@ -18,7 +18,7 @@ public class AdminController {
         db = new DataStore();
     }
 
-    @PostMapping("/admin")
+    @PostMapping("/users")
     public ResponseEntity validateAdmin(@RequestBody Admin admin) {
         if (admin == null)
             return new ResponseEntity(HttpStatus.FORBIDDEN);

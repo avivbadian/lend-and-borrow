@@ -67,5 +67,5 @@ public interface HandyServiceAPI {
     Single<ResponseBody> DeleteBranch(@Path(WebApiConstants.Branches.BranchId) int branchId);
 
     @POST(WebApiConstants.Users.RelativeUrl)
-    Single<Admin> ValidateUser(@Body Admin admin);
+    Single<ResponseBody> ValidateUser(@Body Admin admin);
 }

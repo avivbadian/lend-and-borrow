@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity
     private Item _selectedItem;
     private Availability _selectedAvailability;
     private Branch _selectedBranch;
-    private Borrow _requestedBorrow;
 
     // TODO : Save Fragments here so we can HIDE/SHOW them on back
     // TODO : Change transaction to hide previous, add new and commit instead of current replace

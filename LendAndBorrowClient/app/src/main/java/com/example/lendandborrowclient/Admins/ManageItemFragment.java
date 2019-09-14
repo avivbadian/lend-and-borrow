@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +31,12 @@ import com.google.firebase.storage.StorageReference;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.squareup.picasso.Picasso;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +49,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class ManageItemFragment extends Fragment implements Validator.ValidationListener
 {
+    private static final int IMAGE_PICK = 1;
     private List<Item> _itemsList;
     private static ItemsChangedListener _itemsChangedListener;
 
@@ -62,19 +66,19 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     TextInputLayout _category;
     @BindView(R.id.til_description) @NotEmpty(messageResId = R.string.empty_field_error)
     TextInputLayout _description;
-    @BindView(R.id.tv_imageName)
-    @NotEmpty (message = "Image missing")
-    TextView _imageName;
     @BindView(R.id.sp_items)
     Spinner _itemsSpinner;
+    @BindView(R.id.iv_choose_item_picture)
+    ImageView _itemImage;
 
     private Validator _validator;
     private ArrayAdapter<Item> _itemsSpinnerAdapter;
-    private StorageReference imagesRef = FirebaseStorage.getInstance().getReference().child("Items");
-    private Uri currentUri;
+    private StorageReference _imagesRef = FirebaseStorage.getInstance().getReference().child("Items");
+    private Uri _currentUri;
 
-    public static Fragment newInstance()
+    public static Fragment newInstance(ItemsChangedListener itemsChangedListener)
     {
+        _itemsChangedListener = itemsChangedListener;
         return new ManageItemFragment();
     }
 
@@ -114,7 +118,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     }
 
     @OnClick(R.id.iv_choose_item_picture)
-    public void OnChooseMoviePicture()
+    public void OnChooseItemImage()
     {
         int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -133,7 +137,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         Intent cameraIntent = new Intent(Intent.ACTION_PICK);
         cameraIntent.setType("image/*");
         if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivityForResult(cameraIntent, 1000);
+            startActivityForResult(cameraIntent, IMAGE_PICK);
         }
     }
 
@@ -143,9 +147,10 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         //super method removed
         if (resultCode == RESULT_OK)
         {
-            if (requestCode == 1000)
+            if (requestCode == IMAGE_PICK)
             {
-                currentUri = data.getData();
+                _currentUri = data.getData();
+                Picasso.get().load(_currentUri).into(_itemImage);
                 Toast.makeText(getContext(), "Image selected successfully", Toast.LENGTH_SHORT).show();
             }
         }
@@ -186,7 +191,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     {
         if (_itemsSpinnerAdapter.getCount() == 0)
         {
-            Snackbar.make(getView(), "No movies to delete", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(getView(), "No items to delete", Snackbar.LENGTH_LONG).show();
             return;
         }
 
@@ -207,8 +212,8 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     @OnClick(R.id.btn_add_item)
     public void OnAddItemClicked()
     {
-        // if (_wasImageUploaded)
-        _validator.validate();
+         //if (!_currentUri.equals(""))
+            _validator.validate();
         // Snackbar.make(getView(), "Image did not upload yet", Snackbar.LENGTH_LONG).show();
     }
 
@@ -259,13 +264,14 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     }
 
     private void SaveItemImage(int itemId) {
-        StorageReference imagePath = imagesRef.child(itemId + ".jpg");
-        imagePath.putFile(currentUri).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                //
-            } else {
-                String err = task.getException().toString();
+        StorageReference imagePath = _imagesRef.child(itemId + ".jpg");
+        imagePath.putFile(_currentUri).addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                String err = Objects.requireNonNull(task.getException()).toString();
                 Toast.makeText(getContext(), "Failed saving item image. Error: " + err, Toast.LENGTH_SHORT).show();
+            } else {
+                // turns image back to default icon
+                _itemImage.setImageResource(R.drawable.ic_add_photo);
             }
         });
     }
@@ -315,7 +321,6 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         // Clear fields
         _itemName.getEditText().setText("");
         _category.getEditText().setText("");
-        _imageName.setText("");
         _description.getEditText().setText("");
 
         // Lose focus from everything

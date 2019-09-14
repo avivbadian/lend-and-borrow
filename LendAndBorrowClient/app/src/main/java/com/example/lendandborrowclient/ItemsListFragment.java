@@ -89,16 +89,15 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
                                 _progressBar.setVisibility(View.VISIBLE);
                                 m_itemsListRecyclerView.setVisibility(View.GONE);
                             }
-                    ).subscribe((itemsDetails, throwable) ->
+                    ).subscribe((items, throwable) ->
             {
                 _progressBar.setVisibility(View.GONE);
                 m_itemsListRecyclerView.setVisibility(View.VISIBLE);
 
-                if (itemsDetails != null)
+                if (items != null)
                 {
-                    _itemDisplays = itemsDetails;
+                    _itemDisplays = items;
                     _itemsAdapter.SetData(_itemDisplays);
-                    //LoadMoviesImages(moviesDetails);
                 }
                 else
                 {
@@ -113,6 +112,7 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
         else
             _itemsAdapter.SetData(_itemDisplays);
     }
+
 
 //    public void LoadMoviesImages(final List<MovieDetails> movies)
 //    {

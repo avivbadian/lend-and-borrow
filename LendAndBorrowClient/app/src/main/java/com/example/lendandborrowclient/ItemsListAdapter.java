@@ -1,5 +1,7 @@
 package com.example.lendandborrowclient;
 
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,10 +13,15 @@ import android.widget.TextView;
 
 
 import com.example.lendandborrowclient.Models.Item;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.Console;
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,9 +101,9 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
 
     class ItemsAdapterViewHolder extends RecyclerView.ViewHolder
     {
-        @BindView(R.id.tv_movie_desc_preview)
+        @BindView(R.id.tv_item_desc_preview)
         TextView _itemTitle;
-        @BindView(R.id.iv_movie_image_preview)
+        @BindView(R.id.iv_item_image_preview)
         ImageView _itemPicture;
         @BindView(R.id.card_view) CardView _cardView;
 
@@ -109,7 +116,7 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
             ButterKnife.bind(this, view);
         }
 
-        @OnClick({R.id.card_view, R.id.iv_movie_image_preview, R.id.tv_movie_desc_preview})
+        @OnClick({R.id.card_view, R.id.iv_item_image_preview, R.id.tv_item_desc_preview})
         public void OnChooseItemClicked()
         {
             m_listener.OnItemClicked(_displayedItems.get(getAdapterPosition()));
@@ -119,13 +126,10 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
         {
             _itemTitle.setText(item.Title);
 
-            try {
-                String imagePath = _itemsImagesRef.child(item.Id + ".jpg").getPath();
-                if (!imagePath.equals(""))
-                    Picasso.get().load(imagePath).into(_itemPicture);
-            } catch (Exception ex){
+            _itemsImagesRef.child(item.Id + ".jpg").getDownloadUrl().addOnSuccessListener((OnSuccessListener<UploadTask.TaskSnapshot>) taskSnapshot -> {
+                String image = taskSnapshot.getDownloadUrl().toString();
+                Picasso.get().load(image).into(_itemPicture);
+            });
 
-            }
-        }
     }
 }

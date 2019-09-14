@@ -42,7 +42,7 @@ import butterknife.OnFocusChange;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class ManageAvailabilityFragment extends Fragment implements Validator.ValidationListener /*DataReceiver*/
+public class ManageAvailabilityFragment extends Fragment implements Validator.ValidationListener
 {
     // Members
     private Validator _validator;
@@ -126,7 +126,6 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
                         _itemsList = items;
                         _itemsSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, _itemsList);
                         _itemsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        //_addMoviesSpinner.setAdapter(_itemsSpinnerAdapter);
                         _itemsSpinner.setAdapter(_itemsSpinnerAdapter);
                     }
                 });
@@ -150,6 +149,11 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
                 now.get(Calendar.DAY_OF_MONTH));
 
         initialDatePickerDialog.show(getFragmentManager(), "initial date picker");
+    }
+
+    public void RefreshItems(List<Item> items) {
+        _itemsSpinnerAdapter.clear();
+        _itemsSpinnerAdapter.addAll(items);
     }
 
     class initialDatePicker implements DatePickerDialog.OnDateSetListener{

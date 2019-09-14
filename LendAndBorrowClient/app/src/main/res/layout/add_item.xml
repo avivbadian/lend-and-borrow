@@ -8,14 +8,14 @@
     android:weightSum="1">
 
     <TextView
-        android:id="@+id/tv_add_movie_title"
+        android:id="@+id/tv_add_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:gravity="center"
         android:paddingBottom="10dp"
         android:layout_weight="0"
-        android:text="Add Movie - Details:"/>
+        android:text="@string/add_item_details"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -33,19 +33,14 @@
                 android:layout_height="40dp"
                 android:src="@drawable/ic_add_photo"
                 android:contentDescription="@string/item_picture"/>
-            <TextView
-                android:gravity="center"
-                android:id="@+id/tv_imageName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Image Name"
-                android:textSize="@dimen/add_item_details_field"/>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/til_item_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="20dp"
                 android:orientation="vertical">
+
 
                 <android.support.design.widget.TextInputEditText
                     android:layout_width="match_parent"

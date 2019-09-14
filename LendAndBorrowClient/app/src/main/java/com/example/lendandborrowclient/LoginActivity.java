@@ -1,6 +1,7 @@
 package com.example.lendandborrowclient;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.lendandborrowclient.Admins.ManagementActivity;
 import com.example.lendandborrowclient.Models.Admin;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
@@ -75,11 +77,11 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         HandyServiceFactory.GetInstance().ValidateUser(new Admin(userName, password))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((user, throwable) ->
+                .subscribe((responseBody, throwable) ->
                 {
                     progressDialog.dismiss();
 
-                    if (user != null)
+                    if (throwable == null)
                         OnLoginSuccess();
                     else
                     {
@@ -92,11 +94,9 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
 
     public void OnLoginSuccess()
     {
-//        _loginButton.setEnabled(true);
-//
-//        startActivity(new Intent(this, ManagementActivity.class));
-//
-//        finish();
+        _loginButton.setEnabled(true);
+        startActivity(new Intent(this, ManagementActivity.class));
+        finish();
     }
 
     public void OnLoginFailed()

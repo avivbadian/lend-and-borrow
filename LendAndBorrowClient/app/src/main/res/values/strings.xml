@@ -125,6 +125,8 @@
     /////////////////////////////////////////////////////////////////////
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_item_details">Add Item - Details:</string>
+    <string name="image_name">Image Name</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="Date_of_Screen">

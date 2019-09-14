@@ -10,7 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
+import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
+import com.example.lendandborrowclient.ItemClickedListener;
+import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,7 +24,7 @@ import butterknife.ButterKnife;
  * Created by Nimrod on 17/08/2017.
  */
 
-public class ManagementActivity extends AppCompatActivity /*implements ItemsChangedListener, AvailabilitiesChangedListener*/
+public class ManagementActivity extends AppCompatActivity implements ItemsChangedListener /*AvailabilitiesChangedListener*/
 {
     private static String tabTitles[] = new String[] { "Item", "Availability", "Request" };
 
@@ -42,7 +47,7 @@ public class ManagementActivity extends AppCompatActivity /*implements ItemsChan
 
         setTitle("Management");
 
-        _viewPagerAdapter = new ManagementFragmentsAdapter(getFragmentManager()/*, this, this*/);
+        _viewPagerAdapter = new ManagementFragmentsAdapter(getFragmentManager(), this);
         _viewPager.setAdapter(_viewPagerAdapter);
 
         _tabLayout.setupWithViewPager(_viewPager);
@@ -51,14 +56,13 @@ public class ManagementActivity extends AppCompatActivity /*implements ItemsChan
     public class ManagementFragmentsAdapter extends FragmentPagerAdapter
     {
         private final static int NUM_ITEMS = 3;
-//        private final ItemsChangedListener itemsListener;
-//        private final AvailabilitiesChangedListener availabilitiesListener;
+        private final ItemsChangedListener itemsListener;
         SparseArray<Fragment> registeredFragments = new SparseArray<>(NUM_ITEMS);
 
-        public ManagementFragmentsAdapter(FragmentManager fragmentManager/*, ItemsChangedListener itemsListener,
-                                          AvailabilitiesChangedListener availabilitiesListener*/) {
+        public ManagementFragmentsAdapter(FragmentManager fragmentManager, ItemsChangedListener itemsListener
+                                          /*AvailabilitiesChangedListener availabilitiesListener*/) {
             super(fragmentManager);
-//            this.itemsListener = itemsListener;
+            this.itemsListener = itemsListener;
 //            this.availabilitiesListener = availabilitiesListener;
         }
 
@@ -73,11 +77,11 @@ public class ManagementActivity extends AppCompatActivity /*implements ItemsChan
         public Fragment getItem(int position) {
             switch (position) {
                 case ITEM_FRAGMENT:
-                    return ManageItemFragment.newInstance();
+                    return ManageItemFragment.newInstance(itemsListener);
                 case AVAILABILITY_FRAGMENT:
                     return ManageAvailabilityFragment.newInstance();
                 case REQUESTS_FRAGMENT:
-//                    return ManageRequestsFragment.newInstance(hallsListener);
+                    //return ManageRequestsFragment.newInstance();
                 default:
                     return null;
             }
@@ -106,30 +110,18 @@ public class ManagementActivity extends AppCompatActivity /*implements ItemsChan
             return registeredFragments.get(position);
         }
     }
-//
-//    @Override
-//    public void ItemsChanged(List<Item> items)
-//    {
-//        try
-//        {
-//            _viewPagerAdapter.getRegisteredFragment(ITEM_FRAGMENT)).PassData(halls);
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    @Override
-//    public void MoviesChanged(List<MovieDetails> movies)
-//    {
-//        try
-//        {
-//            ((DataReceiver)_viewPagerAdapter.getRegisteredFragment(SCREENING_FRAGMENT)).PassData(movies);
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-//    }
+
+    @Override
+    public void ItemsChanged(List<Item> items)
+    {
+        try
+        {
+            ((ManageAvailabilityFragment)_viewPagerAdapter.getRegisteredFragment(AVAILABILITY_FRAGMENT)).RefreshItems(items);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
 }
