@@ -33,11 +33,13 @@ public class ItemsController {
                 String title = rs.getString(2).trim();
                 String category = rs.getString(3).trim();
                 String description = rs.getString(4).trim();
+                String path = rs.getString(5).trim();
                 items.add(new Item() {{
                     Id = id;
                     Title = title;
                     Category = category;
                     Description = description;
+                    Path = path;
                 }});
             }
         } catch (SQLException e) {
@@ -58,7 +60,7 @@ public class ItemsController {
                 item.Title = rs.getString(2).trim();
                 item.Category = rs.getString(3).trim();
                 item.Description = rs.getString(4).trim();
-
+                item.Path = rs.getString(5).trim();
                 return item;
             }
         } catch (SQLException e) {
@@ -73,8 +75,8 @@ public class ItemsController {
     @PostMapping("/items")
     public int postAddItem(@RequestBody Item newItem) {
         try {
-            db.execUpdate(String.format("INSERT INTO items (id, title, category, description) VALUES\n(DEFAULT,'%s','%s','%s')",
-                    newItem.Title, newItem.Category, newItem.Description));
+            db.execUpdate(String.format("INSERT INTO items (id, title, category, description, path) VALUES\n(DEFAULT,'%s','%s','%s', '%s')",
+                    newItem.Title, newItem.Category, newItem.Description, newItem.Path));
 
             ArrayList<Item> allItems = getAllItems();
             Optional<Item> createdNewItem = allItems.

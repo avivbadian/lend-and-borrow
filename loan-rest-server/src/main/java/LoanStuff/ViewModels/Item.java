@@ -7,4 +7,5 @@ public class Item implements Serializable {
     public String Title;
     public String Category;
     public String Description;
+    public String Path;
 }

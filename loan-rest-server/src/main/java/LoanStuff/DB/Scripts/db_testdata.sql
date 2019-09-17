@@ -12,11 +12,11 @@ INSERT INTO admins VALUES
   ('avivbadian', 'Aa123456');
 
 --- id, title, category, description
-INSERT INTO items (title, category, description) VALUES
-  ('Keter Chair', 'Camping Equipment', 'Original Keter chair'),
-  ('Harry Potter: The Philosophers stone', 'Books', 'Harry Potter book first book'),
-  ('Harry Potter: The Chamber of Secrets', 'Books', 'Harry Potter book second book'),
-  ('Harry Potter: The Prisoner of Azkaban', 'Books', 'Harry Potter book third book');
+INSERT INTO items (title, category, description, path) VALUES
+  ('Keter Chair', 'Camping Equipment', 'Original Keter chair', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F12.jpg?alt=media&token=d795442f-f69e-4b89-830d-0c206033e9fc'),
+  ('Harry Potter: The Philosophers stone', 'Books', 'Harry Potter book first book', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F12.jpg?alt=media&token=d795442f-f69e-4b89-830d-0c206033e9fc'),
+  ('Harry Potter: The Chamber of Secrets', 'Books', 'Harry Potter book second book', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F12.jpg?alt=media&token=d795442f-f69e-4b89-830d-0c206033e9fc'),
+  ('Harry Potter: The Prisoner of Azkaban', 'Books', 'Harry Potter book third book', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F12.jpg?alt=media&token=d795442f-f69e-4b89-830d-0c206033e9fc');
 
 
 -- title, address

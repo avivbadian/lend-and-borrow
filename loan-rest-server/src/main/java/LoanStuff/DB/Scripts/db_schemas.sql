@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS items
   id SERIAL PRIMARY KEY,
   title char(50),
   category char(50),
-  description char(300)
+  description char(300),
+  path char(300)
 );
 
 CREATE TABLE IF NOT EXISTS branches
