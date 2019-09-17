@@ -14,6 +14,8 @@ public class Item implements Serializable {
 
     public String Description;
 
+    public String Path;
+
     @NonNull
     @Override
     public String toString() {

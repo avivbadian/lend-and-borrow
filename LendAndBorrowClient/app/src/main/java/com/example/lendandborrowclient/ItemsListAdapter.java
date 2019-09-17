@@ -126,7 +126,7 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
             // TODO: Add item image download link to database
             //_itemsImagesRef.child(item.Id + ".jpg").getDownloadUrl().addOnSuccessListener(uri -> {
                 try {
-                    Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F12.jpg?alt=media&token=d795442f-f69e-4b89-830d-0c206033e9fc").into(_itemPicture);
+                    Picasso.get().load(item.Path).into(_itemPicture);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
