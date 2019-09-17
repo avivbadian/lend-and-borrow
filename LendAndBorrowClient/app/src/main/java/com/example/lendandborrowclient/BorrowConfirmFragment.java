@@ -32,8 +32,6 @@ import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.mobsandgeeks.saripaar.annotation.Pattern;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -113,7 +111,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         borrow.First_name = _firstName.getEditText().getText().toString();
         borrow.Last_name = _lastName.getEditText().getText().toString();
         borrow.Phone = _phoneNumber.getEditText().getText().toString();
-        borrow.BranchTitle = ((MainActivity)getActivity()).GetSelectedBranch().Title;
+        borrow.Branch = ((MainActivity)getActivity()).GetSelectedBranch().Title;
         borrow.Availability = ((MainActivity)getActivity()).GetSelectedAvailability().Id;
 
         final ProgressDialog progressDialog = new ProgressDialog(getContext(),

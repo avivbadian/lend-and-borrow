@@ -15,7 +15,7 @@ public class Borrow implements Serializable {
 
     public String Last_name;
 
-    public String BranchTitle;
+    public String Branch;
 
     public int Availability;
 
