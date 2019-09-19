@@ -3,6 +3,9 @@ package LoanStuff.Controllers;
 import LoanStuff.DB.DataStore;
 import LoanStuff.ViewModels.Availability;
 import LoanStuff.ViewModels.Item;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,5 +42,16 @@ public class AvailabilityController {
 
         // Availability not found
         return null;
+    }
+
+    @DeleteMapping("/availabilities/{id}")
+    public ResponseEntity DeleteAvailability(@PathVariable int id) {
+        try {
+            db.execUpdate(String.format("DELETE FROM availabilities WHERE id='%s'", id));
+
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (SQLException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 }
