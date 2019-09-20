@@ -23,14 +23,13 @@ import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.savvi.rangedatepicker.CalendarPickerView;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-import org.joda.time.DateTimeComparator;
-import org.joda.time.LocalTime;
-
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,7 +46,7 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     // Members
     private Validator _validator;
     private List<Item> _itemsList;
-    private List<Availability> _availabilitiesForMovie;
+    private List<Availability> _availabilitiesOfItem;
     private ArrayAdapter<Item> _itemsSpinnerAdapter;
     private Date _initialDate;
     private Date _endDate;
@@ -59,17 +58,18 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     ExpandableLayout _addAvailabilityLayout;
     @BindView(R.id.expl_delete_availability)
     ExpandableLayout _deleteAvailabilityLayout;
-
     // Views
-    @BindView(R.id.sp_items)
-    Spinner _itemsSpinner;
+    @BindView(R.id.calendar_view)
+    CalendarPickerView calendarPickerView;
+    @BindView(R.id.sp_items_for_del)
+    Spinner _itemsSpinnerForDel;
+    @BindView(R.id.sp_items_for_add)
+    Spinner _itemsSpinnerForAdd;
     @BindView(R.id.sp_availabilities)
     Spinner _availabilitiesSpinner;
-    @BindView(R.id.til_start_date) @NotEmpty(messageResId = R.string.empty_field_error)
-    TextInputLayout _availabilityStartDateView;
-    @BindView(R.id.til_end_date) @NotEmpty(messageResId = R.string.empty_field_error)
-    TextInputLayout _availabilityEndDateView;
+
     private ArrayAdapter<Availability> _availabilitiesSpinnerAdapter;
+    private ArrayList<Date> _occupiedDates;
 
     public static Fragment newInstance()
     {
@@ -89,17 +89,19 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
         View v = inflater.inflate(R.layout.fragment_manage_availabilites, container, false);
         ButterKnife.bind(this, v);
 
+        calendarPickerView.setVisibility(View.GONE);
+
         // Setting fields validator
         _validator = new Validator(this);
         _validator.setValidationListener(this);
         _validator.registerAdapter(TextInputLayout.class, new TextInputLayoutDataAdapter());
 
-        _itemsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        _itemsSpinnerForAdd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                OnDeleteItemAvailability();
+                OnItemSelected();
             }
 
             @Override
@@ -126,29 +128,37 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
                         _itemsList = items;
                         _itemsSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, _itemsList);
                         _itemsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        _itemsSpinner.setAdapter(_itemsSpinnerAdapter);
+                        _itemsSpinnerForAdd.setAdapter(_itemsSpinnerAdapter);
+                        _itemsSpinnerForDel.setAdapter(_itemsSpinnerAdapter);
                     }
                 });
     }
 
-    @OnFocusChange(R.id.tiet_start_date)
-    public void OnSelectAvailabilityStartDateFocused(View v, boolean focusGained)
+    private void setAvailabilitiesPicker()
     {
-        if (!focusGained)
-            return;
+        Calendar minDate = Calendar.getInstance();
 
-        // Prevent keyboard from appearing since we show a date dialog
-        ((EditText)v).setShowSoftInputOnFocus(false);
+        Calendar maxDate = Calendar.getInstance();
+        maxDate.setTime(new Date());
+        maxDate.add(Calendar.YEAR, 1);
 
-        Calendar now = Calendar.getInstance();
+        ArrayList<Date> occupiedDates = new ArrayList<>();
+        for (Availability a : _availabilitiesOfItem) {
+            Date initial = a.Start_date;
+            while (initial.before(a.End_date)) {
+                Calendar cur = toCalendar(initial);
+                occupiedDates.add(cur.getTime());
+                cur.add(Calendar.DATE, 1);
+                initial = cur.getTime();
+            }
+        }
 
-        DatePickerDialog initialDatePickerDialog =
-                DatePickerDialog.newInstance(new initialDatePicker(),
-                now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH));
+        calendarPickerView.init(minDate.getTime(), maxDate.getTime()) //
+                .inMode(CalendarPickerView.SelectionMode.RANGE)
+// highlight dates in red color, mean they are aleady used.
+                .withHighlightedDates(occupiedDates);
 
-        initialDatePickerDialog.show(getFragmentManager(), "initial date picker");
+        calendarPickerView.setVisibility(View.VISIBLE);
     }
 
     public void RefreshItems(List<Item> items) {
@@ -156,45 +166,6 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
         _itemsSpinnerAdapter.addAll(items);
     }
 
-    class initialDatePicker implements DatePickerDialog.OnDateSetListener{
-        @Override
-        public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-            Calendar cur = Calendar.getInstance();
-            cur.set(year, monthOfYear, dayOfMonth);
-            _initialDate = new Date(cur.getTimeInMillis());
-            _availabilityStartDateView.getEditText().setText(dateFormatter.format(_initialDate));
-        }
-    }
-
-    @OnFocusChange(R.id.tiet_end_date)
-    public void OnSelectAvailabilityEndDateFocused(View v, boolean focusGained)
-    {
-        if (!focusGained)
-            return;
-
-        // Prevent keyboard from appearing since we show a date dialog
-        ((EditText)v).setShowSoftInputOnFocus(false);
-
-        Calendar now = Calendar.getInstance();
-
-        DatePickerDialog endDatePickerDialog =
-                DatePickerDialog.newInstance(new endDatePicker(),
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH));
-
-        endDatePickerDialog.show(getFragmentManager(), "end date picker");
-    }
-
-    class endDatePicker implements DatePickerDialog.OnDateSetListener{
-        @Override
-        public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-            Calendar cur = Calendar.getInstance();
-            cur.set(year, monthOfYear, dayOfMonth);
-            _endDate = new Date(cur.getTimeInMillis());
-            _availabilityEndDateView.getEditText().setText(dateFormatter.format(_endDate));
-        }
-    }
 
     @OnClick(R.id.btn_add_availability)
     public void OnAddAvailabilityClicked()
@@ -241,7 +212,6 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
                     else
                     {
                         Snackbar.make(getView(), R.string.operation_success_delete_availability, Snackbar.LENGTH_LONG).show();
-                        ClearAll();
 
                         _availabilitiesSpinnerAdapter.remove((Availability) _availabilitiesSpinner.getSelectedItem());
                         _availabilitiesSpinnerAdapter.notifyDataSetChanged();
@@ -249,19 +219,20 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
                 });
     }
 
-    private void OnDeleteItemAvailability()
+    private void OnItemSelected()
     {
-        HandyServiceFactory.GetInstance().GetItemAvailabilities(((Item) _itemsSpinner.getSelectedItem()).Id)
+        HandyServiceFactory.GetInstance().GetItemAvailabilities(((Item) _itemsSpinnerForAdd.getSelectedItem()).Id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((availabilities, throwable) -> {
                     // If everything is ok
                     if (throwable == null)
                     {
-                        _availabilitiesForMovie = availabilities;
-                        _availabilitiesSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, _availabilitiesForMovie);
+                        _availabilitiesOfItem = availabilities;
+                        _availabilitiesSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, _availabilitiesOfItem);
                         _availabilitiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         _availabilitiesSpinner.setAdapter(_availabilitiesSpinnerAdapter);
+                        setAvailabilitiesPicker();
                     }
                 });
     }
@@ -289,42 +260,24 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
                     else
                     {
                         Snackbar.make(getView(), R.string.operation_success_add_availability, Snackbar.LENGTH_LONG).show();
-                        ClearAll();
                     }
                 });
-    }
-
-    private void ClearErrorOnAllFields()
-    {
-        _availabilityStartDateView.setError(null);
-        _availabilityEndDateView.setError(null);
-        _availabilityStartDateView.setErrorEnabled(false);
-        _availabilityEndDateView.setErrorEnabled(false);
-    }
-
-    private void ClearAll()
-    {
-        _availabilityStartDateView.getEditText().setText("");
-        _availabilityEndDateView.getEditText().setText("");
-
-        // Lose focus from everything
-        getActivity().getCurrentFocus().clearFocus();
     }
 
     private Availability ConstructAvailabilityObject()
     {
         Availability newAvailability = new Availability();
-        newAvailability.Start_date = _initialDate;
-        newAvailability.End_date = _endDate;
-        newAvailability.Item_id = ((Item)_itemsSpinner.getSelectedItem()).Id;
+
+        List<Date> selectedDates = calendarPickerView.getSelectedDates();
+        newAvailability.Start_date = selectedDates.get(0);
+        newAvailability.End_date = selectedDates.get(selectedDates.size()-1);
+        newAvailability.Item_id = ((Item)_itemsSpinnerForAdd.getSelectedItem()).Id;
         return newAvailability;
     }
 
     @Override
     public void onValidationFailed(List<ValidationError> errors)
     {
-        ClearErrorOnAllFields();
-
         for (ValidationError error : errors)
         {
             View view = error.getView();
@@ -338,6 +291,12 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
         }
 
         Snackbar.make(getView(), R.string.illegal_fields, Snackbar.LENGTH_LONG).show();
+    }
+
+    public static Calendar toCalendar(Date date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
     }
 
     @OnClick(R.id.btn_toggle)

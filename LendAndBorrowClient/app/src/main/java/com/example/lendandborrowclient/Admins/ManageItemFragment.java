@@ -273,6 +273,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                 Toast.makeText(getContext(), "Failed saving item image. Error: " + err, Toast.LENGTH_SHORT).show();
             } else {
                 // turns image back to default icon
+                task.addOnSuccessListener()
                 _itemImage.setImageResource(R.drawable.ic_add_photo);
             }
         });
