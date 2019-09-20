@@ -1,7 +1,7 @@
 package com.example.lendandborrowclient;
 
-import android.net.Uri;
-import android.support.annotation.NonNull;
+import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,17 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
+import com.bumptech.glide.Glide;
 import com.example.lendandborrowclient.Models.Item;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
-import java.io.Console;
-import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,11 +27,13 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
 {
     List<Item> _itemsList;
     ItemClickedListener m_listener;
+    private Context _ctx;
     private List<Item> _displayedItems;
 
-    public ItemsListAdapter(ItemClickedListener listener)
+    public ItemsListAdapter(ItemClickedListener listener, Context ctx)
     {
         m_listener = listener;
+        _ctx = ctx;
     }
 
     @Override
@@ -126,7 +122,7 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
             // TODO: Add item image download link to database
             //_itemsImagesRef.child(item.Id + ".jpg").getDownloadUrl().addOnSuccessListener(uri -> {
                 try {
-                    Picasso.get().load(item.Path).into(_itemPicture);
+                    Glide.with(_ctx).load(item.Path).into(_itemPicture);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

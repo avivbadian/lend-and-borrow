@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import java.util.List;
@@ -33,7 +34,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class ItemsListFragment extends Fragment implements ItemClickedListener
+public class ItemsListFragment extends Fragment implements ItemClickedListener, ItemsChangedListener
 {
     // Views
     @BindView(R.id.pb_items) ProgressBar _progressBar;
@@ -48,6 +49,7 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        ItemsManager.getInstance().registerListener(this);
     }
 
     @Nullable
@@ -60,7 +62,7 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
         ButterKnife.bind(this, v);
         // TODO : remember to unbind all on destroy!!!! check syntax on butterknife site
 
-        _itemsAdapter = new ItemsListAdapter(this);
+        _itemsAdapter = new ItemsListAdapter(this, getContext());
 
         m_itemsListRecyclerView.setAdapter(_itemsAdapter);
         m_itemsListRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 3));
@@ -105,7 +107,7 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
 
                     Snackbar.make(getView(),
                             "Failed Loading Items", Toast.LENGTH_SHORT)
-                            .setAction(R.string.retry, v -> LoadItemsList(true))
+                            .setAction(R.string.retry, v -> LoadItemsList(forceLoad))
                             .show();
                 }
             });
@@ -113,49 +115,10 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
             _itemsAdapter.SetData(_itemDisplays);
     }
 
-
-//    public void LoadMoviesImages(final List<MovieDetails> movies)
-//    {
-//        Observable.create((ObservableOnSubscribe<MovieImageArrivedEvent>) emitter ->
-//        {
-//            for (int i = 0; i < movies.size(); i++)
-//            {
-//                final MovieDetails currentMovie = movies.get(i);
-//
-//                Bitmap movieImage = Picasso
-//                        .with(getActivity())
-//                        .load(WebApiConstants.Images.Url + "/" + currentMovie.ImageName)
-//                        .get();
-//
-//                if (movieImage != null)
-//                    emitter.onNext(new MovieImageArrivedEvent(movieImage, i));
-//                else
-//                    emitter.onError(null);
-//            }
-//        }).observeOn(AndroidSchedulers.mainThread())
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(movieImageArrivedEvent ->
-//                                _moviesAdapter.SetImageAt(movieImageArrivedEvent.image, movieImageArrivedEvent.position),
-//                        exception -> Log.d("Movies", "Failed loading image: " + exception.getMessage()));
-//
-//    }
-
     @Override
     public void OnItemClicked(Item item) {
         ((com.example.lendandborrowclient.MainActivity)getActivity()).ShowSelectAvailabilityFragment(item);
     }
-
-//    public class MovieImageArrivedEvent
-//    {
-//        public final Bitmap image;
-//        public final int position;
-//
-//        public MovieImageArrivedEvent(Bitmap image, int position)
-//        {
-//            this.image = image;
-//            this.position = position;
-//        }
-//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -207,7 +170,6 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
             case R.id.refresh_action:
             {
                 LoadItemsList(true);
-
                 break;
             }
             default:
@@ -215,6 +177,13 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
         }
 
         return true;
+    }
+
+    @Override
+    public void ItemsChanged(List<Item> items) {
+        _itemDisplays = items;
+        _itemsAdapter.SetData(_itemDisplays);
+        _itemsAdapter.notifyDataSetChanged();
     }
 
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {

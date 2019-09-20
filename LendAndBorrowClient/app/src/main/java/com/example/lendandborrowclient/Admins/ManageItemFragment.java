@@ -3,8 +3,11 @@ package com.example.lendandborrowclient.Admins;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,27 +16,29 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
+import com.example.lendandborrowclient.ItemsManager;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
-import com.squareup.picasso.Picasso;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -54,7 +59,8 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 {
     private static final int IMAGE_PICK = 1;
     private List<Item> _itemsList;
-    private static ItemsChangedListener _itemsChangedListener;
+    private static ItemsChangedListener[] _itemsChangedListener;
+    private ProgressDialog _progressDialog;
 
     // Expandable Views
     @BindView(R.id.expl_add_item)
@@ -73,6 +79,8 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     Spinner _itemsSpinner;
     @BindView(R.id.iv_choose_item_picture)
     ImageView _itemImage;
+    @BindView(R.id.pb_add_item)
+    ProgressBar _progressBar;
 
     private Validator _validator;
     private ArrayAdapter<Item> _itemsSpinnerAdapter;
@@ -82,7 +90,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
-    public static Fragment newInstance(ItemsChangedListener itemsChangedListener)
+    public static Fragment newInstance(ItemsChangedListener... itemsChangedListener)
     {
         _itemsChangedListener = itemsChangedListener;
         return new ManageItemFragment();
@@ -99,6 +107,16 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         _validator = new Validator(this);
         _validator.setValidationListener(this);
         _validator.registerAdapter(TextInputLayout.class, new TextInputLayoutDataAdapter());
+
+        // Progress dialog for adding
+        _progressDialog = new ProgressDialog(getContext(),
+                android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+        _progressDialog.setIndeterminate(true);
+        _progressDialog.setMessage("Please wait...");
+        _progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        _progressDialog.setCancelable(false);
+        _progressDialog.setCanceledOnTouchOutside(false);
+
 
         LoadItems();
 
@@ -171,7 +189,8 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
             if (requestCode == IMAGE_PICK)
             {
                 _currentUri = data.getData();
-                Picasso.get().load(_currentUri).into(_itemImage);
+                //Picasso.get().load(_currentUri).into(_itemImage);
+                Glide.with(this).load(_currentUri).into(_itemImage);
                 Toast.makeText(getContext(), "Image selected successfully", Toast.LENGTH_SHORT).show();
             }
         }
@@ -199,10 +218,19 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                                 Snackbar.LENGTH_LONG).show();
                         ClearAll();
 
+                        // Delete image from firebase
+                        FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.Path).delete().addOnSuccessListener(aVoid -> {
+                            // File deleted successfully
+                            Log.d("Delete item", "onSuccess: deleted file");
+                        }).addOnFailureListener(exception -> {
+                            // Uh-oh, an error occurred!
+                            Log.d("Delete item", "onFailure: did not delete file");
+                        });
+
                         _itemsSpinnerAdapter.remove(selectedItem);
                         _itemsSpinnerAdapter.notifyDataSetChanged();
                         _itemsList.remove(selectedItem);
-                        _itemsChangedListener.ItemsChanged(_itemsList);
+                        ItemsManager.getInstance().notifyItemsChanged(_itemsList);
                     }
                 });
     }
@@ -233,9 +261,13 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     @OnClick(R.id.btn_add_item)
     public void OnAddItemClicked()
     {
-         //if (!_currentUri.equals(""))
-            _validator.validate();
-        // Snackbar.make(getView(), "Image did not upload yet", Snackbar.LENGTH_LONG).show();
+         if (_currentUri == null || _currentUri.equals(Uri.EMPTY)) {
+             Toast.makeText(getContext(), "Please upload an image", Toast.LENGTH_SHORT).show();
+             return;
+         }
+
+        _progressDialog.show();
+        _validator.validate();
     }
 
     /**
@@ -245,14 +277,11 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     public void onValidationSucceeded()
     {
         ClearErrorOnAllFields();
-
-        AddItem();
+        CreateNewItem();
     }
 
-    private void AddItem()
+    private void AddItem(Item newItem)
     {
-        Item newItem = CreateNewItem();
-
         HandyServiceFactory.GetInstance().AddItem(newItem)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -277,12 +306,19 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
                         // Notify other fragments and ourselves
                         _itemsSpinnerAdapter.notifyDataSetChanged();
-                        _itemsChangedListener.ItemsChanged(_itemsList);
+                        ItemsManager.getInstance().notifyItemsChanged(_itemsList);
+
+
+                        _itemImage.setImageResource(R.drawable.ic_add_photo);
+                        _currentUri = Uri.EMPTY;
+                        _progressDialog.dismiss();
                     }
                 });
+
+
     }
 
-    private Item CreateNewItem()
+    private void CreateNewItem()
     {
         Item newItem = new Item();
 
@@ -299,12 +335,10 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                     newItem.Description = _description.getEditText().getText().toString();
                     newItem.Category = _category.getEditText().getText().toString();
                     newItem.Path = uri.toString();
+                    AddItem(newItem);
                 });
-//                _itemImage.setImageResource(R.drawable.ic_add_photo);
             }
         });
-
-        return newItem;
     }
 
     @Override
@@ -346,7 +380,8 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         _description.getEditText().setText("");
 
         // Lose focus from everything
-        getActivity().getCurrentFocus().clearFocus();
+        if (getActivity().getCurrentFocus() != null)
+            getActivity().getCurrentFocus().clearFocus();
     }
 
     @OnClick(R.id.btn_toggle)

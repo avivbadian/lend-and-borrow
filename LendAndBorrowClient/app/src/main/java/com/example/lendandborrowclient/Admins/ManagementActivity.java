@@ -1,7 +1,10 @@
 package com.example.lendandborrowclient.Admins;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
@@ -11,7 +14,7 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
-import com.example.lendandborrowclient.ItemClickedListener;
+import com.example.lendandborrowclient.ItemsManager;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
 
@@ -49,8 +52,9 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
 
         _viewPagerAdapter = new ManagementFragmentsAdapter(getFragmentManager(), this);
         _viewPager.setAdapter(_viewPagerAdapter);
-
         _tabLayout.setupWithViewPager(_viewPager);
+
+        ItemsManager.getInstance().registerListener(this);
     }
 
     public class ManagementFragmentsAdapter extends FragmentPagerAdapter
@@ -77,7 +81,7 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
         public Fragment getItem(int position) {
             switch (position) {
                 case ITEM_FRAGMENT:
-                    return ManageItemFragment.newInstance(itemsListener);
+                   return ManageItemFragment.newInstance(itemsListener);
                 case AVAILABILITY_FRAGMENT:
                     return ManageAvailabilityFragment.newInstance();
                 case REQUESTS_FRAGMENT:
@@ -124,4 +128,9 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        ItemsManager.getInstance().unregisterListener(this);
+        super.onDestroy();
+    }
 }

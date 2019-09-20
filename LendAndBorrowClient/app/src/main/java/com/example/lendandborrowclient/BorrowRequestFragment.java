@@ -18,12 +18,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
-import com.google.firebase.storage.FirebaseStorage;
-import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.joda.time.DateTimeComparator;
@@ -149,7 +148,7 @@ public class BorrowRequestFragment extends Fragment
         _selectedAvailability = new Availability();
         _itemTitle.setText(m_displayedItem.Title);
         _itemCategory.setText(String.format(getString(R.string.genres), m_displayedItem.Category));
-        Picasso.get().load(FirebaseStorage.getInstance().getReference().child("Items images").child(m_displayedItem.Id + ".jpg").getPath()).into(_itemImage);
+        Glide.with(this).load(m_displayedItem.Path).into(_itemImage);
         _itemDescription.setText(String.format(getString(R.string.description_format), m_displayedItem.Description));
 
         //_itemYear.setText(String.format("%s %s", getString(R.string.release_date), m_displayedMovie.ReleaseDate.toString(getString(R.string.release_date_time_pattern))));

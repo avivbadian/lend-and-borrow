@@ -8,18 +8,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
 import com.example.lendandborrowclient.Models.Availability;
-import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
 
-public class MainActivity extends AppCompatActivity
-{
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements ItemsChangedListener {
     private Item _selectedItem;
     private Availability _selectedAvailability;
     private Branch _selectedBranch;
@@ -33,7 +35,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         ShowItemsListFragment();
     }
 
@@ -106,8 +107,13 @@ public class MainActivity extends AppCompatActivity
     {
         getFragmentManager()
                 .beginTransaction()
-                .add(R.id.container, new ItemsListFragment())
+                .add(R.id.container, new ItemsListFragment(), "ItemsListFragment")
                 /*.addToBackStack(null)*/.commit();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
 
     public void ShowSelectAvailabilityFragment(Item item)
@@ -141,6 +147,11 @@ public class MainActivity extends AppCompatActivity
 
     public Branch GetSelectedBranch() {
         return _selectedBranch;
+    }
+
+    @Override
+    public void ItemsChanged(List<Item> items) {
+        Log.d("crap", "ADasd");
     }
 
 
