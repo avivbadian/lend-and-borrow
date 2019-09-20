@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -26,6 +27,7 @@ import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mobsandgeeks.saripaar.ValidationError;
@@ -37,6 +39,7 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,6 +78,9 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     private ArrayAdapter<Item> _itemsSpinnerAdapter;
     private StorageReference _imagesRef = FirebaseStorage.getInstance().getReference().child("Items");
     private Uri _currentUri;
+
+    /* Used to handle permission request */
+    private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     public static Fragment newInstance(ItemsChangedListener itemsChangedListener)
     {
@@ -117,6 +123,21 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                 });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Recognizer initialization is a time-consuming and it involves IO,
+                // so we execute it in async task
+                StartGallery();
+            } else {
+            }
+        }
+    }
+
     @OnClick(R.id.iv_choose_item_picture)
     public void OnChooseItemImage()
     {
@@ -128,7 +149,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         } else {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    2000);
+                    PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
         }
     }
 
@@ -251,8 +272,6 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                         // Add the new movie to all the lists and notify everyone for changes
                         newItem.Id = itemId;
 
-                        SaveItemImage(itemId);
-
                         // Adding item to list = SPINNERS DATA so no need to add to adapter too.
                         _itemsList.add(newItem);
 
@@ -263,9 +282,11 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                 });
     }
 
-    private void SaveItemImage(int itemId) {
-        // TODO: Generate unique id and upload file to firebase
-        StorageReference imagePath = _imagesRef.child(itemId + ".jpg");
+    private Item CreateNewItem()
+    {
+        Item newItem = new Item();
+
+        StorageReference imagePath = _imagesRef.child(UUID.randomUUID() + ".jpg");
         imagePath.putFile(_currentUri).addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 //
@@ -273,18 +294,16 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                 Toast.makeText(getContext(), "Failed saving item image. Error: " + err, Toast.LENGTH_SHORT).show();
             } else {
                 // turns image back to default icon
-                task.addOnSuccessListener()
-                _itemImage.setImageResource(R.drawable.ic_add_photo);
+                imagePath.getDownloadUrl().addOnSuccessListener(uri -> {
+                    newItem.Title =_itemName.getEditText().getText().toString();
+                    newItem.Description = _description.getEditText().getText().toString();
+                    newItem.Category = _category.getEditText().getText().toString();
+                    newItem.Path = uri.toString();
+                });
+//                _itemImage.setImageResource(R.drawable.ic_add_photo);
             }
         });
-    }
 
-    private Item CreateNewItem()
-    {
-        Item newItem = new Item();
-        newItem.Title =_itemName.getEditText().getText().toString();
-        newItem.Description = _description.getEditText().getText().toString();
-        newItem.Category = _category.getEditText().getText().toString();
         return newItem;
     }
 
