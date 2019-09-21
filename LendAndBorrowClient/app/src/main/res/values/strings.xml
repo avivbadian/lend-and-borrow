@@ -2,8 +2,7 @@
     <string name="app_name">Handy</string>
     <string name="mainTitle">Welcome to Handy</string>
 
-    <string name="management_action">Management</string>
-    <string name="refresh_action">Refresh</string>
+    <string name="management_action">Admins</string>
     <string name="next_action">Next</string>
     <string name="back_action">Back</string>
     <string name="item_picture">Item Picture</string>
@@ -135,6 +134,7 @@
     <string name="dates">Dates</string>
     <string name="item_name">Item name</string>
     <string name="pending_requests">Pending requests:</string>
+    <string name="about_action">About</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="Date_of_Screen">

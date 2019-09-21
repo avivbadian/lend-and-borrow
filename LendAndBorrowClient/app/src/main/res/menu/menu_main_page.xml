@@ -19,15 +19,15 @@
         android:icon="@drawable/ic_done"/>
 
     <item
-        android:id="@+id/refresh_action"
+        android:id="@+id/admin_action"
         android:orderInCategory="2"
-        android:title="@string/refresh_action"
+        android:title="@string/management_action"
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/admin_action"
+        android:id="@+id/about_action"
         android:orderInCategory="3"
-        android:title="@string/management_action"
+        android:title="@string/about_action"
         app:showAsAction="never"/>
 
 </menu>

@@ -34,7 +34,7 @@ public interface HandyServiceAPI {
     Single<Integer> AddItem(@Body Item item);
 
     @DELETE(WebApiConstants.Items.SpecificItem)
-    Single<ResponseBody> DeleteItem(@Path(WebApiConstants.Items.ItemId) int itemId);
+    Single<List<Borrow>> DeleteItem(@Path(WebApiConstants.Items.ItemId) int itemId);
 
     @GET(WebApiConstants.Items.GetItemAvailabilities)
     Single<List<Availability>> GetItemAvailabilities(@Path(WebApiConstants.Items.ItemId) int id);
@@ -60,7 +60,7 @@ public interface HandyServiceAPI {
     Single<String> AddAvailability(@Body Availability availability);
 
     @DELETE(WebApiConstants.Availabilities.SpecificAvailability)
-    Single<ResponseBody> DeleteAvailability(@Path(WebApiConstants.Availabilities.AvailabilityId) int availabilityId);
+    Single<List<Borrow>> DeleteAvailability(@Path(WebApiConstants.Availabilities.AvailabilityId) int availabilityId);
 
     //endregion
 

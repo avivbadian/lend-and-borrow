@@ -27,6 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
@@ -189,7 +190,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         HandyServiceFactory.GetInstance().DeleteItem(((Item) _itemsSpinner.getSelectedItem()).Id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((responseBody, throwable) ->
+                .subscribe((requests, throwable) ->
                 {
                     if (throwable != null)
                     {
@@ -215,11 +216,29 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                             Log.d("Delete item", "onFailure: did not delete file");
                         });
 
+                        // declining related requests
+                        declineRelatedRequests(requests, selectedItem);
+
                         _itemsSpinnerAdapter.remove(selectedItem);
                         _itemsSpinnerAdapter.notifyDataSetChanged();
                         _itemsList.remove(selectedItem);
                     }
                 });
+    }
+
+    private void declineRelatedRequests(List<Borrow> borrows, Item item) {
+        for (Borrow request : borrows){
+
+            HandyServiceFactory.GetInstance().GetAvailabilityById(request.Availability)
+                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe((availability, throwable) ->
+                    {
+                        if (throwable == null && availability.Item_id != 0) {
+
+                        } else
+                            Toast.makeText(getContext(), "Failed Loading request availability", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     @OnClick(R.id.btn_delete_item)

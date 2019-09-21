@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -42,6 +43,7 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener, 
     // Views
     @BindView(R.id.pb_items) ProgressBar _progressBar;
     @BindView(R.id.rv_items) RecyclerView m_itemsListRecyclerView;
+    @BindView(R.id.pullToRefresh) SwipeRefreshLayout swipeRefreshLayout;
 
     // Variables
     private List<Item> _itemDisplays;
@@ -72,6 +74,11 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener, 
         m_itemsListRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 3));
         m_itemsListRecyclerView.addItemDecoration(new ItemsListFragment.GridSpacingItemDecoration(3, dpToPx(10), true));
         m_itemsListRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            LoadItemsList(true);
+            swipeRefreshLayout.setRefreshing(false);
+        });
 
         LoadItemsList();
 
@@ -164,23 +171,6 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener, 
         searchItem.setVisible(true);
 
         super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.refresh_action:
-            {
-                LoadItemsList(true);
-                break;
-            }
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-        return true;
     }
 
     @Override

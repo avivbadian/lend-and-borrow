@@ -19,5 +19,4 @@ public class Borrow implements Serializable {
     public String Last_name;
 
     public Status Status;
-
 }

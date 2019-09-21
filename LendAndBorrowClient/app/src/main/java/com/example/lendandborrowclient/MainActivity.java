@@ -1,9 +1,11 @@
 package com.example.lendandborrowclient;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -59,16 +61,22 @@ public class MainActivity extends AppCompatActivity {
     {
         switch (item.getItemId())
         {
-            case android.R.id.home:
-            {
-                // Let the child fragment on focus to handle this!!!
+            case android.R.id.home: {
+                // child fragment on focus handles this
                 return false;
             }
-            case R.id.admin_action:
-            {
+            case R.id.admin_action: {
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 return true;
+            }
+            case R.id.about_action: {
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setTitle("Handy App");
+                alertDialog.setMessage("This application was developed by Aviv Badian and Yaniv Krim.\nThe application provides borrowing services to clients and managing tools for administrators.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        (dialog, which) -> dialog.dismiss());
+                alertDialog.show();
             }
             default:
                 return super.onOptionsItemSelected(item);

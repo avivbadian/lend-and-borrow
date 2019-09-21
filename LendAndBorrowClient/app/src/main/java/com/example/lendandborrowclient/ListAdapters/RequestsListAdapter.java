@@ -109,7 +109,6 @@ public class RequestsListAdapter extends RecyclerView.Adapter<RequestsListAdapte
         }
 
         public void bind(final Borrow request) {
-
             HandyServiceFactory.GetInstance().GetAvailabilityById(request.Availability)
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe((availability, throwable) ->

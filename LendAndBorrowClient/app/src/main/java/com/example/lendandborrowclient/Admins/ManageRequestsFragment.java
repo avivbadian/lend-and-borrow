@@ -59,13 +59,6 @@ public class ManageRequestsFragment extends Fragment implements RequestsChangedL
         requestsRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         LoadPendingRequests();
-
-        // Request for send SMS permission if not yet given
-        int permissionCheck = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.SEND_SMS}, 1);
-        }
-
         return v;
     }
 
@@ -157,17 +150,6 @@ public class ManageRequestsFragment extends Fragment implements RequestsChangedL
     }
 
     private void sendSMS(Borrow borrow, Item relatedItem, Availability relatedAvailability, boolean approved) {
-        StringBuilder msg =
-                new StringBuilder("HandyApp: dear ").append(borrow.First_name).append(", ")
-                        .append(borrow.Last_name).append(" your request to borrow the item: ")
-                        .append(relatedItem.Title).append("' during: ")
-                        .append(relatedAvailability.toString()).append(" has been ");
-        if (approved) {
-            msg = msg.append("approved.");
-        } else {
-            msg = msg.append("declined.");
-        }
-        SmsManager smgr = SmsManager.getDefault();
-        smgr.sendTextMessage(borrow.Phone,null,msg.toString(),null,null);
+        ((ManagementActivity)getActivity()).sendSMS(borrow, relatedItem, relatedAvailability, approved);
     }
 }

@@ -1,14 +1,22 @@
 package com.example.lendandborrowclient.Admins;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v13.app.ActivityCompat;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.util.SparseArray;
 import android.view.ViewGroup;
+
+import com.example.lendandborrowclient.Models.Availability;
+import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.NotificationListeners.ItemsChangedListener;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
@@ -40,6 +48,12 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
         _viewPagerAdapter = new ManagementFragmentsAdapter(getFragmentManager());
         _viewPager.setAdapter(_viewPagerAdapter);
         _tabLayout.setupWithViewPager(_viewPager);
+
+        // Request for send SMS permission if not yet given
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 1);
+        }
     }
 
     public class ManagementFragmentsAdapter extends FragmentPagerAdapter
@@ -117,8 +131,19 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+
+    public void sendSMS(Borrow borrow, Item relatedItem, Availability relatedAvailability, boolean approved) {
+        StringBuilder msg =
+                new StringBuilder("HandyApp: dear ").append(borrow.First_name).append(", ")
+                        .append(borrow.Last_name).append(" your request to borrow the item: ")
+                        .append(relatedItem.Title).append("' during: ")
+                        .append(relatedAvailability.toString()).append(" has been ");
+        if (approved) {
+            msg = msg.append("approved.");
+        } else {
+            msg = msg.append("declined.");
+        }
+        SmsManager smgr = SmsManager.getDefault();
+        smgr.sendTextMessage(borrow.Phone,null,msg.toString(),null,null);
     }
 }
