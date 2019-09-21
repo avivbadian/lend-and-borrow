@@ -26,18 +26,7 @@ public class BorrowsController {
         ResultSet rs;
         try {
             rs = db.execQuery("SELECT * FROM borrows");
-            while (rs.next()) {
-                Borrow borrow = new Borrow();
-                borrow.Id = rs.getInt(1);
-                borrow.Availability = rs.getInt(2);
-                borrow.Branch = rs.getString(3).trim();
-                borrow.Phone = rs.getString(4).trim();
-                borrow.Email = rs.getString(5).trim();
-                borrow.First_name = rs.getString(6).trim();
-                borrow.Last_name = rs.getString(7).trim();
-                borrow.Status = Status.valueOf(rs.getString(8).trim());
-                borrows.add(borrow);
-            }
+            BuildBorrow(borrows, rs);
         } catch (SQLException e) {
             // TODO: log or something
             return null;
@@ -84,5 +73,35 @@ public class BorrowsController {
         }
 
         return new ResponseEntity(HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/borrows/pending")
+    public ArrayList<Borrow> getAllPendingBorrows() {
+        ArrayList<Borrow> borrows = new ArrayList<>();
+        ResultSet rs;
+        try {
+            rs = db.execQuery("SELECT * FROM borrows WHERE status = 'pending'");
+            BuildBorrow(borrows, rs);
+        } catch (SQLException e) {
+            // TODO: log or something
+            return null;
+        }
+
+        return borrows;
+    }
+
+    private void BuildBorrow(ArrayList<Borrow> borrows, ResultSet rs) throws SQLException {
+        while (rs.next()) {
+            Borrow borrow = new Borrow();
+            borrow.Id = rs.getInt(1);
+            borrow.Availability = rs.getInt(2);
+            borrow.Branch = rs.getString(3).trim();
+            borrow.Phone = rs.getString(4).trim();
+            borrow.Email = rs.getString(5).trim();
+            borrow.First_name = rs.getString(6).trim();
+            borrow.Last_name = rs.getString(7).trim();
+            borrow.Status = Status.valueOf(rs.getString(8).trim());
+            borrows.add(borrow);
+        }
     }
 }

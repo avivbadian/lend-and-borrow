@@ -82,4 +82,5 @@ INSERT INTO borrows (availability, branch, phone, email, first_name, last_name, 
   (1, 'Haifa', '0531234567', 'yossi@gmail.com', 'Yossi', 'Luchim', 'pending'),
   (1, 'Tel-Aviv', '0546259696', 'yanivkrim@gmail.com', 'Yaniv', 'Krim', 'pending'),
   (7, 'Tel-Aviv', '0527585867', 'Benjamin@gmail.com', 'Bejnamin', 'Franlkin', 'pending'),
-  (7, 'Tel-Aviv', '0509491233', 'Juila@gmail.com', 'Julia', 'Adams', 'pending');
+  (7, 'Tel-Aviv', '0509491233', 'Juila@gmail.com', 'Julia', 'Adams', 'pending'),
+  (8, 'Tel-Aviv', '0509491233', 'Juila@gmail.com', 'Julia', 'Adams', 'declined');
