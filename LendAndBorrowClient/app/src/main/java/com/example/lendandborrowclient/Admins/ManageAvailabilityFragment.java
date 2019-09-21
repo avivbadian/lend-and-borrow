@@ -48,10 +48,6 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     private List<Item> _itemsList;
     private List<Availability> _availabilitiesOfItem;
     private ArrayAdapter<Item> _itemsSpinnerAdapter;
-    private Date _initialDate;
-    private Date _endDate;
-    private SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-
 
     // Expandable Views
     @BindView(R.id.expl_add_availability)
@@ -69,12 +65,6 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     Spinner _availabilitiesSpinner;
 
     private ArrayAdapter<Availability> _availabilitiesSpinnerAdapter;
-    private ArrayList<Date> _occupiedDates;
-
-    public static Fragment newInstance()
-    {
-        return new ManageAvailabilityFragment();
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)

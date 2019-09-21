@@ -59,15 +59,13 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
 
     public class ManagementFragmentsAdapter extends FragmentPagerAdapter
     {
-        private final static int NUM_ITEMS = 2;
+        private final static int NUM_ITEMS = 3;
         private final ItemsChangedListener itemsListener;
         SparseArray<Fragment> registeredFragments = new SparseArray<>(NUM_ITEMS);
 
-        public ManagementFragmentsAdapter(FragmentManager fragmentManager, ItemsChangedListener itemsListener
-                                          /*AvailabilitiesChangedListener availabilitiesListener*/) {
+        public ManagementFragmentsAdapter(FragmentManager fragmentManager, ItemsChangedListener itemsListener) {
             super(fragmentManager);
             this.itemsListener = itemsListener;
-//            this.availabilitiesListener = availabilitiesListener;
         }
 
         // Returns total number of pages
@@ -81,11 +79,11 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
         public Fragment getItem(int position) {
             switch (position) {
                 case ITEM_FRAGMENT:
-                   return ManageItemFragment.newInstance(itemsListener);
+                    return new ManageItemFragment(itemsListener);
                 case AVAILABILITY_FRAGMENT:
-                    return ManageAvailabilityFragment.newInstance();
+                    return new ManageAvailabilityFragment();
                 case REQUESTS_FRAGMENT:
-                    //return ManageRequestsFragment.newInstance();
+                    return new ManageRequestsFragment();
                 default:
                     return null;
             }

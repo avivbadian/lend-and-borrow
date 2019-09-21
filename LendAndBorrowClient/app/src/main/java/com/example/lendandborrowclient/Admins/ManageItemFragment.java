@@ -90,10 +90,9 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
-    public static Fragment newInstance(ItemsChangedListener... itemsChangedListener)
+    public ManageItemFragment (ItemsChangedListener... itemsChangedListener)
     {
         _itemsChangedListener = itemsChangedListener;
-        return new ManageItemFragment();
     }
 
     @Nullable
