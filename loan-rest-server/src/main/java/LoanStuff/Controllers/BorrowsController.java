@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class BorrowsController {
@@ -53,9 +56,9 @@ public class BorrowsController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
-
+    
     @PutMapping("/borrows/{id}/{status}")
-    public ResponseEntity changeBorrowStatus(@PathVariable int id, @PathVariable Status status) {
+    public List<Borrow> changeBorrowStatus(@PathVariable int id, @PathVariable Status status) {
         try {
             // Update the status
             db.execUpdate(String.format("UPDATE borrows SET status='%s' WHERE id='%s'", status, id));
@@ -66,13 +69,17 @@ public class BorrowsController {
                 ResultSet rs = db.execQuery(String.format("SELECT availability FROM borrows WHERE id='%d'", id));
                 rs.next();
                 int availabilityId = rs.getInt(1);
+                List<Borrow> toDecline = getAllBorrows().
+                        stream().
+                        filter(borrow -> borrow.Availability == availabilityId
+                                && borrow.Id != id).collect(Collectors.toList());
                 db.execUpdate(String.format("UPDATE borrows SET status='declined' WHERE availability='%s' AND id <> '%s'", availabilityId, id));
-
+                return toDecline;
             }
         } catch (SQLException e) {
         }
 
-        return new ResponseEntity(HttpStatus.ACCEPTED);
+        return new ArrayList<Borrow>();
     }
 
     @GetMapping("/borrows/pending")
