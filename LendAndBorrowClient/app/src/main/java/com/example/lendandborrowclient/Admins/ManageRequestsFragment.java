@@ -24,6 +24,9 @@ import com.example.lendandborrowclient.NotificationListeners.RequestsChangedList
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -132,12 +135,19 @@ public class ManageRequestsFragment extends Fragment implements RequestsChangedL
                 });
     }
 
+    public void DeclineRequests(List<Borrow> borrowsToDecline, Item relatedItem, Availability relatedAvailability) {
+        for (Borrow borrow : borrowsToDecline) {
+            DeclineRequest(borrow, relatedItem, relatedAvailability);
+        }
+    }
+
 
     private void ApproveRequest(Borrow borrow, Item relatedItem, Availability relatedAvailability) {
         HandyServiceFactory.GetInstance().UpdateBorrowStatus(borrow.Id, Status.approved).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((responseBody, throwable) -> {
+                .subscribe((requests, throwable) -> {
                     if (throwable == null) {
+                        DeclineRequests(requests, relatedItem, relatedAvailability);
                         LoadPendingRequests();
                         sendSMS(borrow, relatedItem, relatedAvailability, true);
                     } else {

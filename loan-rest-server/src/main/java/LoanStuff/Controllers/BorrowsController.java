@@ -56,7 +56,7 @@ public class BorrowsController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
-    
+
     @PutMapping("/borrows/{id}/{status}")
     public List<Borrow> changeBorrowStatus(@PathVariable int id, @PathVariable Status status) {
         try {

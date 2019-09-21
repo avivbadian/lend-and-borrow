@@ -37,7 +37,7 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
         setContentView(R.layout.activity_management);
         ButterKnife.bind(this);
         setTitle("Management");
-        _viewPagerAdapter = new ManagementFragmentsAdapter(getFragmentManager(), this);
+        _viewPagerAdapter = new ManagementFragmentsAdapter(getFragmentManager());
         _viewPager.setAdapter(_viewPagerAdapter);
         _tabLayout.setupWithViewPager(_viewPager);
     }
@@ -45,12 +45,10 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
     public class ManagementFragmentsAdapter extends FragmentPagerAdapter
     {
         private final static int NUM_ITEMS = 3;
-        private final ItemsChangedListener itemsListener;
         SparseArray<Fragment> registeredFragments = new SparseArray<>(NUM_ITEMS);
 
-        public ManagementFragmentsAdapter(FragmentManager fragmentManager, ItemsChangedListener itemsListener) {
+        public ManagementFragmentsAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
-            this.itemsListener = itemsListener;
         }
 
         // Returns total number of pages

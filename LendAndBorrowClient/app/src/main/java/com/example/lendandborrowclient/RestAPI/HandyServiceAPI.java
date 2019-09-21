@@ -48,7 +48,7 @@ public interface HandyServiceAPI {
     Single<List<Borrow>> GetAllPendingRequests();
 
     @PUT(WebApiConstants.Borrows.UpdateBorrowStatus)
-    Single<ResponseBody> UpdateBorrowStatus(@Path(WebApiConstants.Borrows.BorrowId) int borrowId,
+    Single<List<Borrow>> UpdateBorrowStatus(@Path(WebApiConstants.Borrows.BorrowId) int borrowId,
                                             @Path(WebApiConstants.Borrows.BorrowStatus) Status newStatus);
 
     //region Availabilities
