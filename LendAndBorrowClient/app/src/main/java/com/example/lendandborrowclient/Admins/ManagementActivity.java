@@ -137,11 +137,11 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
     public void sendSMS(Borrow borrow, Item relatedItem, Availability relatedAvailability, boolean approved) {
         StringBuilder msg =
                 new StringBuilder("HandyApp: dear ").append(borrow.First_name).append(" ")
-                        .append(borrow.Last_name).append(", ").append(" your request to borrow the item: ")
+                        .append(borrow.Last_name).append(", ").append(" your request to borrow the item: '")
                         .append(relatedItem.Title).append("' during: ")
                         .append(relatedAvailability.toString()).append(" has been ");
         if (approved) {
-            msg = msg.append("approved.");
+            msg = msg.append("approved.").append(" Please arrive ").append(borrow.Branch).append(" at the specified date to get your item.");
         } else {
             msg = msg.append("declined.");
         }

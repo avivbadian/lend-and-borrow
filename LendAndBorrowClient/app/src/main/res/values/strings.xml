@@ -2,7 +2,7 @@
     <string name="app_name">Handy</string>
     <string name="mainTitle">Welcome to Handy</string>
 
-    <string name="management_action">Admins</string>
+    <string name="management_action">Admin</string>
     <string name="next_action">Next</string>
     <string name="back_action">Back</string>
     <string name="item_picture">Item Picture</string>
