@@ -23,13 +23,16 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
-import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
+import com.example.lendandborrowclient.ListAdapters.ItemClickedListener;
+import com.example.lendandborrowclient.NotificationListeners.ItemsChangedListener;
+import com.example.lendandborrowclient.ListAdapters.ItemsListAdapter;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -41,15 +44,19 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener, 
     @BindView(R.id.rv_items) RecyclerView m_itemsListRecyclerView;
 
     // Variables
-    List<Item> _itemDisplays;
-    ItemsListAdapter _itemsAdapter;
+    private List<Item> _itemDisplays;
+    private ItemsListAdapter _itemsAdapter;
+
+    /** because a Fragment may continue to exist after its Views are destroyed,
+     *  we manually call .unbind() from fragments to release reference to Views (and allow associated memory to be reclaimed)*/
+    private Unbinder _unbinder;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        ItemsManager.getInstance().registerListener(this);
     }
 
     @Nullable
@@ -59,11 +66,8 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener, 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         View v = inflater.inflate(R.layout.fragment_items_list, container, false);
-        ButterKnife.bind(this, v);
-        // TODO : remember to unbind all on destroy!!!! check syntax on butterknife site
-
+        _unbinder = ButterKnife.bind(this, v);
         _itemsAdapter = new ItemsListAdapter(this, getContext());
-
         m_itemsListRecyclerView.setAdapter(_itemsAdapter);
         m_itemsListRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 3));
         m_itemsListRecyclerView.addItemDecoration(new ItemsListFragment.GridSpacingItemDecoration(3, dpToPx(10), true));
@@ -183,7 +187,6 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener, 
     public void ItemsChanged(List<Item> items) {
         _itemDisplays = items;
         _itemsAdapter.SetData(_itemDisplays);
-        _itemsAdapter.notifyDataSetChanged();
     }
 
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
@@ -227,5 +230,11 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener, 
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    @Override
+    public void onDestroyView() {
+        _unbinder.unbind();
+        super.onDestroyView();
     }
 }

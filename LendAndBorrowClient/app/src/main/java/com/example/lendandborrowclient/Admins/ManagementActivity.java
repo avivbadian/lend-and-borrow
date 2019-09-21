@@ -1,10 +1,7 @@
 package com.example.lendandborrowclient.Admins;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
@@ -12,24 +9,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.ViewGroup;
-
-import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
-import com.example.lendandborrowclient.ItemsManager;
+import com.example.lendandborrowclient.NotificationListeners.ItemsChangedListener;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
-
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Nimrod on 17/08/2017.
- */
-
-public class ManagementActivity extends AppCompatActivity implements ItemsChangedListener /*AvailabilitiesChangedListener*/
+public class ManagementActivity extends AppCompatActivity implements ItemsChangedListener
 {
-    private static String tabTitles[] = new String[] { "Item", "Availability", "Request" };
+    private static String tabTitles[] = new String[] { "Items", "Availabilities", "Requests" };
 
     private static final int ITEM_FRAGMENT = 0;
     private static final int AVAILABILITY_FRAGMENT = 1;
@@ -47,14 +36,10 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_management);
         ButterKnife.bind(this);
-
         setTitle("Management");
-
         _viewPagerAdapter = new ManagementFragmentsAdapter(getFragmentManager(), this);
         _viewPager.setAdapter(_viewPagerAdapter);
         _tabLayout.setupWithViewPager(_viewPager);
-
-        ItemsManager.getInstance().registerListener(this);
     }
 
     public class ManagementFragmentsAdapter extends FragmentPagerAdapter
@@ -77,13 +62,21 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
         // Returns the fragment to display for that page
         @Override
         public Fragment getItem(int position) {
+
+            /**
+             * Fragments need to have empty public ctor,
+             * to allow the FragmentManger to kill and recreate Fragments with states.
+             *
+             * Convention is that every fragment has static newInstance() method for creation.
+             */
+
             switch (position) {
                 case ITEM_FRAGMENT:
-                    return new ManageItemFragment(itemsListener);
+                    return ManageItemFragment.newInstance();
                 case AVAILABILITY_FRAGMENT:
-                    return new ManageAvailabilityFragment();
+                    return ManageAvailabilityFragment.newInstance();
                 case REQUESTS_FRAGMENT:
-                    return new ManageRequestsFragment();
+                    return ManageRequestsFragment.newInstance();
                 default:
                     return null;
             }
@@ -128,7 +121,6 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
 
     @Override
     protected void onDestroy() {
-        ItemsManager.getInstance().unregisterListener(this);
         super.onDestroy();
     }
 }

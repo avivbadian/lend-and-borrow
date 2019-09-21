@@ -11,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
@@ -22,22 +20,16 @@ import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
-import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 import com.savvi.rangedatepicker.CalendarPickerView;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-
 import net.cachapa.expandablelayout.ExpandableLayout;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnFocusChange;
+import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -48,6 +40,8 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     private List<Item> _itemsList;
     private List<Availability> _availabilitiesOfItem;
     private ArrayAdapter<Item> _itemsSpinnerAdapter;
+    private ArrayAdapter<Availability> _availabilitiesSpinnerAdapter;
+    private Unbinder _unbinder;
 
     // Expandable Views
     @BindView(R.id.expl_add_availability)
@@ -64,7 +58,9 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     @BindView(R.id.sp_availabilities)
     Spinner _availabilitiesSpinner;
 
-    private ArrayAdapter<Availability> _availabilitiesSpinnerAdapter;
+    public static ManageAvailabilityFragment newInstance() {
+        return new ManageAvailabilityFragment();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -77,7 +73,7 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.fragment_manage_availabilites, container, false);
-        ButterKnife.bind(this, v);
+        _unbinder = ButterKnife.bind(this, v);
 
         calendarPickerView.setVisibility(View.GONE);
 
@@ -203,7 +199,8 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
                     {
                         Snackbar.make(getView(), R.string.operation_success_delete_availability, Snackbar.LENGTH_LONG).show();
 
-                        _availabilitiesSpinnerAdapter.remove((Availability) _availabilitiesSpinner.getSelectedItem());
+                        Availability deletedAvailability = (Availability) _availabilitiesSpinner.getSelectedItem();
+                        _availabilitiesSpinnerAdapter.remove(deletedAvailability);
                         _availabilitiesSpinnerAdapter.notifyDataSetChanged();
                     }
                 });
@@ -294,6 +291,12 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     {
         _addAvailabilityLayout.toggle();
         _deleteAvailabilityLayout.toggle();
+    }
+
+    @Override
+    public void onDestroyView() {
+        _unbinder.unbind();
+        super.onDestroyView();
     }
 }
 

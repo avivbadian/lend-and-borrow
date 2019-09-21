@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.lendandborrowclient.NotificationListeners.AvailabilitiesChangedListener;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
@@ -34,21 +35,20 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class BorrowRequestFragment extends Fragment
+public class BorrowRequestFragment extends Fragment implements AvailabilitiesChangedListener
 {
-    Item m_displayedItem;
-
-    List<Availability> _allAvailabilities;
-    List<Branch> _allBranches;
-
+    private Item _displayedItem;
+    private List<Availability> _allAvailabilities;
+    private List<Branch> _allBranches;
     private Availability _selectedAvailability;
-
-    DatePickerDialog initialDatePickerDialog;
-    ArrayAdapter<Branch> _branchesSpinnerAdapter;
+    private DatePickerDialog _initialDatePickerDialog;
+    private ArrayAdapter<Branch> _branchesSpinnerAdapter;
+    private Unbinder _unbinder;
 
     @BindView(R.id.iv_item_image) ImageView _itemImage;
     @BindView(R.id.tv_item_title) TextView _itemTitle;
@@ -61,9 +61,7 @@ public class BorrowRequestFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         setHasOptionsMenu(true);
     }
 
@@ -72,10 +70,8 @@ public class BorrowRequestFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.fragment_borrow_request, container, false);
-        ButterKnife.bind(this, v);
-
+        _unbinder = ButterKnife.bind(this, v);
         _itemDescription.setMovementMethod(ScrollingMovementMethod.getInstance());
-
         return v;
     }
 
@@ -84,7 +80,7 @@ public class BorrowRequestFragment extends Fragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        m_displayedItem = ((MainActivity)getActivity()).GetSelectedItem();
+        _displayedItem = ((MainActivity)getActivity()).GetSelectedItem();
 //        m_savedImageBitmap = ((MainActivity)getActivity()).getSelectedMovieImage();
 
         PopulateFields();
@@ -109,7 +105,7 @@ public class BorrowRequestFragment extends Fragment
 
     private void LoadAvailabilities()
     {
-        HandyServiceFactory.GetInstance().GetItemAvailabilities(m_displayedItem.Id)
+        HandyServiceFactory.GetInstance().GetItemAvailabilities(_displayedItem.Id)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe((availabilities, throwable) ->
                 {
@@ -124,7 +120,7 @@ public class BorrowRequestFragment extends Fragment
     void OnDatePickerButtonClicked() {
         Calendar now = Calendar.getInstance();
 
-        initialDatePickerDialog = DatePickerDialog.newInstance(new initialDatePicker(),
+        _initialDatePickerDialog = DatePickerDialog.newInstance(new initialDatePicker(),
                     now.get(Calendar.YEAR),
                     now.get(Calendar.MONTH),
                     now.get(Calendar.DAY_OF_MONTH));
@@ -133,8 +129,8 @@ public class BorrowRequestFragment extends Fragment
         {
             Calendar[] selectableDays = _allAvailabilities.stream().map(
                     availability -> toCalendar(availability.Start_date)).toArray(Calendar[]::new);
-            initialDatePickerDialog.setSelectableDays(selectableDays);
-            initialDatePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+            _initialDatePickerDialog.setSelectableDays(selectableDays);
+            _initialDatePickerDialog.show(getFragmentManager(), "Datepickerdialog");
         }
 
         else {
@@ -146,15 +142,16 @@ public class BorrowRequestFragment extends Fragment
     private void PopulateFields()
     {
         _selectedAvailability = new Availability();
-        _itemTitle.setText(m_displayedItem.Title);
-        _itemCategory.setText(String.format(getString(R.string.genres), m_displayedItem.Category));
-        Glide.with(this).load(m_displayedItem.Path).into(_itemImage);
-        _itemDescription.setText(String.format(getString(R.string.description_format), m_displayedItem.Description));
+        _itemTitle.setText(_displayedItem.Title);
+        _itemCategory.setText(String.format(getString(R.string.genres), _displayedItem.Category));
+        Glide.with(this).load(_displayedItem.Path).into(_itemImage);
+        _itemDescription.setText(String.format(getString(R.string.description_format), _displayedItem.Description));
+    }
 
-        //_itemYear.setText(String.format("%s %s", getString(R.string.release_date), m_displayedMovie.ReleaseDate.toString(getString(R.string.release_date_time_pattern))));
-        //_itemImage.setImageBitmap(m_savedImageBitmap);
-        //_itemDirector.setText(String.format(getString(R.string.director), m_displayedMovie.Director));
-        // _itemDuration.setText(String.format(getString(R.string.duration), String.valueOf(m_displayedMovie.Duration)));
+    @Override
+    public void AvailabilitiesChanged(int itemId) {
+        if (itemId == _displayedItem.Id)
+            LoadAvailabilities();
     }
 
 
@@ -168,9 +165,13 @@ public class BorrowRequestFragment extends Fragment
 
             _selectedAvailability = _allAvailabilities.stream().filter((availability) ->
                 comparator.compare(availability.Start_date, date) == 0
-            ).findFirst().orElse(new Availability());
+            ).findFirst().orElse(null);
 
-            _selectedAvailabilityView.setText(_selectedAvailability.toString());
+            if (_selectedAvailability != null)
+                _selectedAvailabilityView.setText(_selectedAvailability.toString());
+            else {
+                Toast.makeText(getContext(), "An error occurred during dates selection. Please try again", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -228,5 +229,11 @@ public class BorrowRequestFragment extends Fragment
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return cal;
+    }
+
+    @Override
+    public void onDestroyView() {
+        _unbinder.unbind();
+        super.onDestroyView();
     }
 }

@@ -54,8 +54,8 @@ public class BorrowsController {
         }
     }
 
-    @GetMapping("/borrows/{id}/{status}")
-    public ResponseEntity postChangeBorrowStatus(@PathVariable int id, @PathVariable Status status) {
+    @PutMapping("/borrows/{id}/{status}")
+    public ResponseEntity changeBorrowStatus(@PathVariable int id, @PathVariable Status status) {
         try {
             // Update the status
             db.execUpdate(String.format("UPDATE borrows SET status='%s' WHERE id='%s'", status, id));

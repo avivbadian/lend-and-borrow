@@ -43,7 +43,7 @@
     <string name="selected_screening">Selected Screening: %s</string>search_hint
     <string name="description_format">Description: %s</string>
     <string name="search_hint">Item Search</string>
-    <string name="borrow_approval_text">Request Number: %d\nSMS will be sent to your phone\n%s</string>
+    <string name="borrow_approval_text">Request submitted!\nSMS will be sent to your phone\n%s</string>
     <string name="movie_search">Item Search</string>
     <string name="add_movie_btn">Add Item</string>
     <string name="delete_item_btn">Delete Item</string>
@@ -68,6 +68,9 @@
     <string name="genres_hint">Genres</string>
     <string name="description_hint">Description</string>
     <string name="item_delete_confirm">Are you sure you want to delete? Warning! Related availabilities will be removed!</string>
+    <string name="request_decline_confirm">Are you sure you want to decline that request?</string>
+    <string name="request_approve_confirm">Are you sure you want to approve that request?
+                                           All other requests for that item in those specific dates will automatically be declined.</string>
 
     // Success
     <string name="success_msg_add_item">Item added successfully</string>
@@ -128,6 +131,10 @@
     <string name="add_item_details">Add Item - Details:</string>
     <string name="image_name">Image Name</string>
     <string name="add_item_availability">Add Item Availability:</string>
+    <string name="item_category">(item category)</string>
+    <string name="dates">Dates</string>
+    <string name="item_name">Item name</string>
+    <string name="pending_requests">Pending requests:</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string-array name="Date_of_Screen">

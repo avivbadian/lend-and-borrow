@@ -8,20 +8,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
-import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
 
-import java.util.List;
-
-public class MainActivity extends AppCompatActivity implements ItemsChangedListener {
+public class MainActivity extends AppCompatActivity {
     private Item _selectedItem;
     private Availability _selectedAvailability;
     private Branch _selectedBranch;
@@ -148,23 +143,4 @@ public class MainActivity extends AppCompatActivity implements ItemsChangedListe
     public Branch GetSelectedBranch() {
         return _selectedBranch;
     }
-
-    @Override
-    public void ItemsChanged(List<Item> items) {
-        Log.d("crap", "ADasd");
-    }
-
-
-//    public void ShowPurchaseDetailsFragment(List<Seat> selectedSeats, String selectionId) throws Exception
-//    {
-//        PurchaseFinishFragment frag = new PurchaseFinishFragment();
-//
-//        getFragmentManager()
-//                .beginTransaction()
-//                .replace(R.id.container, frag)
-//                .addToBackStack(null).commit();
-//
-//        // Passing the required data for the fragment
-//        frag.PassData(_selectedScreening, _selectedMovie.MovieDetails, selectedSeats, selectionId);
-//    }
 }

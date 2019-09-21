@@ -26,10 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
-import com.example.lendandborrowclient.Admins.Listeners.ItemsChangedListener;
-import com.example.lendandborrowclient.ItemsManager;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
@@ -39,35 +36,36 @@ import com.google.firebase.storage.StorageReference;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
-
 import net.cachapa.expandablelayout.ExpandableLayout;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-
 import static android.app.Activity.RESULT_OK;
-
 
 public class ManageItemFragment extends Fragment implements Validator.ValidationListener
 {
     private static final int IMAGE_PICK = 1;
     private List<Item> _itemsList;
-    private static ItemsChangedListener[] _itemsChangedListener;
     private ProgressDialog _progressDialog;
+    private Validator _validator;
+    private ArrayAdapter<Item> _itemsSpinnerAdapter;
+    private StorageReference _imagesRef = FirebaseStorage.getInstance().getReference().child("Items");
+    private Uri _currentUri;
+    /** because a Fragment may continue to exist after its Views are destroyed,
+     *  we manually call .unbind() from fragments to release reference to Views (and allow associated memory to be reclaimed)*/
+    private Unbinder _unbinder;
 
     // Expandable Views
     @BindView(R.id.expl_add_item)
     ExpandableLayout _addItemLayout;
     @BindView(R.id.expl_delete_item)
     ExpandableLayout _deleteItemLayout;
-
     // Layout fields
     @BindView(R.id.til_item_name) @NotEmpty(messageResId = R.string.empty_field_error)
     TextInputLayout _itemName;
@@ -82,17 +80,11 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     @BindView(R.id.pb_add_item)
     ProgressBar _progressBar;
 
-    private Validator _validator;
-    private ArrayAdapter<Item> _itemsSpinnerAdapter;
-    private StorageReference _imagesRef = FirebaseStorage.getInstance().getReference().child("Items");
-    private Uri _currentUri;
-
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
-    public ManageItemFragment (ItemsChangedListener... itemsChangedListener)
-    {
-        _itemsChangedListener = itemsChangedListener;
+    public static ManageItemFragment newInstance() {
+        return new ManageItemFragment();
     }
 
     @Nullable
@@ -100,7 +92,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.fragment_manage_items, container, false);
-        ButterKnife.bind(this, v);
+        _unbinder = ButterKnife.bind(this, v);
 
         // Setting fields validator
         _validator = new Validator(this);
@@ -116,9 +108,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         _progressDialog.setCancelable(false);
         _progressDialog.setCanceledOnTouchOutside(false);
 
-
         LoadItems();
-
         return v;
     }
 
@@ -134,7 +124,6 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                         _itemsList = items;
                         _itemsSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, items);
                         _itemsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
                         _itemsSpinner.setAdapter(_itemsSpinnerAdapter);
                     }
                 });
@@ -229,7 +218,6 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                         _itemsSpinnerAdapter.remove(selectedItem);
                         _itemsSpinnerAdapter.notifyDataSetChanged();
                         _itemsList.remove(selectedItem);
-                        ItemsManager.getInstance().notifyItemsChanged(_itemsList);
                     }
                 });
     }
@@ -253,7 +241,6 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         });
 
         alert.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-
         alert.show();
     }
 
@@ -305,8 +292,6 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
                         // Notify other fragments and ourselves
                         _itemsSpinnerAdapter.notifyDataSetChanged();
-                        ItemsManager.getInstance().notifyItemsChanged(_itemsList);
-
 
                         _itemImage.setImageResource(R.drawable.ic_add_photo);
                         _currentUri = Uri.EMPTY;
@@ -388,6 +373,12 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     {
         _addItemLayout.toggle();
         _deleteItemLayout.toggle();
+    }
+
+    @Override
+    public void onDestroyView() {
+        _unbinder.unbind();
+        super.onDestroyView();
     }
 }
 

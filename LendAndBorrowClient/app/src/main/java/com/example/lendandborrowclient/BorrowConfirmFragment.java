@@ -36,12 +36,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class BorrowConfirmFragment extends Fragment implements Validator.ValidationListener
 {
     private Validator _validator;
+    private Unbinder _unbinder;
 
     @BindView(R.id.tv_borrow_summary)
     TextView _borrowSummaryView;
@@ -60,7 +62,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
     {
         View v = inflater.inflate(R.layout.fragment_borrow_confirm, container, false);
         // Binding Fields
-        ButterKnife.bind(this, v);
+        _unbinder = ButterKnife.bind(this, v);
 
         // Setting fields validator
         _validator = new Validator(this);
@@ -125,11 +127,12 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         HandyServiceFactory.GetInstance().Borrow(borrow).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
-                subscribe((borrowReq, throwable) -> {
+                subscribe((ResponseBody, throwable) -> {
                             progressDialog.dismiss();
 
-                            if (borrowReq != null)
-                                ShowBorrowCompletionDialog(borrowReq);
+                            if (throwable == null){
+                                ShowBorrowCompletionDialog(borrow);
+                            }
                             else
                                 Snackbar.make(getView(), "Failed submitting borrow", Snackbar.LENGTH_LONG).show();
                         }
@@ -141,7 +144,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
 
         TextView messageText = new TextView(getContext());
-        messageText.setText(String.format(getString(R.string.borrow_approval_text), borrow.Id, _phoneNumber.getEditText().getText().toString()));
+        messageText.setText(String.format(getString(R.string.borrow_approval_text), _phoneNumber.getEditText().getText().toString()));
         messageText.setTextSize(20f);
         messageText.setGravity(Gravity.CENTER);
 
@@ -219,6 +222,12 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        _unbinder.unbind();
+        super.onDestroyView();
     }
 }
 

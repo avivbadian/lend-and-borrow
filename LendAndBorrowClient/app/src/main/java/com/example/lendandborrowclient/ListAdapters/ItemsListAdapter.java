@@ -1,7 +1,6 @@
-package com.example.lendandborrowclient;
+package com.example.lendandborrowclient.ListAdapters;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,8 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.lendandborrowclient.Models.Item;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.example.lendandborrowclient.R;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +21,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+
+/**
+ * bridge between a ListView and the data that backs the list.
+ * The ListView can display any data provided that it is wrapped in a ListAdapter.
+ */
 public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.ItemsAdapterViewHolder>
 {
     List<Item> _itemsList;
@@ -80,14 +83,6 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
         notifyDataSetChanged();
     }
 
-//    public void SetImageAt(Bitmap image, int position)
-//    {
-//        if (position < _itemsList.size())
-//            _itemsList.get(position).MoviePicture = image;
-//
-//        notifyItemChanged(position);
-//    }
-
     public void ClearFilteredData()
     {
         _displayedItems = _itemsList;
@@ -95,6 +90,10 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
         notifyDataSetChanged();
     }
 
+    /**
+     * The views in the list are represented by view holder objects.
+     * Each view holder is in charge of displaying a single item with a view.
+     */
     class ItemsAdapterViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_item_desc_preview)
         TextView _itemTitle;
@@ -103,11 +102,8 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
         @BindView(R.id.card_view)
         CardView _cardView;
 
-        private StorageReference _itemsImagesRef;
-
         ItemsAdapterViewHolder(View view) {
             super(view);
-            _itemsImagesRef = FirebaseStorage.getInstance().getReference().child("Items");
             ButterKnife.bind(this, view);
         }
 
@@ -118,15 +114,11 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
 
         public void bind(final Item item) {
             _itemTitle.setText(item.Title);
-
-            // TODO: Add item image download link to database
-            //_itemsImagesRef.child(item.Id + ".jpg").getDownloadUrl().addOnSuccessListener(uri -> {
-                try {
-                    Glide.with(_ctx).load(item.Path).into(_itemPicture);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-           // });
+            try {
+                Glide.with(_ctx).load(item.Path).into(_itemPicture);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }
