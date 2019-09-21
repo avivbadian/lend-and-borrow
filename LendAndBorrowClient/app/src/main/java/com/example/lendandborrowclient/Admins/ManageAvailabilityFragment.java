@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.example.lendandborrowclient.Models.Availability;
+import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
@@ -92,13 +93,10 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
 
             @Override
             public void onNothingSelected(AdapterView<?> parent)
-            {
-
-            }
+            { }
         });
 
         LoadValuesFromServer();
-
         return v;
     }
 
@@ -187,7 +185,7 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
         HandyServiceFactory.GetInstance().DeleteAvailability(((Availability) _availabilitiesSpinner.getSelectedItem()).Id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((responseBody, throwable) ->
+                .subscribe((requestsToDecline, throwable) ->
                 {
                     if (throwable != null)
                     {
@@ -198,8 +196,14 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
                     else
                     {
                         Snackbar.make(getView(), R.string.operation_success_delete_availability, Snackbar.LENGTH_LONG).show();
-
                         Availability deletedAvailability = (Availability) _availabilitiesSpinner.getSelectedItem();
+
+                        // Declining related requests
+                        for (Borrow req : requestsToDecline){
+                            ((ManagementActivity)getActivity()).sendSMS(req,(Item) _itemsSpinnerForAdd.getSelectedItem(),
+                                    deletedAvailability, false);
+                        }
+
                         _availabilitiesSpinnerAdapter.remove(deletedAvailability);
                         _availabilitiesSpinnerAdapter.notifyDataSetChanged();
                     }

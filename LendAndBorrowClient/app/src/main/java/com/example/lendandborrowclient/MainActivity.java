@@ -73,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.about_action: {
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                 alertDialog.setTitle("Handy App");
-                alertDialog.setMessage("This application was developed by Aviv Badian and Yaniv Krim.\nThe application provides borrowing services to clients and managing tools for administrators.");
+                alertDialog.setMessage("Handy App was developed by Aviv Badian and Yaniv Krim.\n" +
+                        "It is a platform that supplies borrowing services to multiple clients and managing tools for administrators.");
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         (dialog, which) -> dialog.dismiss());
                 alertDialog.show();

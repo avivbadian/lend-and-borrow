@@ -196,13 +196,11 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
             {
                 // Tell the activity back was pressed
                 getActivity().onBackPressed();
-
                 return true;
             }
             case R.id.next_action:
             {
                 if (_selectedAvailability.Id != 0) {
-
                     Branch selectedBranch = (Branch)_branchesSpinner.getSelectedItem();
                     if (selectedBranch == null || selectedBranch.Title.equals("")) {
                         Toast.makeText(getContext(), "Please choose a branch", Toast.LENGTH_LONG).show();

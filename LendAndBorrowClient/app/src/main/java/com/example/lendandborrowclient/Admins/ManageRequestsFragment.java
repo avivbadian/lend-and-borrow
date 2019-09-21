@@ -1,16 +1,11 @@
 package com.example.lendandborrowclient.Admins;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v13.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,20 +15,17 @@ import com.example.lendandborrowclient.ListAdapters.RequestsListAdapter;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.Models.Status;
-import com.example.lendandborrowclient.NotificationListeners.RequestsChangedListener;
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
-
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class ManageRequestsFragment extends Fragment implements RequestsChangedListener, RequestClickedListener {
+public class ManageRequestsFragment extends Fragment implements RequestClickedListener {
 
 
     /** because a Fragment may continue to exist after its Views are destroyed,
@@ -75,17 +67,6 @@ public class ManageRequestsFragment extends Fragment implements RequestsChangedL
     }
 
     @Override
-    public void RequestAdded(Borrow borrowRequest) {
-
-    }
-
-    @Override
-    public void onDestroy() {
-        _unbinder.unbind();
-        super.onDestroy();
-    }
-
-    @Override
     public void RequestConfirmClicked(Borrow request, Item relatedItem, Availability relatedAvailability) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setTitle("Confirmation dialog");
@@ -121,7 +102,7 @@ public class ManageRequestsFragment extends Fragment implements RequestsChangedL
                 .subscribe((responseBody, throwable) -> {
                     if (throwable == null) {
                         LoadPendingRequests();
-                        sendSMS(borrow, relatedItem, relatedAvailability, false);
+                        ((ManagementActivity)getActivity()).sendSMS(borrow, relatedItem, relatedAvailability, false);
                     } else {
                         Toast.makeText(getContext(), "There was an error declining the request. Please try again", Toast.LENGTH_SHORT).show();
                     }
@@ -140,16 +121,20 @@ public class ManageRequestsFragment extends Fragment implements RequestsChangedL
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((requests, throwable) -> {
                     if (throwable == null) {
-                        DeclineRequests(requests, relatedItem, relatedAvailability);
                         LoadPendingRequests();
-                        sendSMS(borrow, relatedItem, relatedAvailability, true);
+                        // Declines other requests for that particular item on the same dates
+                        DeclineRequests(requests, relatedItem, relatedAvailability);
+                        ((ManagementActivity)getActivity()).sendSMS(borrow, relatedItem, relatedAvailability, true);
                     } else {
                         Toast.makeText(getContext(), "There was an error approving the request. Please try again", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void sendSMS(Borrow borrow, Item relatedItem, Availability relatedAvailability, boolean approved) {
-        ((ManagementActivity)getActivity()).sendSMS(borrow, relatedItem, relatedAvailability, approved);
+
+    @Override
+    public void onDestroy() {
+        _unbinder.unbind();
+        super.onDestroy();
     }
 }

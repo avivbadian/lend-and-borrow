@@ -27,8 +27,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Item;
+import com.example.lendandborrowclient.NotificationListeners.ItemsChangedListener;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
@@ -52,6 +54,7 @@ import static android.app.Activity.RESULT_OK;
 public class ManageItemFragment extends Fragment implements Validator.ValidationListener
 {
     private static final int IMAGE_PICK = 1;
+    private static ItemsChangedListener _itemsChangedListener;
     private List<Item> _itemsList;
     private ProgressDialog _progressDialog;
     private Validator _validator;
@@ -84,7 +87,8 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
-    public static ManageItemFragment newInstance() {
+    public static ManageItemFragment newInstance(ItemsChangedListener listener) {
+        _itemsChangedListener = listener;
         return new ManageItemFragment();
     }
 
@@ -187,57 +191,55 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
     private void DeleteSelectedItem()
     {
-        HandyServiceFactory.GetInstance().DeleteItem(((Item) _itemsSpinner.getSelectedItem()).Id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((requests, throwable) ->
-                {
-                    if (throwable != null)
-                    {
-                        Snackbar snack = Snackbar.make(getView(), R.string.failure_deleting_item, Snackbar.LENGTH_LONG);
-                        snack.setAction(R.string.retry, v -> OnDeleteItemClicked());
-                        snack.show();
-                    }
-                    else
-                    {
-                        Item selectedItem = ((Item) _itemsSpinner.getSelectedItem());
+        HandyServiceFactory.GetInstance().GetItemAvailabilities(((Item) _itemsSpinner.getSelectedItem()).Id).subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe((availabilities, throwable) -> {
+                if (throwable == null) {
+                    HandyServiceFactory.GetInstance().DeleteItem(((Item) _itemsSpinner.getSelectedItem()).Id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe((requests, ex) ->
+                            {
+                                if (ex != null) {
+                                    Snackbar snack = Snackbar.make(getView(), R.string.failure_deleting_item, Snackbar.LENGTH_LONG);
+                                    snack.show();
+                                } else {
+                                    Item selectedItem = ((Item) _itemsSpinner.getSelectedItem());
 
-                        Snackbar.make(getView(),
-                                String.format(getString(R.string.success_msg_delete_item), selectedItem.Title),
-                                Snackbar.LENGTH_LONG).show();
-                        ClearAll();
+                                    Snackbar.make(getView(),
+                                            String.format(getString(R.string.success_msg_delete_item), selectedItem.Title),
+                                            Snackbar.LENGTH_LONG).show();
+                                    ClearAll();
 
-                        // Delete image from firebase
-                        FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.Path).delete().addOnSuccessListener(aVoid -> {
-                            // File deleted successfully
-                            Log.d("Delete item", "onSuccess: deleted file");
-                        }).addOnFailureListener(exception -> {
-                            // Uh-oh, an error occurred!
-                            Log.d("Delete item", "onFailure: did not delete file");
-                        });
+                                    // Delete image from firebase
+                                    FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.Path).delete().addOnSuccessListener(aVoid -> {
+                                        // File deleted successfully
+                                        Log.d("Delete item", "onSuccess: deleted file");
+                                    }).addOnFailureListener(exception -> {
+                                        // Uh-oh, an error occurred!
+                                        Log.d("Delete item", "onFailure: did not delete file");
+                                    });
 
-                        // declining related requests
-                        declineRelatedRequests(requests, selectedItem);
+                                    // declining related requests
+                                    declineRelatedRequests(requests, selectedItem, availabilities);
 
-                        _itemsSpinnerAdapter.remove(selectedItem);
-                        _itemsSpinnerAdapter.notifyDataSetChanged();
-                        _itemsList.remove(selectedItem);
-                    }
-                });
+                                    _itemsSpinnerAdapter.remove(selectedItem);
+                                    _itemsSpinnerAdapter.notifyDataSetChanged();
+                                    _itemsList.remove(selectedItem);
+                                    _itemsChangedListener.ItemsChanged(_itemsList);
+                                }
+                            });
+                } else {
+                    Snackbar snack = Snackbar.make(getView(), R.string.failure_deleting_item, Snackbar.LENGTH_LONG);
+                    snack.show();
+                }
+            });
     }
 
-    private void declineRelatedRequests(List<Borrow> borrows, Item item) {
+    private void declineRelatedRequests(List<Borrow> borrows, Item relatedItem, List<Availability> relatedAvailabilities) {
         for (Borrow request : borrows){
-
-            HandyServiceFactory.GetInstance().GetAvailabilityById(request.Availability)
-                    .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe((availability, throwable) ->
-                    {
-                        if (throwable == null && availability.Item_id != 0) {
-
-                        } else
-                            Toast.makeText(getContext(), "Failed Loading request availability", Toast.LENGTH_SHORT).show();
-                    });
+            ((ManagementActivity)getActivity()).sendSMS(request, relatedItem,
+                    relatedAvailabilities.stream().filter(availability -> availability.Id == request.Availability).findFirst().get(), false);
         }
     }
 
@@ -310,6 +312,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                         _itemsList.add(newItem);
 
                         // Notify other fragments and ourselves
+                        _itemsChangedListener.ItemsChanged(_itemsList);
                         _itemsSpinnerAdapter.notifyDataSetChanged();
 
                         _itemImage.setImageResource(R.drawable.ic_add_photo);
@@ -317,8 +320,6 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                         _progressDialog.dismiss();
                     }
                 });
-
-
     }
 
     private void CreateNewItem()

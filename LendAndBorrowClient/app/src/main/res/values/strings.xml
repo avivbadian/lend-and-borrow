@@ -66,7 +66,8 @@
     <string name="release_date_hint">Release Year</string>
     <string name="genres_hint">Genres</string>
     <string name="description_hint">Description</string>
-    <string name="item_delete_confirm">Are you sure you want to delete? Warning! Related availabilities will be removed!</string>
+    <string name="item_delete_confirm">Are you sure you want to delete this item?
+                                       Related availabilities will be removed and requests will automatically be declined</string>
     <string name="request_decline_confirm">Are you sure you want to decline that request?</string>
     <string name="request_approve_confirm">Are you sure you want to approve that request?
                                            All other requests for that item in those specific dates will automatically be declined.</string>
@@ -100,25 +101,15 @@
     <string name="failure_deleting_availability">Failed deleting availability</string>
 
 
-    ///////////////////////////////////////////////////////////////////
-    /// Halls management
-
     // General
-    <string name="delete_hall_btn">Delete Hall</string>
-    <string name="add_hall_btn">Add Hall</string>
-    <string name="hall_id_hint">Hall Number</string>
-    <string name="seat_count_hint">Seats Count</string>
-    <string name="rows_count_hint">Rows Count</string>
-    <string name="availability_delete_confirmation">Are you sure you want to delete?</string>
+    <string name="availability_delete_confirmation">Are you sure you want to delete this availability? Related requests will be automatically declined</string>
 
     // Success
     <string name="operation_success_add_hall">Hall created successfully</string>
     <string name="operation_success_delete_hall">Hall deleted successfully</string>
 
     // Error
-    <string name="failed_adding_hall">Failed adding hall</string>
     <string name="row_col_count_field_error">Should be a value between 5 to 30</string>
-    <string name="purchase_view_action">View Purchase</string>
     <string name="failed_deleting_hall">Failed deleting hall</string>
     <string name="password_invalid_error">Password must be with numbers and letters</string>
     <string name="login_user_hint">User</string>

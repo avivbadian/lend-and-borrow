@@ -45,7 +45,7 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
         setContentView(R.layout.activity_management);
         ButterKnife.bind(this);
         setTitle("Management");
-        _viewPagerAdapter = new ManagementFragmentsAdapter(getFragmentManager());
+        _viewPagerAdapter = new ManagementFragmentsAdapter(getFragmentManager(), this);
         _viewPager.setAdapter(_viewPagerAdapter);
         _tabLayout.setupWithViewPager(_viewPager);
 
@@ -59,10 +59,12 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
     public class ManagementFragmentsAdapter extends FragmentPagerAdapter
     {
         private final static int NUM_ITEMS = 3;
+        private final ItemsChangedListener listener;
         SparseArray<Fragment> registeredFragments = new SparseArray<>(NUM_ITEMS);
 
-        public ManagementFragmentsAdapter(FragmentManager fragmentManager) {
+        public ManagementFragmentsAdapter(FragmentManager fragmentManager, ItemsChangedListener listener) {
             super(fragmentManager);
+            this.listener = listener;
         }
 
         // Returns total number of pages
@@ -84,7 +86,7 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
 
             switch (position) {
                 case ITEM_FRAGMENT:
-                    return ManageItemFragment.newInstance();
+                    return ManageItemFragment.newInstance(listener);
                 case AVAILABILITY_FRAGMENT:
                     return ManageAvailabilityFragment.newInstance();
                 case REQUESTS_FRAGMENT:
@@ -134,8 +136,8 @@ public class ManagementActivity extends AppCompatActivity implements ItemsChange
 
     public void sendSMS(Borrow borrow, Item relatedItem, Availability relatedAvailability, boolean approved) {
         StringBuilder msg =
-                new StringBuilder("HandyApp: dear ").append(borrow.First_name).append(", ")
-                        .append(borrow.Last_name).append(" your request to borrow the item: ")
+                new StringBuilder("HandyApp: dear ").append(borrow.First_name).append(" ")
+                        .append(borrow.Last_name).append(", ").append(" your request to borrow the item: ")
                         .append(relatedItem.Title).append("' during: ")
                         .append(relatedAvailability.toString()).append(" has been ");
         if (approved) {
