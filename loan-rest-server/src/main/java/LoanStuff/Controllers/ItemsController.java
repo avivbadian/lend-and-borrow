@@ -2,7 +2,9 @@ package LoanStuff.Controllers;
 
 import LoanStuff.DB.DataStore;
 import LoanStuff.ViewModels.Availability;
+import LoanStuff.ViewModels.Borrow;
 import LoanStuff.ViewModels.Item;
+import LoanStuff.ViewModels.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.GET)
 @RestController
@@ -123,13 +127,24 @@ public class ItemsController {
 
 
     @DeleteMapping("/items/{id}")
-    public ResponseEntity deleteItem(@PathVariable int id) {
+    public List<Borrow> deleteItem(@PathVariable int id) {
         try {
+
+            List<Integer> itemsAvailabilitiesIds = getAllItemAvailabilities(id).
+                    stream().
+                    map(availability -> availability.Id).collect(Collectors.toList());
+            ArrayList<Borrow> borrows = new ArrayList<>();
+            ResultSet rs = db.execQuery("SELECT * FROM borrows");
+            BorrowsController.BuildBorrow(borrows, rs);
+            List<Borrow> itemBorrows = borrows.stream().
+                    filter(borrow -> itemsAvailabilitiesIds.contains(borrow.Availability) &&
+                            borrow.Status == Status.pending).
+                    collect(Collectors.toList());
             db.execUpdate(String.format("DELETE FROM items WHERE id='%s'", id));
 
-            return new ResponseEntity(HttpStatus.OK);
+            return itemBorrows;
         } catch (SQLException e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return null;
         }
     }
 }

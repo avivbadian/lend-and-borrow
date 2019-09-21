@@ -97,7 +97,7 @@ public class BorrowsController {
         return borrows;
     }
 
-    private void BuildBorrow(ArrayList<Borrow> borrows, ResultSet rs) throws SQLException {
+    public static void BuildBorrow(ArrayList<Borrow> borrows, ResultSet rs) throws SQLException {
         while (rs.next()) {
             Borrow borrow = new Borrow();
             borrow.Id = rs.getInt(1);
