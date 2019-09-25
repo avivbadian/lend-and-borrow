@@ -2,7 +2,7 @@ package com.example.lendandborrowclient.RestAPI;
 
 public final class WebApiConstants
 {
-    public final static String BaseUrl = "http://10.0.0.20:8080/";
+    public final static String BaseUrl = "http://10.0.0.15:8080/";
 
     public final class Items
     {

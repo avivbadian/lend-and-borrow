@@ -31,7 +31,7 @@
 
     // General use
     <string name="retry">Retry</string>
-    <string name="toggle_add_remove">Toggle Add/Remove</string>
+    <string name="toggle_add_remove">Add / Remove</string>
 
     // Item fields Hints
     <string name="name_hint">Name</string>

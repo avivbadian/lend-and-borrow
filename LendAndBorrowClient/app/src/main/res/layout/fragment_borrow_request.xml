@@ -8,7 +8,6 @@
     <LinearLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-
         android:orientation="vertical"
         android:padding="10dp"
         android:dividerPadding="20dp"
@@ -88,6 +87,7 @@
             android:id="@+id/btn_date"
             android:padding="15dp"
             android:text="@string/choose_dates"
+            android:background="@color/color_button"
             android:gravity="center"
             android:layout_weight="0"/>
 

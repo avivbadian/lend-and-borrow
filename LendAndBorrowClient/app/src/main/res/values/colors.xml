@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ce7019</color>
-    <color name="colorPrimaryDark">#3a3a3a</color>
-    <color name="colorAccent">#ff8f4a</color>
-    <color name="viewBg">#e3e3e3</color>
+    <color name="colorPrimary">#3CAEA3</color>
+    <color name="colorPrimaryDark">#544661</color>
+    <color name="colorAccent">#95e0d9</color>
+    <color name="viewBg">#e0ffff</color>
     <color name="item_name">#272525</color>
-    <color name="fragmentBackground">#979797</color>
-    <color name="image_border_start">#e86703</color>
-    <color name="image_border_end">#918888</color>
-    <color name="image_border_center">#b3de822c</color>
-    <color name="management_tabs">#ddd8d6</color>
+    <color name="fragmentBackground">#e0ffff</color>
+    <color name="image_border_start">#ffca98</color>
+    <color name="image_border_end">#ff7c00</color>
+    <color name="image_border_center">#ffaa5a</color>
+    <color name="management_tabs">#20639b</color>
+    <color name="color_button">#ffe082</color>
 </resources>
