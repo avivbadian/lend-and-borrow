@@ -211,22 +211,28 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                                             Snackbar.LENGTH_LONG).show();
                                     ClearAll();
 
-                                    // Delete image from firebase
-                                    FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.Path).delete().addOnSuccessListener(aVoid -> {
-                                        // File deleted successfully
-                                        Log.d("Delete item", "onSuccess: deleted file");
-                                    }).addOnFailureListener(exception -> {
-                                        // Uh-oh, an error occurred!
-                                        Log.d("Delete item", "onFailure: did not delete file");
-                                    });
-
                                     // declining related requests
                                     declineRelatedRequests(requests, selectedItem, availabilities);
 
+                                    // Updating items
                                     _itemsSpinnerAdapter.remove(selectedItem);
                                     _itemsSpinnerAdapter.notifyDataSetChanged();
                                     _itemsList.remove(selectedItem);
                                     _itemsChangedListener.ItemsChanged(_itemsList);
+
+                                    try {
+                                        // Delete image from firebase
+                                        FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.Path).delete().addOnSuccessListener(aVoid -> {
+                                            // File deleted successfully
+                                            Log.d("Delete item", "onSuccess: deleted file");
+                                        }).addOnFailureListener(exception -> {
+                                            // Uh-oh, an error occurred!
+                                            Log.d("Delete item", "onFailure: did not delete file");
+                                        });
+                                    } catch (Exception deleteEx) {
+                                        // File deleted successfully
+                                        Log.d("Delete item image", "Failed to delete item image from firebase");
+                                    }
                                 }
                             });
                 } else {
@@ -305,7 +311,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                         Snackbar.make(getView(), R.string.success_msg_add_item, Snackbar.LENGTH_LONG).show();
                         ClearAll();
 
-                        // Add the new movie to all the lists and notify everyone for changes
+                        // Add the new item to all the lists and notify everyone for changes
                         newItem.Id = itemId;
 
                         // Adding item to list = SPINNERS DATA so no need to add to adapter too.

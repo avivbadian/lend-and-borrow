@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
         android:elevation="7dp"
-        card_view:cardCornerRadius="@dimen/card_movie_radius"
+        card_view:cardCornerRadius="@dimen/card_item_radius"
         card_view:cardBackgroundColor="@color/viewBg">
         <!--style="@style/carbon_CardView">-->
 
@@ -25,7 +25,7 @@
             <ImageView
                 android:id="@+id/iv_item_image_preview"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/album_cover_height"
+                android:layout_height="@dimen/item_pic_height"
                 android:clickable="true"
                 android:focusable="true"
                 android:scaleType="fitXY"
@@ -39,9 +39,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/iv_item_image_preview"
-                android:padding="@dimen/movie_title_padding"
+                android:padding="@dimen/item_name_padding"
                 android:textColor="@color/item_name"
-                android:textSize="@dimen/movie_title"/>
+                android:textSize="@dimen/item_name"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

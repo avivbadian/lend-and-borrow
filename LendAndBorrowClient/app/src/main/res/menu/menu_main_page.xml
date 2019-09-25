@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/menu_item_search"
-        android:title="@string/movie_search"
+        android:title="@string/item_search"
         android:orderInCategory="0"
         app:showAsAction="always"
 

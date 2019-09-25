@@ -79,10 +79,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
     public void onActivityCreated(@Nullable Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
         _displayedItem = ((MainActivity)getActivity()).GetSelectedItem();
-//        m_savedImageBitmap = ((MainActivity)getActivity()).getSelectedMovieImage();
-
         PopulateFields();
         LoadBranches();
         LoadAvailabilities();
@@ -143,7 +140,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
     {
         _selectedAvailability = new Availability();
         _itemTitle.setText(_displayedItem.Title);
-        _itemCategory.setText(String.format(getString(R.string.genres), _displayedItem.Category));
+        _itemCategory.setText(String.format(getString(R.string.categories), _displayedItem.Category));
         Glide.with(this).load(_displayedItem.Path).into(_itemImage);
         _itemDescription.setText(String.format(getString(R.string.description_format), _displayedItem.Description));
     }

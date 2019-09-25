@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/toggle_add_remove"
-            style="@style/myColoredButton"/>
+            style="@style/customColoredButton"/>
         <net.cachapa.expandablelayout.ExpandableLayout
             android:id="@+id/expl_delete_item"
             android:layout_width="match_parent"

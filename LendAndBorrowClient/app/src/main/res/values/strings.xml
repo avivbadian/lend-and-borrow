@@ -1,71 +1,44 @@
 <resources>
     <string name="app_name">Handy</string>
-    <string name="mainTitle">Welcome to Handy</string>
-
     <string name="management_action">Admin</string>
     <string name="next_action">Next</string>
-    <string name="back_action">Back</string>
     <string name="item_picture">Item Picture</string>
 
-    // Purchase fields Hints
+    // New borrow
     <string name="last_name">Last Name</string>
     <string name="first_name">First Name</string>
-    <string name="given_name">Given Name</string>
     <string name="email">Email</string>
-    <string name="card_expiration">Expiry Date</string>
     <string name="phone_number">Phone Number</string>
-    <string name="card_number">Credit Card Number</string>
-    <string name="purchase_confirm">Submit borrow</string>
+    <string name="put_borrow">Submit borrow</string>
 
-    // Purchase fields Error Messages
+    // New borrow errors
     <string name="empty_field_error">Field should not be empty</string>
-    <string name="last_name_error">שם משפחה</string>
-    <string name="given_name_error">שם פרטי</string>
     <string name="email_error">Email address is invalid</string>
-    <string name="card_expiration_error">Expiration date is invalid</string>
     <string name="phone_number_error">Phone number is invalid</string>
-    <string name="card_number_error">Credit card number is invalid</string>
-    <string name="purchase_confirm_error">בצע רכישה</string>
-    <string name="choose_screening_button">Choose dates</string>
+    <string name="choose_dates">Choose dates</string>
     <string name="branch_not_selected">Branch was not selected</string>
-    <string name="screening_selection_canceled">Canceled screening selection</string>
 
-    // Movie details and screening selection
-    <string name="choose_screening_time">Choose Screening Time</string>
-    <string name="release_date_time_pattern">dd/MM/yyyy</string>
-    <string name="release_date">Release Date:</string>
-    <string name="actors">Actors: %s</string>
-    <string name="duration">Duration: %s minutes</string>
-    <string name="genres">Genres: %s</string>
-    <string name="director">Director: %s</string>
+    // Borrow details
+    <string name="categories">Categories: %s</string>
     <string name="illegal_fields">Illegal fields exists</string>
-    <string name="selected_screening">Selected Screening: %s</string>search_hint
     <string name="description_format">Description: %s</string>
-    <string name="search_hint">Item Search</string>
+    <string name="hint_search">Item Search</string>
     <string name="borrow_approval_text">Request submitted!\nSMS will be sent to your phone\n%s</string>
-    <string name="movie_search">Item Search</string>
-    <string name="add_movie_btn">Add Item</string>
+    <string name="item_search">Item Search</string>
+    <string name="add_item_btn">Add Item</string>
     <string name="delete_item_btn">Delete Item</string>
 
-    ///////////////////////////////////////////////////////////////////
-    //// General use
+
+    // General use
     <string name="retry">Retry</string>
-
-
-    ///////////////////////////////////////////////////////////////////
-    //// Movies Management
-
-    // General
     <string name="toggle_add_remove">Toggle Add/Remove</string>
 
-    // Movie fields Hints
-    <string name="movie_name_hint">Name</string>
-    <string name="duration_hint">Duration</string>
-    <string name="actors_hint">Actors</string>
+    // Item fields Hints
+    <string name="name_hint">Name</string>
     <string name="category_hint">Category</string>
-    <string name="release_date_hint">Release Year</string>
-    <string name="genres_hint">Genres</string>
     <string name="description_hint">Description</string>
+
+    // Confirmations
     <string name="item_delete_confirm">Are you sure you want to delete this item?
                                        Related availabilities will be removed and requests will automatically be declined</string>
     <string name="request_decline_confirm">Are you sure you want to decline that request?</string>
@@ -80,16 +53,10 @@
     <string name="failure_adding_item">Failed adding item</string>
     <string name="failure_deleting_item">Failed deleting item</string>
 
-
-    /// Screening Management /////////////////////////////////////////////////
-    // hints
-    <string name="price_hint">Ticket Price</string>
-    <string name="end_date_hint">End date</string>
-    <string name="start_date_hint">Start date</string>
+    // Availabilities
     <string name="add_availability_btn">Add Availability</string>
-    <string name="release_date_format">dd/MM/yyyy</string>
     <string name="delete_availability_btn">Delete Availability</string>
-    <string name="screening_delete_confirmation">Are you sure you want to delete?</string>
+    <string name="availability_delete_confirmation">Are you sure you want to delete this availability? Related requests will be automatically declined</string>
 
     // Success
     <string name="operation_success_add_availability">Availability added successfully</string>
@@ -97,44 +64,18 @@
 
     // Errors
     <string name="failure_adding_availability">Failed adding availability</string>
-    <string name="price_field_error">Price can be maximum 3 digits</string>
     <string name="failure_deleting_availability">Failed deleting availability</string>
 
-
-    // General
-    <string name="availability_delete_confirmation">Are you sure you want to delete this availability? Related requests will be automatically declined</string>
-
-    // Success
-    <string name="operation_success_add_hall">Hall created successfully</string>
-    <string name="operation_success_delete_hall">Hall deleted successfully</string>
-
-    // Error
-    <string name="row_col_count_field_error">Should be a value between 5 to 30</string>
-    <string name="failed_deleting_hall">Failed deleting hall</string>
+    // Login errors
     <string name="password_invalid_error">Password must be with numbers and letters</string>
     <string name="login_user_hint">User</string>
     <string name="login_password_hint">Password</string>
 
-    /////////////////////////////////////////////////////////////////////
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    // Manage items
     <string name="add_item_details">Add Item - Details:</string>
-    <string name="image_name">Image Name</string>
     <string name="add_item_availability">Add Item Availability:</string>
     <string name="item_category">(item category)</string>
     <string name="dates">Dates</string>
     <string name="item_name">Item name</string>
-    <string name="pending_requests">Pending requests:</string>
     <string name="about_action">About</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string-array name="Date_of_Screen">
-        <item>Sunday</item>
-        <item>Monday</item>
-        <item>Tuesday</item>
-        <item>Wednesday</item>
-        <item>Thursday</item>
-        <item>Friday</item>
-        <item>Saturday</item>
-    </string-array>
 </resources>

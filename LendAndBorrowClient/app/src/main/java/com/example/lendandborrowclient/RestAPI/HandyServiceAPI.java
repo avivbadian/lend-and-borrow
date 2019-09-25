@@ -41,6 +41,8 @@ public interface HandyServiceAPI {
 
     //endregion
 
+    //region borrows
+
     @POST(WebApiConstants.Borrows.RelativeUrl)
     Single<ResponseBody> Borrow(@Body Borrow request);
 
@@ -51,7 +53,9 @@ public interface HandyServiceAPI {
     Single<List<Borrow>> UpdateBorrowStatus(@Path(WebApiConstants.Borrows.BorrowId) int borrowId,
                                             @Path(WebApiConstants.Borrows.BorrowStatus) Status newStatus);
 
-    //region Availabilities
+    //endregion
+
+    //region availabilities
 
     @GET(WebApiConstants.Availabilities.SpecificAvailability)
     Single<Availability> GetAvailabilityById(@Path(WebApiConstants.Availabilities.AvailabilityId) int availabilityId);
@@ -77,6 +81,10 @@ public interface HandyServiceAPI {
 
     //endregion
 
+    //region users
+
     @POST(WebApiConstants.Users.RelativeUrl)
     Single<ResponseBody> ValidateUser(@Body Admin admin);
+
+    //endregion
 }

@@ -97,7 +97,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         return builder.toString();
     }
 
-    @OnClick(R.id.btn_purchase)
+    @OnClick(R.id.btn_submit)
     public void Validate()
     {
         _validator.validate();
