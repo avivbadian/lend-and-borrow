@@ -10,7 +10,7 @@ set datestyle TO "ISO, DMY";
 INSERT INTO admins VALUES
   ('yanivkrim', 'Aa123456'),
   ('avivbadian', 'Aa123456'),
-  ('master', 'AdMataiMarch14');
+  ('master', 'AdMataiMarch15');
 
 --- id, title, category, description
 INSERT INTO items (title, category, description, path) VALUES
