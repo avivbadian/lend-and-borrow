@@ -22,10 +22,14 @@ public class DbConfig {
     public static DbConfig Instance = new DbConfig();
 
     private DbConfig() {
-        ReadSettings();
+        try {
+            ReadSettings();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void ReadSettings() {
+    private void ReadSettings() throws IOException {
         //File inputFile = new File(System.getProperty("user.dir")+ "\\src\\main\\resources\\settings.xml");
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = null;
