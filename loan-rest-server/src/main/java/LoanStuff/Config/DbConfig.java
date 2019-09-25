@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class DbConfig {
     public String HOST;
@@ -21,11 +22,16 @@ public class DbConfig {
     public static DbConfig Instance = new DbConfig();
 
     private DbConfig() {
-        ReadSettings();
+        try {
+            ReadSettings();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void ReadSettings() {
+    private void ReadSettings() throws IOException {
         File inputFile = new File(System.getProperty("user.dir")+ "\\src\\main\\resources\\settings.xml");
+        InputStream input = getClass().getResource("/settings.xml").openStream();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = null;
         try {
@@ -35,7 +41,7 @@ public class DbConfig {
         }
         Document doc = null;
         try {
-            doc = dBuilder.parse(inputFile);
+            doc = dBuilder.parse(input);
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (IOException e) {
