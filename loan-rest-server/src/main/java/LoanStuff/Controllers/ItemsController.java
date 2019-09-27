@@ -5,8 +5,6 @@ import LoanStuff.ViewModels.Availability;
 import LoanStuff.ViewModels.Borrow;
 import LoanStuff.ViewModels.Item;
 import LoanStuff.ViewModels.Status;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.ResultSet;
@@ -15,14 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.GET)
 @RestController
 public class ItemsController {
     private DataStore db;
 
-    public ItemsController() throws SQLException, ClassNotFoundException {
+    public ItemsController() throws SQLException {
         db = new DataStore();
     }
 
@@ -46,9 +42,7 @@ public class ItemsController {
                     Path = path;
                 }});
             }
-        } catch (SQLException e) {
-            // TODO: log or something
-            return null;
+        } catch (SQLException ignored) {
         }
 
         return items;
@@ -67,9 +61,7 @@ public class ItemsController {
                 item.Path = rs.getString(5).trim();
                 return item;
             }
-        } catch (SQLException e) {
-            // TODO: log or something
-            return null;
+        } catch (SQLException ignored) {
         }
 
         // Item not found
@@ -91,10 +83,7 @@ public class ItemsController {
                     findFirst();
 
 
-            if (createdNewItem.isPresent())
-                return createdNewItem.get().Id;
-            else
-                return -1;
+            return createdNewItem.map(item -> item.Id).orElse(-1);
         } catch (SQLException e) {
             return -1;
         }
@@ -118,8 +107,6 @@ public class ItemsController {
                 availability.add(newAval);
             }
         } catch (SQLException e) {
-            // TODO: log or something
-            return null;
         }
 
         return availability;

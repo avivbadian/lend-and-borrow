@@ -3,20 +3,13 @@ package LoanStuff.Controllers;
 import LoanStuff.DB.DataStore;
 import LoanStuff.ViewModels.Availability;
 import LoanStuff.ViewModels.Borrow;
-import LoanStuff.ViewModels.Item;
-import LoanStuff.ViewModels.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class AvailabilityController {
@@ -40,9 +33,7 @@ public class AvailabilityController {
 
                 return availability;
             }
-        } catch (SQLException e) {
-            // TODO: log or something
-            return null;
+        } catch (SQLException ignored) {
         }
 
         // Availability not found
@@ -61,6 +52,18 @@ public class AvailabilityController {
             return borrows;
         } catch (SQLException e) {
             return null;
+        }
+    }
+
+    @PostMapping("/availabilities")
+    public ResponseEntity postAddAvailability(@RequestBody Availability newAvailability) {
+        try {
+            db.execUpdate(String.format("INSERT INTO availabilities (id, item_id, start_date, end_date) VALUES\n(DEFAULT,'%s','%s', '%s')",
+                    newAvailability.Item_id, newAvailability.Start_date, newAvailability.End_date));
+
+            return new ResponseEntity(HttpStatus.CREATED);
+        } catch (SQLException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 }

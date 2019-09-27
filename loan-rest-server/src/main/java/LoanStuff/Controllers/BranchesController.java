@@ -2,7 +2,6 @@ package LoanStuff.Controllers;
 
 import LoanStuff.DB.DataStore;
 import LoanStuff.ViewModels.Branch;
-import LoanStuff.ViewModels.Item;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +14,7 @@ import java.util.ArrayList;
 public class BranchesController {
     private DataStore db;
 
-    public BranchesController() throws SQLException, ClassNotFoundException {
+    public BranchesController() throws SQLException {
         db = new DataStore();
     }
 
@@ -25,17 +24,13 @@ public class BranchesController {
         ResultSet rs;
         try {
             rs = db.execQuery("SELECT * FROM branches");
-            while (rs.next()) {
-                //-- id, title, address
-                Branch branch = new Branch();
+            while (rs.next()) { Branch branch = new Branch();
                 branch.Title = rs.getString(1).trim();
                 branch.Address = rs.getString(2).trim();
 
                 branches.add(branch);
             }
-        } catch (SQLException e) {
-            // TODO: log or something
-            return null;
+        } catch (SQLException ignored) {
         }
 
         return branches;
