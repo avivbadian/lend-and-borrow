@@ -1,12 +1,9 @@
 package com.example.lendandborrowclient.ListAdapters;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.support.v13.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

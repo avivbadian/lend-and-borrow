@@ -1,6 +1,6 @@
 package com.example.lendandborrowclient.Validation;
 
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import com.mobsandgeeks.saripaar.adapter.ViewDataAdapter;
 
 public class TextInputLayoutDataAdapter implements ViewDataAdapter<TextInputLayout, String>
