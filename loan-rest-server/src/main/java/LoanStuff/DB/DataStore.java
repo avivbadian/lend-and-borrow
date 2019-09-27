@@ -19,7 +19,7 @@ public class DataStore {
         if (DbConfig.Instance.HOST.isEmpty() || DbConfig.Instance.DB_NAME.isEmpty() || DbConfig.Instance.USER.isEmpty() || DbConfig.Instance.PASS.isEmpty()) {
             throw new SQLException("Database credentials missing");
         }
-        
+
         conn = DriverManager.getConnection(
                 DbConfig.Instance.HOST + DbConfig.Instance.DB_NAME,
                 DbConfig.Instance.USER, DbConfig.Instance.PASS);
