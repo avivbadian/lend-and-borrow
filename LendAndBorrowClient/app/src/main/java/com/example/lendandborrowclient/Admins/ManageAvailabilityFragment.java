@@ -276,14 +276,14 @@ public class ManageAvailabilityFragment extends Fragment
             newAvailability.Start_date = selectedDates.get(0);
             newAvailability.End_date = selectedDates.get(selectedDates.size()-1);
             newAvailability.Item_id = ((Item)_itemsSpinnerForAdd.getSelectedItem()).Id;
-
-            DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-            try {
-                newAvailability.Start_date = format.parse(format.format(newAvailability.Start_date));
-                newAvailability.End_date = format.parse(format.format(newAvailability.End_date));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+//
+//            DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+//            try {
+//                newAvailability.Start_date = format.parse(format.format(newAvailability.Start_date));
+//                newAvailability.End_date = format.parse(format.format(newAvailability.End_date));
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
 
             return newAvailability;
         }
