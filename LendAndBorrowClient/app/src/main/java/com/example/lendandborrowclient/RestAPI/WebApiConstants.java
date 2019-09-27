@@ -1,42 +1,42 @@
 package com.example.lendandborrowclient.RestAPI;
 
-public final class WebApiConstants
+final class WebApiConstants
 {
-    public final static String BaseUrl = "http://10.0.0.15:8080/";
+    final static String BaseUrl = "http://10.0.0.15:8080/";
 
-    public final class Items
+    final class Items
     {
-        public final static String ItemId = "id";
-        public final static String RelativeUrl = "items";
-        public final static String SpecificItem = RelativeUrl + "/{id}";
-        public final static String GetItemAvailabilities = SpecificItem + "/availabilities";
+        final static String ItemId = "id";
+        final static String RelativeUrl = "items";
+        final static String SpecificItem = RelativeUrl + "/{id}";
+        final static String GetItemAvailabilities = SpecificItem + "/availabilities";
     }
 
-    public final class Availabilities
+    final class Availabilities
     {
-        public final static String AvailabilityId = "id";
-        public final static String RelativeUrl = "availabilities";
-        public final static String SpecificAvailability = RelativeUrl + "/{id}";
+        final static String AvailabilityId = "id";
+        final static String RelativeUrl = "availabilities";
+        final static String SpecificAvailability = RelativeUrl + "/{id}";
     }
 
-    public class Borrows
+    class Borrows
     {
-        public final static String BorrowId = "id";
-        public final static String BorrowStatus = "status";
-        public final static String RelativeUrl = "borrows";
-        public final static String PendingBorrows =  RelativeUrl + "/pending";
-        public final static String UpdateBorrowStatus = "borrows/{id}/{status}";
+        final static String BorrowId = "id";
+        final static String BorrowStatus = "status";
+        final static String RelativeUrl = "borrows";
+        final static String PendingBorrows =  RelativeUrl + "/pending";
+        final static String UpdateBorrowStatus = "borrows/{id}/{status}";
     }
 
-    public class Branches
+    class Branches
     {
-        public final static String RelativeUrl = "branches";
-        public final static String BranchId = "branchId";
-        public final static String SpecificBranch = RelativeUrl + "/{branchId}";
+        final static String RelativeUrl = "branches";
+        final static String BranchId = "branchId";
+        final static String SpecificBranch = RelativeUrl + "/{branchId}";
     }
 
-    public class Users
+    class Users
     {
-        public final static String RelativeUrl = "users";
+        final static String RelativeUrl = "users";
     }
 }

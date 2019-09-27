@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         _loginButton.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+                android.R.style.Theme_Material_Light);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

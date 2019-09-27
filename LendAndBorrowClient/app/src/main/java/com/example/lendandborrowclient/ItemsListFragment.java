@@ -1,9 +1,10 @@
 package com.example.lendandborrowclient;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -80,12 +81,12 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
         return v;
     }
 
-    public void LoadItemsList()
+    private void LoadItemsList()
     {
         LoadItemsList(false);
     }
 
-    public void LoadItemsList(boolean forceLoad)
+    private void LoadItemsList(boolean forceLoad)
     {
         if (forceLoad || _itemDisplays == null)
             HandyServiceFactory.GetInstance().GetAllItems()
@@ -112,7 +113,7 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
                     Log.d("Items", "Error retrieving the items");
 
                     Snackbar.make(getView(),
-                            "Failed Loading Items", Toast.LENGTH_SHORT)
+                            "Failed Loading Items", Snackbar.LENGTH_SHORT)
                             .setAction(R.string.retry, v -> LoadItemsList(forceLoad))
                             .show();
                 }
@@ -166,5 +167,11 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
         searchItem.setVisible(true);
 
         super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onDestroyView() {
+        _unbinder.unbind();
+        super.onDestroyView();
     }
 }

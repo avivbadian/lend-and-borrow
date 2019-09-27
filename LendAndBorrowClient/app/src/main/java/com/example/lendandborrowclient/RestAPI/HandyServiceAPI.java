@@ -61,7 +61,7 @@ public interface HandyServiceAPI {
     Single<Availability> GetAvailabilityById(@Path(WebApiConstants.Availabilities.AvailabilityId) int availabilityId);
 
     @POST(WebApiConstants.Availabilities.RelativeUrl)
-    Single<String> AddAvailability(@Body Availability availability);
+    Single<ResponseBody> AddAvailability(@Body Availability availability);
 
     @DELETE(WebApiConstants.Availabilities.SpecificAvailability)
     Single<List<Borrow>> DeleteAvailability(@Path(WebApiConstants.Availabilities.AvailabilityId) int availabilityId);

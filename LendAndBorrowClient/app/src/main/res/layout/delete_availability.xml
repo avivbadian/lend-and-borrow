@@ -16,7 +16,7 @@
         android:backgroundTint="@color/colorPrimary"/>
 
     <Spinner
-        android:id="@+id/sp_availabilities"
+        android:id="@+id/sp_availabilities_for_del"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spinner_top_bottom_padding"

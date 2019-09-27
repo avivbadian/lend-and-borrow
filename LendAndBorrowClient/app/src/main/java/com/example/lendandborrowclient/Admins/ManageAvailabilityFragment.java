@@ -1,32 +1,36 @@
 package com.example.lendandborrowclient.Admins;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
-import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
-import com.mobsandgeeks.saripaar.ValidationError;
-import com.mobsandgeeks.saripaar.Validator;
 import com.savvi.rangedatepicker.CalendarPickerView;
 import net.cachapa.expandablelayout.ExpandableLayout;
+
+import org.joda.time.format.ISODateTimeFormat;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,10 +38,9 @@ import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class ManageAvailabilityFragment extends Fragment implements Validator.ValidationListener
+public class ManageAvailabilityFragment extends Fragment
 {
     // Members
-    private Validator _validator;
     private List<Item> _itemsList;
     private List<Availability> _availabilitiesOfItem;
     private ArrayAdapter<Item> _itemsSpinnerAdapter;
@@ -56,10 +59,10 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     Spinner _itemsSpinnerForDel;
     @BindView(R.id.sp_items_for_add)
     Spinner _itemsSpinnerForAdd;
-    @BindView(R.id.sp_availabilities)
+    @BindView(R.id.sp_availabilities_for_del)
     Spinner _availabilitiesSpinner;
 
-    public static ManageAvailabilityFragment newInstance() {
+    static ManageAvailabilityFragment newInstance() {
         return new ManageAvailabilityFragment();
     }
 
@@ -75,22 +78,31 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     {
         View v = inflater.inflate(R.layout.fragment_manage_availabilites, container, false);
         _unbinder = ButterKnife.bind(this, v);
-
         calendarPickerView.setVisibility(View.GONE);
-
-        // Setting fields validator
-        _validator = new Validator(this);
-        _validator.setValidationListener(this);
-        _validator.registerAdapter(TextInputLayout.class, new TextInputLayoutDataAdapter());
+        _availabilitiesOfItem = new ArrayList<>();
+        _availabilitiesSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, _availabilitiesOfItem);
+        _availabilitiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        _availabilitiesSpinner.setAdapter(_availabilitiesSpinnerAdapter);
 
         _itemsSpinnerForAdd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                OnItemSelected();
+                OnItemSelected(((Item)_itemsSpinnerForAdd.getSelectedItem()).Id, true);
             }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            { }
+        });
 
+        _itemsSpinnerForDel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                OnItemSelected(((Item)_itemsSpinnerForDel.getSelectedItem()).Id, false);
+            }
             @Override
             public void onNothingSelected(AdapterView<?> parent)
             { }
@@ -135,30 +147,54 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
                 cur.add(Calendar.DATE, 1);
                 initial = cur.getTime();
             }
+
+            Calendar cur = toCalendar(initial);
+            occupiedDates.add(cur.getTime());
         }
 
         calendarPickerView.init(minDate.getTime(), maxDate.getTime()) //
                 .inMode(CalendarPickerView.SelectionMode.RANGE)
-// highlight dates in red color, mean they are aleady used.
+                // highlight dates in red color, mean they are already used.
                 .withHighlightedDates(occupiedDates);
 
         calendarPickerView.setVisibility(View.VISIBLE);
     }
 
-    public void RefreshItems(List<Item> items) {
+    void RefreshItems(List<Item> items) {
         _itemsSpinnerAdapter.clear();
         _itemsSpinnerAdapter.addAll(items);
     }
 
 
     @OnClick(R.id.btn_add_availability)
-    public void OnAddAvailabilityClicked()
+    void OnAddAvailabilityClicked()
     {
-        _validator.validate();
+        Availability availability = ConstructAvailabilityObject();
+
+        if (availability == null) {
+            Snackbar.make(getView(), "Please select range of dates", Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        HandyServiceFactory.GetInstance().AddAvailability(availability)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((s, throwable) -> {
+                    if (throwable != null)
+                    {
+                        Snackbar addAvailabilitySnack = Snackbar.make(getView(), R.string.failure_adding_availability, Snackbar.LENGTH_LONG);
+                        addAvailabilitySnack.setAction(R.string.retry, v -> OnAddAvailabilityClicked());
+                        addAvailabilitySnack.show();
+                    }
+                    else
+                    {
+                        Snackbar.make(getView(), R.string.operation_success_add_availability, Snackbar.LENGTH_LONG).show();
+                    }
+                });
     }
 
     @OnClick(R.id.btn_delete_availability)
-    public void OnDeleteAvailabilityClicked()
+    void OnDeleteAvailabilityClicked()
     {
         if (_availabilitiesSpinner.getAdapter().getCount() == 0)
         {
@@ -176,7 +212,6 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
         });
 
         alert.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-
         alert.show();
     }
 
@@ -206,13 +241,14 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
 
                         _availabilitiesSpinnerAdapter.remove(deletedAvailability);
                         _availabilitiesSpinnerAdapter.notifyDataSetChanged();
+                        ((ManagementActivity)getActivity()).AvailabilityDeleted();
                     }
                 });
     }
 
-    private void OnItemSelected()
+    private void OnItemSelected(int itemId, boolean add)
     {
-        HandyServiceFactory.GetInstance().GetItemAvailabilities(((Item) _itemsSpinnerForAdd.getSelectedItem()).Id)
+        HandyServiceFactory.GetInstance().GetItemAvailabilities(itemId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((availabilities, throwable) -> {
@@ -220,37 +256,14 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
                     if (throwable == null)
                     {
                         _availabilitiesOfItem = availabilities;
-                        _availabilitiesSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, _availabilitiesOfItem);
-                        _availabilitiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        _availabilitiesSpinner.setAdapter(_availabilitiesSpinnerAdapter);
-                        setAvailabilitiesPicker();
-                    }
-                });
-    }
 
-    @Override
-    public void onValidationSucceeded()
-    {
-        AddAvailability();
-    }
-
-    private void AddAvailability()
-    {
-        Availability Availability = ConstructAvailabilityObject();
-
-        HandyServiceFactory.GetInstance().AddAvailability(Availability)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((s, throwable) -> {
-                    if (throwable != null)
-                    {
-                        Snackbar addAvailabilitySnack = Snackbar.make(getView(), R.string.failure_adding_availability, Snackbar.LENGTH_LONG);
-                        addAvailabilitySnack.setAction(R.string.retry, v -> OnAddAvailabilityClicked());
-                        addAvailabilitySnack.show();
-                    }
-                    else
-                    {
-                        Snackbar.make(getView(), R.string.operation_success_add_availability, Snackbar.LENGTH_LONG).show();
+                        if (add) {
+                            setAvailabilitiesPicker();
+                        } else {
+                            _availabilitiesSpinnerAdapter.clear();
+                            _availabilitiesSpinnerAdapter.addAll(_availabilitiesOfItem);
+                            _availabilitiesSpinnerAdapter.notifyDataSetChanged();
+                        }
                     }
                 });
     }
@@ -258,40 +271,33 @@ public class ManageAvailabilityFragment extends Fragment implements Validator.Va
     private Availability ConstructAvailabilityObject()
     {
         Availability newAvailability = new Availability();
-
         List<Date> selectedDates = calendarPickerView.getSelectedDates();
-        newAvailability.Start_date = selectedDates.get(0);
-        newAvailability.End_date = selectedDates.get(selectedDates.size()-1);
-        newAvailability.Item_id = ((Item)_itemsSpinnerForAdd.getSelectedItem()).Id;
-        return newAvailability;
-    }
+        if (selectedDates.size() >= 2) {
+            newAvailability.Start_date = selectedDates.get(0);
+            newAvailability.End_date = selectedDates.get(selectedDates.size()-1);
+            newAvailability.Item_id = ((Item)_itemsSpinnerForAdd.getSelectedItem()).Id;
 
-    @Override
-    public void onValidationFailed(List<ValidationError> errors)
-    {
-        for (ValidationError error : errors)
-        {
-            View view = error.getView();
-            String message = error.getCollatedErrorMessage(getContext());
+            DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+            try {
+                newAvailability.Start_date = format.parse(format.format(newAvailability.Start_date));
+                newAvailability.End_date = format.parse(format.format(newAvailability.End_date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-            // Display error messages
-            if (view instanceof TextInputLayout)
-                ((TextInputLayout) view).setError(message);
-            else if (view instanceof TextView)
-                ((TextView) view).setText(message);
+            return newAvailability;
         }
-
-        Snackbar.make(getView(), R.string.illegal_fields, Snackbar.LENGTH_LONG).show();
+        return null;
     }
 
-    public static Calendar toCalendar(Date date){
+    private static Calendar toCalendar(Date date){
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return cal;
     }
 
     @OnClick(R.id.btn_toggle)
-    public void OnToggleButtonClicked()
+    void OnToggleButtonClicked()
     {
         _addAvailabilityLayout.toggle();
         _deleteAvailabilityLayout.toggle();

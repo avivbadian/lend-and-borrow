@@ -2,7 +2,6 @@ package com.example.lendandborrowclient.Admins;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,7 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
-import androidx.legacy.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,7 +54,6 @@ import static android.app.Activity.RESULT_OK;
 public class ManageItemFragment extends Fragment implements Validator.ValidationListener
 {
     private static final int IMAGE_PICK = 1;
-    private static ItemsChangedListener _itemsChangedListener;
     private List<Item> _itemsList;
     private ProgressDialog _progressDialog;
     private Validator _validator;
@@ -87,8 +86,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
-    public static ManageItemFragment newInstance(ItemsChangedListener listener) {
-        _itemsChangedListener = listener;
+    static ManageItemFragment newInstance() {
         return new ManageItemFragment();
     }
 
@@ -106,7 +104,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
         // Progress dialog for adding
         _progressDialog = new ProgressDialog(getContext(),
-                android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+                android.R.style.Theme_Material_Light);
         _progressDialog.setIndeterminate(true);
         _progressDialog.setMessage("Please wait...");
         _progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -117,7 +115,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         return v;
     }
 
-    public void LoadItems()
+    private void LoadItems()
     {
         HandyServiceFactory.GetInstance().GetAllItems()
                 .subscribeOn(Schedulers.io())
@@ -144,7 +142,6 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                 // Recognizer initialization is a time-consuming and it involves IO,
                 // so we execute it in async task
                 StartGallery();
-            } else {
             }
         }
     }
@@ -218,8 +215,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                                     _itemsSpinnerAdapter.remove(selectedItem);
                                     _itemsSpinnerAdapter.notifyDataSetChanged();
                                     _itemsList.remove(selectedItem);
-                                    _itemsChangedListener.ItemsChanged(_itemsList);
-
+                                    ((ManagementActivity)getActivity()).ItemsChanged(_itemsList);
                                     try {
                                         // Delete image from firebase
                                         FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.Path).delete().addOnSuccessListener(aVoid -> {
@@ -250,7 +246,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     }
 
     @OnClick(R.id.btn_delete_item)
-    public void OnDeleteItemClicked()
+    void OnDeleteItemClicked()
     {
         if (_itemsSpinnerAdapter.getCount() == 0)
         {
@@ -272,7 +268,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     }
 
     @OnClick(R.id.btn_add_item)
-    public void OnAddItemClicked()
+    void OnAddItemClicked()
     {
          if (_currentUri == null || _currentUri.equals(Uri.EMPTY)) {
              Toast.makeText(getContext(), "Please upload an image", Toast.LENGTH_SHORT).show();
@@ -318,7 +314,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                         _itemsList.add(newItem);
 
                         // Notify other fragments and ourselves
-                        _itemsChangedListener.ItemsChanged(_itemsList);
+                        ((ManagementActivity)getActivity()).ItemsChanged(_itemsList);
                         _itemsSpinnerAdapter.notifyDataSetChanged();
 
                         _itemImage.setImageResource(R.drawable.ic_add_photo);
@@ -395,7 +391,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     }
 
     @OnClick(R.id.btn_toggle)
-    public void OnToggleButtonClicked()
+    void OnToggleButtonClicked()
     {
         _addItemLayout.toggle();
         _deleteItemLayout.toggle();

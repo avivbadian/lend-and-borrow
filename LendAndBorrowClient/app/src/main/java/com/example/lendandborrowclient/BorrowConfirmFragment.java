@@ -1,6 +1,5 @@
 package com.example.lendandborrowclient;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -9,6 +8,8 @@ import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -117,7 +118,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         borrow.Availability = ((MainActivity)getActivity()).GetSelectedAvailability().Id;
 
         final ProgressDialog progressDialog = new ProgressDialog(getContext(),
-                android.R.style.Theme_Holo_Light_Dialog_NoActionBar_MinWidth);
+                android.R.style.Theme_Material_Light);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Please wait...");
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -131,7 +132,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
                             progressDialog.dismiss();
 
                             if (throwable == null){
-                                ShowBorrowCompletionDialog(borrow);
+                                ShowBorrowCompletionDialog();
                             }
                             else
                                 Snackbar.make(getView(), "Failed submitting borrow", Snackbar.LENGTH_LONG).show();
@@ -139,9 +140,9 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
                 );
     }
 
-    private void ShowBorrowCompletionDialog(Borrow borrow)
+    private void ShowBorrowCompletionDialog()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), android.R.style.Widget_Holo_Light));
 
         TextView messageText = new TextView(getContext());
         messageText.setText(String.format(getString(R.string.borrow_approval_text), _phoneNumber.getEditText().getText().toString()));
@@ -212,16 +213,11 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId())
-        {
-            case android.R.id.home:
-            {
-                getActivity().onBackPressed();
-                return true;
-            }
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().onBackPressed();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

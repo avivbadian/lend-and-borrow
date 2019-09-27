@@ -1,10 +1,10 @@
 package com.example.lendandborrowclient;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.example.lendandborrowclient.NotificationListeners.AvailabilitiesChangedListener;
 import com.example.lendandborrowclient.Models.Availability;
@@ -25,13 +24,10 @@ import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-
 import org.joda.time.DateTimeComparator;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -42,13 +38,13 @@ import io.reactivex.schedulers.Schedulers;
 
 public class BorrowRequestFragment extends Fragment implements AvailabilitiesChangedListener
 {
+
+    private ArrayAdapter<Branch> _branchesSpinnerAdapter;
+    private Unbinder _unbinder;
     private Item _displayedItem;
     private List<Availability> _allAvailabilities;
     private List<Branch> _allBranches;
     private Availability _selectedAvailability;
-    private DatePickerDialog _initialDatePickerDialog;
-    private ArrayAdapter<Branch> _branchesSpinnerAdapter;
-    private Unbinder _unbinder;
 
     @BindView(R.id.iv_item_image) ImageView _itemImage;
     @BindView(R.id.tv_item_title) TextView _itemTitle;
@@ -117,17 +113,19 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
     void OnDatePickerButtonClicked() {
         Calendar now = Calendar.getInstance();
 
-        _initialDatePickerDialog = DatePickerDialog.newInstance(new initialDatePicker(),
-                    now.get(Calendar.YEAR),
-                    now.get(Calendar.MONTH),
-                    now.get(Calendar.DAY_OF_MONTH));
+        // Using a date picker dialog which enables setting selectable dates.
+        // Using a date picker dialog which enables setting selectable dates.
+        DatePickerDialog initialDatePickerDialog = DatePickerDialog.newInstance(new initialDatePicker(),
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH));
 
         if (_allAvailabilities != null && _allAvailabilities.size() != 0)
         {
             Calendar[] selectableDays = _allAvailabilities.stream().map(
                     availability -> toCalendar(availability.Start_date)).toArray(Calendar[]::new);
-            _initialDatePickerDialog.setSelectableDays(selectableDays);
-            _initialDatePickerDialog.show(getFragmentManager(), "Datepickerdialog");
+            initialDatePickerDialog.setSelectableDays(selectableDays);
+            initialDatePickerDialog.show(getActivity().getSupportFragmentManager(), "Datepickerdialog");
         }
 
         else {
@@ -220,7 +218,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
         }
     }
 
-    public static Calendar toCalendar(Date date){
+    private static Calendar toCalendar(Date date){
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return cal;

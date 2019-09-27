@@ -1,8 +1,9 @@
 package com.example.lendandborrowclient.Admins;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,17 +45,16 @@ public class ManageRequestsFragment extends Fragment implements RequestClickedLi
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_manage_requests, container, false);
         _unbinder = ButterKnife.bind(this, v);
-
         _requestsListAdapter = new RequestsListAdapter(getContext(), this);
         requestsRecyclerView.setAdapter(_requestsListAdapter);
         requestsRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 1));
         requestsRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        LoadPendingRequests();
+        ReloadPendingRequests();
         return v;
     }
 
-    private void LoadPendingRequests() {
+    void ReloadPendingRequests() {
         HandyServiceFactory.GetInstance().GetAllPendingRequests().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((requests, throwable) -> {
@@ -101,7 +101,7 @@ public class ManageRequestsFragment extends Fragment implements RequestClickedLi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((responseBody, throwable) -> {
                     if (throwable == null) {
-                        LoadPendingRequests();
+                        ReloadPendingRequests();
                         ((ManagementActivity)getActivity()).sendSMS(borrow, relatedItem, relatedAvailability, false);
                     } else {
                         Toast.makeText(getContext(), "There was an error declining the request. Please try again", Toast.LENGTH_SHORT).show();
@@ -109,7 +109,7 @@ public class ManageRequestsFragment extends Fragment implements RequestClickedLi
                 });
     }
 
-    public void DeclineRequests(List<Borrow> borrowsToDecline, Item relatedItem, Availability relatedAvailability) {
+    private void DeclineRequests(List<Borrow> borrowsToDecline, Item relatedItem, Availability relatedAvailability) {
         for (Borrow borrow : borrowsToDecline) {
             DeclineRequest(borrow, relatedItem, relatedAvailability);
         }
@@ -121,7 +121,7 @@ public class ManageRequestsFragment extends Fragment implements RequestClickedLi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((requests, throwable) -> {
                     if (throwable == null) {
-                        LoadPendingRequests();
+                        ReloadPendingRequests();
                         // Declines other requests for that particular item on the same dates
                         DeclineRequests(requests, relatedItem, relatedAvailability);
                         ((ManagementActivity)getActivity()).sendSMS(borrow, relatedItem, relatedAvailability, true);

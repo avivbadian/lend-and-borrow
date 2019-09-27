@@ -91,24 +91,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             // TODO : Ask the current fragment to handle the back press and then pop
-            getFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }
     }
 
-    // TODO: set here another function like backpressed but one that doesnt get called by the back button, call this when we really wanna go back.
-
     public void CloseAllFragments()
     {
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     public void ShowItemsListFragment()
     {
-        getFragmentManager()
+        getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.container, new ItemsListFragment(), "ItemsListFragment")
                 /*.addToBackStack(null)*/.commit();
@@ -122,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     public void ShowSelectAvailabilityFragment(Item item)
     {
         _selectedItem = item;
-        getFragmentManager()
+        getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, new BorrowRequestFragment())
                 .addToBackStack(null).commit();
@@ -134,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
         BorrowConfirmFragment frag = new BorrowConfirmFragment();
 
-        getFragmentManager()
+        getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, frag)
                 .addToBackStack(null).commit();
