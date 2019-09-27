@@ -2,7 +2,6 @@ package LoanStuff.Controllers;
 
 import LoanStuff.DB.DataStore;
 import LoanStuff.ViewModels.Borrow;
-import LoanStuff.ViewModels.Item;
 import LoanStuff.ViewModels.Status;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +12,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 public class BorrowsController {
     private DataStore db;
 
-    public BorrowsController() throws SQLException, ClassNotFoundException {
+    public BorrowsController() throws SQLException {
         db = new DataStore();
     }
 
@@ -30,9 +28,7 @@ public class BorrowsController {
         try {
             rs = db.execQuery("SELECT * FROM borrows");
             BuildBorrow(borrows, rs);
-        } catch (SQLException e) {
-            // TODO: log or something
-            return null;
+        } catch (SQLException ignored) {
         }
 
         return borrows;
@@ -76,10 +72,10 @@ public class BorrowsController {
                 db.execUpdate(String.format("UPDATE borrows SET status='declined' WHERE availability='%s' AND id <> '%s'", availabilityId, id));
                 return toDecline;
             }
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
         }
 
-        return new ArrayList<Borrow>();
+        return new ArrayList<>();
     }
 
     @GetMapping("/borrows/pending")
@@ -89,9 +85,7 @@ public class BorrowsController {
         try {
             rs = db.execQuery("SELECT * FROM borrows WHERE status = 'pending'");
             BuildBorrow(borrows, rs);
-        } catch (SQLException e) {
-            // TODO: log or something
-            return null;
+        } catch (SQLException ignored) {
         }
 
         return borrows;

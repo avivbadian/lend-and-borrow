@@ -40,9 +40,7 @@ public class AvailabilityController {
 
                 return availability;
             }
-        } catch (SQLException e) {
-            // TODO: log or something
-            return null;
+        } catch (SQLException ignored) {
         }
 
         // Availability not found

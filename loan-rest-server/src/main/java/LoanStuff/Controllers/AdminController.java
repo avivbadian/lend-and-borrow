@@ -37,9 +37,7 @@ public class AdminController {
                     Password = password;
                 }});
             }
-        } catch (SQLException e) {
-            // TODO: log or something
-            return null;
+        } catch (SQLException ignored) {
         }
 
         if (users.size() > 0)
