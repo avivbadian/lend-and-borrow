@@ -97,15 +97,7 @@ public class ItemsController {
             rs = db.execQuery(String.format("SELECT * " +
                     "FROM availabilities " +
                     "WHERE item_id='%s' AND (select count(*) FROM borrows WHERE availabilities.id = availability AND status='approved') = 0", id));
-            while (rs.next()) {
-                Availability newAval = new Availability();
-                newAval.Id = rs.getInt(1);
-                newAval.Item_id = rs.getInt(2);
-                newAval.Start_date = rs.getDate(3);
-                newAval.End_date = rs.getDate(4);
-
-                availability.add(newAval);
-            }
+            createAvailability(availability, rs);
         } catch (SQLException e) {
         }
 
@@ -132,6 +124,33 @@ public class ItemsController {
             return itemBorrows;
         } catch (SQLException e) {
             return null;
+        }
+    }
+
+    @GetMapping("/items/{id}/availabilities/all")
+    public ArrayList<Availability> getAllItemAvailabilitiesNotFiltered(@PathVariable int id) {
+        ArrayList<Availability> availability = new ArrayList<>();
+        ResultSet rs;
+        try {
+            rs = db.execQuery(String.format("SELECT * " +
+                    "FROM availabilities " +
+                    "WHERE item_id='%s'", id));
+            createAvailability(availability, rs);
+        } catch (SQLException e) {
+        }
+
+        return availability;
+    }
+
+    private void createAvailability(ArrayList<Availability> availability, ResultSet rs) throws SQLException {
+        while (rs.next()) {
+            Availability newAval = new Availability();
+            newAval.Id = rs.getInt(1);
+            newAval.Item_id = rs.getInt(2);
+            newAval.Start_date = rs.getDate(3);
+            newAval.End_date = rs.getDate(4);
+
+            availability.add(newAval);
         }
     }
 }
