@@ -2,11 +2,8 @@ package com.example.lendandborrowclient.Admins;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -30,7 +27,6 @@ import com.bumptech.glide.Glide;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Item;
-import com.example.lendandborrowclient.NotificationListeners.ItemsChangedListener;
 import com.example.lendandborrowclient.R;
 import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
@@ -55,7 +51,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 {
     private static final int IMAGE_PICK = 1;
     private List<Item> _itemsList;
-    private ProgressDialog _progressDialog;
+    //private ProgressDialog _progressDialog;
     private Validator _validator;
     private ArrayAdapter<Item> _itemsSpinnerAdapter;
     private StorageReference _imagesRef = FirebaseStorage.getInstance().getReference().child("Items");
@@ -101,16 +97,6 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
         _validator = new Validator(this);
         _validator.setValidationListener(this);
         _validator.registerAdapter(TextInputLayout.class, new TextInputLayoutDataAdapter());
-
-        // Progress dialog for adding
-        _progressDialog = new ProgressDialog(getContext(),
-                android.R.style.Theme_Material_Light);
-        _progressDialog.setIndeterminate(true);
-        _progressDialog.setMessage("Please wait...");
-        _progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        _progressDialog.setCancelable(false);
-        _progressDialog.setCanceledOnTouchOutside(false);
-
         LoadItems();
         return v;
     }
@@ -275,7 +261,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
              return;
          }
 
-        _progressDialog.show();
+        _progressBar.setVisibility(View.VISIBLE);
         _validator.validate();
     }
 
@@ -319,7 +305,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
                         _itemImage.setImageResource(R.drawable.ic_add_photo);
                         _currentUri = Uri.EMPTY;
-                        _progressDialog.dismiss();
+                        _progressBar.setVisibility(View.GONE);
                     }
                 });
     }

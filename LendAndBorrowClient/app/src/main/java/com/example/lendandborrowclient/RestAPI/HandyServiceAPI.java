@@ -9,6 +9,7 @@ import com.example.lendandborrowclient.Models.Status;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -38,6 +39,9 @@ public interface HandyServiceAPI {
 
     @GET(WebApiConstants.Items.GetItemAvailabilities)
     Single<List<Availability>> GetItemAvailabilities(@Path(WebApiConstants.Items.ItemId) int id);
+
+    @GET(WebApiConstants.Items.GetItemFullAvailabilities)
+    Single<List<Availability>> GetItemFullAvailabilities(@Path(WebApiConstants.Items.ItemId) int id);
 
     //endregion
 

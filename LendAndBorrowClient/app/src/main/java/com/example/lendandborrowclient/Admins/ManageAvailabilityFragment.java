@@ -133,7 +133,6 @@ public class ManageAvailabilityFragment extends Fragment
     private void setAvailabilitiesPicker()
     {
         Calendar minDate = Calendar.getInstance();
-
         Calendar maxDate = Calendar.getInstance();
         maxDate.setTime(new Date());
         maxDate.add(Calendar.YEAR, 1);
@@ -189,6 +188,8 @@ public class ManageAvailabilityFragment extends Fragment
                     else
                     {
                         Snackbar.make(getView(), R.string.operation_success_add_availability, Snackbar.LENGTH_LONG).show();
+                        calendarPickerView.highlightDates(calendarPickerView.getSelectedDates());
+                        calendarPickerView.clearSelectedDates();
                     }
                 });
     }
@@ -248,7 +249,7 @@ public class ManageAvailabilityFragment extends Fragment
 
     private void OnItemSelected(int itemId, boolean add)
     {
-        HandyServiceFactory.GetInstance().GetItemAvailabilities(itemId)
+        HandyServiceFactory.GetInstance().GetItemFullAvailabilities(itemId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((availabilities, throwable) -> {
@@ -276,15 +277,6 @@ public class ManageAvailabilityFragment extends Fragment
             newAvailability.Start_date = selectedDates.get(0);
             newAvailability.End_date = selectedDates.get(selectedDates.size()-1);
             newAvailability.Item_id = ((Item)_itemsSpinnerForAdd.getSelectedItem()).Id;
-//
-//            DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-//            try {
-//                newAvailability.Start_date = format.parse(format.format(newAvailability.Start_date));
-//                newAvailability.End_date = format.parse(format.format(newAvailability.End_date));
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-
             return newAvailability;
         }
         return null;

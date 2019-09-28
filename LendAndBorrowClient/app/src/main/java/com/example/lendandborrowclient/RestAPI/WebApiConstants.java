@@ -10,6 +10,7 @@ final class WebApiConstants
         final static String RelativeUrl = "items";
         final static String SpecificItem = RelativeUrl + "/{id}";
         final static String GetItemAvailabilities = SpecificItem + "/availabilities";
+        final static String GetItemFullAvailabilities = GetItemAvailabilities + "/all";
     }
 
     final class Availabilities

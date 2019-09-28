@@ -20,7 +20,7 @@ public final class HandyServiceFactory
         if (m_service == null)
         {
             // Creating gson with custom date handling serializers
-            GsonBuilder gsonBuilder = new GsonBuilder();
+            GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(WebApiConstants.BaseUrl)

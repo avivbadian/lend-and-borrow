@@ -133,7 +133,7 @@ public class ManagementActivity extends AppCompatActivity
                         .append(relatedItem.Title).append("' during: ")
                         .append(relatedAvailability.toString()).append(" has been ");
         if (approved) {
-            msg = msg.append("approved.").append(" Please arrive ").append(borrow.Branch).append(" at the specified date to get your item.");
+            msg = msg.append("approved.");
         } else {
             msg = msg.append("declined.");
         }
