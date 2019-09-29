@@ -16,8 +16,10 @@ import android.view.MenuItem;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
+import com.example.lendandborrowclient.NotificationListeners.ServerNotificationsListener;
+import com.example.lendandborrowclient.RestAPI.HandyRestApiBuilder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ServerNotificationsListener {
     private Item _selectedItem;
     private Availability _selectedAvailability;
     private Branch _selectedBranch;
@@ -26,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        DisplayItemsFragment();
+        HandyRestApiBuilder.SetServerUrl(this);
     }
 
     @Override
@@ -81,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         return true;
+    }
+
+
+    @Override
+    public void HttpClientCreated() {
+        DisplayItemsFragment();
     }
 
     @Override
