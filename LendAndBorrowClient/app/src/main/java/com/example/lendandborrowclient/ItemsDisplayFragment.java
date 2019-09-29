@@ -19,13 +19,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 
 import com.example.lendandborrowclient.ListAdapters.ItemClickedListener;
 import com.example.lendandborrowclient.ListAdapters.ItemsListAdapter;
 import com.example.lendandborrowclient.Models.Item;
-import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+import com.example.lendandborrowclient.RestAPI.HandyRestApiBuilder;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,7 +34,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class ItemsListFragment extends Fragment implements ItemClickedListener
+public class ItemsDisplayFragment extends Fragment implements ItemClickedListener
 {
     // Views
     @BindView(R.id.pb_items) ProgressBar _progressBar;
@@ -89,7 +88,7 @@ public class ItemsListFragment extends Fragment implements ItemClickedListener
     private void LoadItemsList(boolean forceLoad)
     {
         if (forceLoad || _itemDisplays == null)
-            HandyServiceFactory.GetInstance().GetAllItems()
+            HandyRestApiBuilder.GetInstance().GetAllItems()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .doOnSubscribe(

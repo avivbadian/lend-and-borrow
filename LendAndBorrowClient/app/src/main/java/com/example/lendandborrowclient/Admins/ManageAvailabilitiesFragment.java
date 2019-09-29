@@ -11,25 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
-import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+import com.example.lendandborrowclient.RestAPI.HandyRestApiBuilder;
 import com.savvi.rangedatepicker.CalendarPickerView;
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-import org.joda.time.format.ISODateTimeFormat;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +33,7 @@ import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class ManageAvailabilityFragment extends Fragment
+public class ManageAvailabilitiesFragment extends Fragment
 {
     // Members
     private List<Item> _itemsList;
@@ -61,9 +56,11 @@ public class ManageAvailabilityFragment extends Fragment
     Spinner _itemsSpinnerForAdd;
     @BindView(R.id.sp_availabilities_for_del)
     Spinner _availabilitiesSpinner;
+    @BindView(R.id.btn_delete_availability)
+    Button _deleteAvailabilityButton;
 
-    static ManageAvailabilityFragment newInstance() {
-        return new ManageAvailabilityFragment();
+    static ManageAvailabilitiesFragment newInstance() {
+        return new ManageAvailabilitiesFragment();
     }
 
     @Override
@@ -89,7 +86,7 @@ public class ManageAvailabilityFragment extends Fragment
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                OnItemSelected(((Item)_itemsSpinnerForAdd.getSelectedItem()).Id, true);
+                _deleteAvailabilityButton.setEnabled(true);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent)
@@ -108,13 +105,25 @@ public class ManageAvailabilityFragment extends Fragment
             { }
         });
 
+        _availabilitiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         LoadValuesFromServer();
         return v;
     }
 
     private void LoadValuesFromServer()
     {
-        HandyServiceFactory.GetInstance().GetAllItems()
+        HandyRestApiBuilder.GetInstance().GetAllItems()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((items, throwable) -> {
@@ -156,6 +165,7 @@ public class ManageAvailabilityFragment extends Fragment
                 // highlight dates in red color, mean they are already used.
                 .withHighlightedDates(occupiedDates);
 
+
         calendarPickerView.setVisibility(View.VISIBLE);
     }
 
@@ -175,7 +185,7 @@ public class ManageAvailabilityFragment extends Fragment
             return;
         }
 
-        HandyServiceFactory.GetInstance().AddAvailability(availability)
+        HandyRestApiBuilder.GetInstance().AddAvailability(availability)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((s, throwable) -> {
@@ -197,12 +207,6 @@ public class ManageAvailabilityFragment extends Fragment
     @OnClick(R.id.btn_delete_availability)
     void OnDeleteAvailabilityClicked()
     {
-        if (_availabilitiesSpinner.getAdapter().getCount() == 0)
-        {
-            Snackbar.make(getView(), "No availabilities to delete", Snackbar.LENGTH_LONG).show();
-            return;
-        }
-
         AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
         alert.setTitle("Delete");
         alert.setMessage(R.string.availability_delete_confirmation);
@@ -218,7 +222,7 @@ public class ManageAvailabilityFragment extends Fragment
 
     private void DeleteSelectedAvailability()
     {
-        HandyServiceFactory.GetInstance().DeleteAvailability(((Availability) _availabilitiesSpinner.getSelectedItem()).Id)
+        HandyRestApiBuilder.GetInstance().DeleteAvailability(((Availability) _availabilitiesSpinner.getSelectedItem()).Id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((requestsToDecline, throwable) ->
@@ -236,20 +240,20 @@ public class ManageAvailabilityFragment extends Fragment
 
                         // Declining related requests
                         for (Borrow req : requestsToDecline){
-                            ((ManagementActivity)getActivity()).sendSMS(req,(Item) _itemsSpinnerForAdd.getSelectedItem(),
+                            ((AdminManagementActivity)getActivity()).sendSMS(req,(Item) _itemsSpinnerForAdd.getSelectedItem(),
                                     deletedAvailability, false);
                         }
 
                         _availabilitiesSpinnerAdapter.remove(deletedAvailability);
                         _availabilitiesSpinnerAdapter.notifyDataSetChanged();
-                        ((ManagementActivity)getActivity()).AvailabilityDeleted();
+                        ((AdminManagementActivity)getActivity()).AvailabilityDeleted();
                     }
                 });
     }
 
     private void OnItemSelected(int itemId, boolean add)
     {
-        HandyServiceFactory.GetInstance().GetItemFullAvailabilities(itemId)
+        HandyRestApiBuilder.GetInstance().GetItemFullAvailabilities(itemId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((availabilities, throwable) -> {
@@ -257,6 +261,13 @@ public class ManageAvailabilityFragment extends Fragment
                     if (throwable == null)
                     {
                         _availabilitiesOfItem = availabilities;
+                        if (_availabilitiesOfItem.size() > 0) {
+                            _deleteAvailabilityButton.setEnabled(true);
+                            _availabilitiesSpinner.setEnabled(true);
+                        } else {
+                            _availabilitiesSpinner.setEnabled(false);
+                            _deleteAvailabilityButton.setEnabled(false);
+                        }
 
                         if (add) {
                             setAvailabilitiesPicker();

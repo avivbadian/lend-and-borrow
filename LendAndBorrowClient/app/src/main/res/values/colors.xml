@@ -9,6 +9,6 @@
     <color name="image_border_start">#ffca98</color>
     <color name="image_border_end">#ff7c00</color>
     <color name="image_border_center">#ffaa5a</color>
-    <color name="management_tabs">#20639b</color>
-    <color name="color_button">#ffe082</color>
+    <color name="management_tabs">#E0E0E0</color>
+    <color name="color_button">#E5FFCC</color>
 </resources>

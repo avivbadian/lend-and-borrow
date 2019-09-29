@@ -27,9 +27,12 @@
 
     <Button
         android:id="@+id/btn_delete_availability"
+        android:enabled="false"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:background="@color/color_button"
+        android:padding="12dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/my_button_bg"
         android:text="@string/delete_availability_btn"/>
 
 </LinearLayout>

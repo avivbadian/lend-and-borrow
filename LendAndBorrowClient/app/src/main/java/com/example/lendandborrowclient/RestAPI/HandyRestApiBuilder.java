@@ -8,14 +8,15 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public final class HandyServiceFactory
+public final class HandyRestApiBuilder
 {
-    private static HandyServiceAPI m_service = null;
+    final static String BaseUrl = "http://10.0.0.15:8080/";
 
-    private HandyServiceFactory()
+    private static HandyRestAPI m_service = null;
+    private HandyRestApiBuilder()
     { }
 
-    public static HandyServiceAPI GetInstance()
+    public static HandyRestAPI GetInstance()
     {
         if (m_service == null)
         {
@@ -23,7 +24,7 @@ public final class HandyServiceFactory
             GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(WebApiConstants.BaseUrl)
+                    .baseUrl(BaseUrl)
                     .client(new OkHttpClient.Builder().writeTimeout(10, TimeUnit.SECONDS)
                             .readTimeout(10, TimeUnit.SECONDS).build())
                     .addConverterFactory(ScalarsConverterFactory.create())
@@ -31,7 +32,7 @@ public final class HandyServiceFactory
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();
 
-            m_service = retrofit.create(HandyServiceAPI.class);
+            m_service = retrofit.create(HandyRestAPI.class);
         }
 
         return m_service;

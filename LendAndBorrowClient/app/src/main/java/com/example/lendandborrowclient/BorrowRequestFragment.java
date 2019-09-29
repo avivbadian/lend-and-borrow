@@ -22,7 +22,7 @@ import com.example.lendandborrowclient.NotificationListeners.AvailabilitiesChang
 import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
-import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+import com.example.lendandborrowclient.RestAPI.HandyRestApiBuilder;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import org.joda.time.DateTimeComparator;
 import java.util.Calendar;
@@ -82,7 +82,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
     }
 
     private void LoadBranches() {
-        HandyServiceFactory.GetInstance().GetBranches().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        HandyRestApiBuilder.GetInstance().GetBranches().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe((branches, throwable) ->
                 {
                     if (branches != null) {
@@ -98,7 +98,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
 
     private void LoadAvailabilities()
     {
-        HandyServiceFactory.GetInstance().GetItemAvailabilities(_displayedItem.Id)
+        HandyRestApiBuilder.GetInstance().GetItemAvailabilities(_displayedItem.Id)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe((availabilities, throwable) ->
                 {
@@ -209,7 +209,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
                 }
 
                 else
-                    Toast.makeText(getContext(), R.string.branch_not_selected, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), R.string.request_fill_all_fields, Toast.LENGTH_LONG).show();
 
                 return true;
             }

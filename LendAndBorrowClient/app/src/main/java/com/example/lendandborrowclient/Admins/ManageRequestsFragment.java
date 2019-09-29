@@ -18,7 +18,7 @@ import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.Models.Status;
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.R;
-import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+import com.example.lendandborrowclient.RestAPI.HandyRestApiBuilder;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,7 +55,7 @@ public class ManageRequestsFragment extends Fragment implements RequestClickedLi
     }
 
     void ReloadPendingRequests() {
-        HandyServiceFactory.GetInstance().GetAllPendingRequests().subscribeOn(Schedulers.io())
+        HandyRestApiBuilder.GetInstance().GetAllPendingRequests().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((requests, throwable) -> {
                     if (throwable == null) {
@@ -97,12 +97,12 @@ public class ManageRequestsFragment extends Fragment implements RequestClickedLi
     }
 
     private void DeclineRequest(Borrow borrow, Item relatedItem, Availability relatedAvailability) {
-        HandyServiceFactory.GetInstance().UpdateBorrowStatus(borrow.Id, Status.declined).subscribeOn(Schedulers.io())
+        HandyRestApiBuilder.GetInstance().UpdateBorrowStatus(borrow.Id, Status.declined).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((responseBody, throwable) -> {
                     if (throwable == null) {
                         ReloadPendingRequests();
-                        ((ManagementActivity)getActivity()).sendSMS(borrow, relatedItem, relatedAvailability, false);
+                        ((AdminManagementActivity)getActivity()).sendSMS(borrow, relatedItem, relatedAvailability, false);
                     } else {
                         Toast.makeText(getContext(), "There was an error declining the request. Please try again", Toast.LENGTH_SHORT).show();
                     }
@@ -117,14 +117,14 @@ public class ManageRequestsFragment extends Fragment implements RequestClickedLi
 
 
     private void ApproveRequest(Borrow borrow, Item relatedItem, Availability relatedAvailability) {
-        HandyServiceFactory.GetInstance().UpdateBorrowStatus(borrow.Id, Status.approved).subscribeOn(Schedulers.io())
+        HandyRestApiBuilder.GetInstance().UpdateBorrowStatus(borrow.Id, Status.approved).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((requests, throwable) -> {
                     if (throwable == null) {
                         ReloadPendingRequests();
                         // Declines other requests for that particular item on the same dates
                         DeclineRequests(requests, relatedItem, relatedAvailability);
-                        ((ManagementActivity)getActivity()).sendSMS(borrow, relatedItem, relatedAvailability, true);
+                        ((AdminManagementActivity)getActivity()).sendSMS(borrow, relatedItem, relatedAvailability, true);
                     } else {
                         Toast.makeText(getContext(), "There was an error approving the request. Please try again", Toast.LENGTH_SHORT).show();
                     }

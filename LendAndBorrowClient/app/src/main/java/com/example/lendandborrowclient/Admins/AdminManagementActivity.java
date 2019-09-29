@@ -24,7 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ManagementActivity extends AppCompatActivity
+public class AdminManagementActivity extends AppCompatActivity
 {
     private static String[] tabTitles = new String[]{"Items", "Availabilities", "Requests"};
 
@@ -92,9 +92,9 @@ public class ManagementActivity extends AppCompatActivity
              */
             switch (position) {
                 case ITEM_FRAGMENT:
-                    return ManageItemFragment.newInstance();
+                    return ManageItemsFragment.newInstance();
                 case AVAILABILITY_FRAGMENT:
-                    return ManageAvailabilityFragment.newInstance();
+                    return ManageAvailabilitiesFragment.newInstance();
                 case REQUESTS_FRAGMENT:
                     return ManageRequestsFragment.newInstance();
                 default:
@@ -149,7 +149,7 @@ public class ManagementActivity extends AppCompatActivity
     }
 
     public void ItemsChanged(List<Item> items) {
-        ((ManageAvailabilityFragment)_viewPagerAdapter.getRegisteredFragment(AVAILABILITY_FRAGMENT)).RefreshItems(items);
+        ((ManageAvailabilitiesFragment)_viewPagerAdapter.getRegisteredFragment(AVAILABILITY_FRAGMENT)).RefreshItems(items);
     }
 
     //endregion

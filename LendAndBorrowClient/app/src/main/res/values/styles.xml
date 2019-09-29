@@ -22,7 +22,7 @@
         <item name="android:minHeight">36dp</item>
         <item name="android:elevation">1dp</item>
         <item name="android:translationZ">1dp</item>
-        <item name="android:background">#e0e0e0</item>
+        <item name="android:background">#FFFFFF</item>
     </style>
 
 </resources>

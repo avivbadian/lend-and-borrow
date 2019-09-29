@@ -39,7 +39,6 @@
                 android:spinnerMode="dialog" />
 
             <com.savvi.rangedatepicker.CalendarPickerView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/calendar_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -49,11 +48,6 @@
                 android:scrollbarStyle="outsideOverlay"
                 android:clipToPadding="false">
             </com.savvi.rangedatepicker.CalendarPickerView>
-<!--                app:tsquare_dividerColor="@color/transparent"-->
-<!--                app:tsquare_headerTextColor="@color/custom_header_text"-->
-                />
-
-
         </LinearLayout>
     </ScrollView>
 
@@ -61,8 +55,10 @@
         android:id="@+id/btn_add_availability"
         android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:padding="12dp"
+        android:layout_marginTop="24dp"
         android:text="@string/add_availability_btn"
-        android:background="@color/color_button"
+        android:background="@drawable/my_button_bg"
         android:layout_weight="0"/>
 
 </LinearLayout>

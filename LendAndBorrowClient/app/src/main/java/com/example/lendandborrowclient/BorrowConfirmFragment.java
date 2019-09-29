@@ -25,7 +25,7 @@ import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Branch;
 import com.example.lendandborrowclient.Models.Item;
-import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+import com.example.lendandborrowclient.RestAPI.HandyRestApiBuilder;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -86,14 +86,14 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
 
     private String ConstructBorrowSummary()
     {
-        StringBuilder builder = new StringBuilder("Borrow details:\n");
+        StringBuilder builder = new StringBuilder();
         Item item = ((MainActivity)getActivity()).GetSelectedItem();
         Branch branch = ((MainActivity)getActivity()).GetSelectedBranch();
         Availability availability = ((MainActivity)getActivity()).GetSelectedAvailability();
 
-        builder.append(item.Title).append(", Category: ").append(item.Category)
+        builder.append(item.Title).append("\nCategory: ").append(item.Category)
                 .append("\n" + availability)
-                .append("\n from branch: ").append(branch.Title).append("(").append(branch.Address).append(")");
+                .append("\nfrom branch: ").append(branch.Title).append("(").append(branch.Address).append(")");
 
         return builder.toString();
     }
@@ -125,7 +125,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         progressDialog.show();
 
         // Send server request and wait.
-        HandyServiceFactory.GetInstance().Borrow(borrow).
+        HandyRestApiBuilder.GetInstance().Borrow(borrow).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
                 subscribe((ResponseBody, throwable) -> {
@@ -153,7 +153,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
 
         builder.setPositiveButton("Ok", (dialog, id) -> {
             ((MainActivity)getActivity()).CloseAllFragments();
-            ((MainActivity)getActivity()).ShowItemsListFragment();
+            ((MainActivity)getActivity()).DisplayItemsFragment();
         });
 
         AlertDialog dlg = builder.create();

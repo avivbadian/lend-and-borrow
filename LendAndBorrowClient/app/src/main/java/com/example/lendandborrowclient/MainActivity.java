@@ -22,16 +22,11 @@ public class MainActivity extends AppCompatActivity {
     private Availability _selectedAvailability;
     private Branch _selectedBranch;
 
-    // TODO : Save Fragments here so we can HIDE/SHOW them on back
-    // TODO : Change transaction to hide previous, add new and commit instead of current replace
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        ShowItemsListFragment();
+        DisplayItemsFragment();
     }
 
     @Override
@@ -39,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main_page,menu);
+        inflater.inflate(R.menu.options_menu,menu);
 
         // Create search bar in the action bar
         MenuItem searchItem = menu.findItem(R.id.menu_item_search);
@@ -47,11 +42,10 @@ public class MainActivity extends AppCompatActivity {
         searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.CENTER));
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        if(null != searchManager )
+        if (searchManager != null)
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setIconifiedByDefault(false);
-
         return true;
     }
 
@@ -65,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
             case R.id.admin_action: {
-                Intent intent = new Intent(this, LoginActivity.class);
+                Intent intent = new Intent(this, AdminLoginActivity.class);
                 startActivity(intent);
                 return true;
             }
@@ -92,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            // TODO : Ask the current fragment to handle the back press and then pop
             getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
@@ -102,14 +95,6 @@ public class MainActivity extends AppCompatActivity {
     public void CloseAllFragments()
     {
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-    }
-
-    public void ShowItemsListFragment()
-    {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.container, new ItemsListFragment(), "ItemsListFragment")
-                /*.addToBackStack(null)*/.commit();
     }
 
     @Override
@@ -137,6 +122,15 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.container, frag)
                 .addToBackStack(null).commit();
     }
+
+    public void DisplayItemsFragment()
+    {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container, new ItemsDisplayFragment(), "ItemsDisplayFragment")
+                .commit();
+    }
+
 
     public Item GetSelectedItem(){
         return _selectedItem;

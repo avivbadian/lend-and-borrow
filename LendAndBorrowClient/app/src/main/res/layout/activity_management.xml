@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Admins.ManagementActivity">
+    tools:context=".Admins.AdminManagementActivity">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/management_tabs"

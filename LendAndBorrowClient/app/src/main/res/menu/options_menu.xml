@@ -7,15 +7,14 @@
         android:id="@+id/menu_item_search"
         android:title="@string/item_search"
         android:orderInCategory="0"
-        app:showAsAction="always"
-
+        app:showAsAction="ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
         android:id="@+id/next_action"
         android:title="@string/next_action"
         android:orderInCategory="1"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_done"/>
 
     <item

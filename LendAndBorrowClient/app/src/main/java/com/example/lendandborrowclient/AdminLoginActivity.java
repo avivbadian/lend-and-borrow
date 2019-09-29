@@ -13,9 +13,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.lendandborrowclient.Admins.ManagementActivity;
+import com.example.lendandborrowclient.Admins.AdminManagementActivity;
 import com.example.lendandborrowclient.Models.Admin;
-import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+import com.example.lendandborrowclient.RestAPI.HandyRestApiBuilder;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
@@ -29,9 +29,9 @@ import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener
+public class AdminLoginActivity extends AppCompatActivity implements Validator.ValidationListener
 {
-    private static final String TAG = "LoginActivity";
+    private static final String TAG = "AdminLoginActivity";
 
     @BindView(R.id.til_input_username) @NotEmpty(messageResId = R.string.empty_field_error)
     TextInputLayout _userText;
@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
 
         _loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
+        final ProgressDialog progressDialog = new ProgressDialog(AdminLoginActivity.this,
                 android.R.style.Theme_Material_Light);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
         String userName = _userText.getEditText().getText().toString();
         String password = _passwordText.getEditText().getText().toString();
 
-        HandyServiceFactory.GetInstance().ValidateUser(new Admin(userName, password))
+        HandyRestApiBuilder.GetInstance().ValidateUser(new Admin(userName, password))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((responseBody, throwable) ->
@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     public void OnLoginSuccess()
     {
         _loginButton.setEnabled(true);
-        startActivity(new Intent(this, ManagementActivity.class));
+        startActivity(new Intent(this, AdminManagementActivity.class));
         finish();
     }
 

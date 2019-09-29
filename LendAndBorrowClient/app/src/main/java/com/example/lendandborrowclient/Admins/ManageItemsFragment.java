@@ -28,7 +28,7 @@ import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
-import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+import com.example.lendandborrowclient.RestAPI.HandyRestApiBuilder;
 import com.example.lendandborrowclient.Validation.TextInputLayoutDataAdapter;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -47,7 +47,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import static android.app.Activity.RESULT_OK;
 
-public class ManageItemFragment extends Fragment implements Validator.ValidationListener
+public class ManageItemsFragment extends Fragment implements Validator.ValidationListener
 {
     private static final int IMAGE_PICK = 1;
     private List<Item> _itemsList;
@@ -82,8 +82,8 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
-    static ManageItemFragment newInstance() {
-        return new ManageItemFragment();
+    static ManageItemsFragment newInstance() {
+        return new ManageItemsFragment();
     }
 
     @Nullable
@@ -103,7 +103,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
     private void LoadItems()
     {
-        HandyServiceFactory.GetInstance().GetAllItems()
+        HandyRestApiBuilder.GetInstance().GetAllItems()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((items, throwable) -> {
@@ -174,11 +174,11 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
     private void DeleteSelectedItem()
     {
-        HandyServiceFactory.GetInstance().GetItemAvailabilities(((Item) _itemsSpinner.getSelectedItem()).Id).subscribeOn(Schedulers.io())
+        HandyRestApiBuilder.GetInstance().GetItemAvailabilities(((Item) _itemsSpinner.getSelectedItem()).Id).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe((availabilities, throwable) -> {
                 if (throwable == null) {
-                    HandyServiceFactory.GetInstance().DeleteItem(((Item) _itemsSpinner.getSelectedItem()).Id)
+                    HandyRestApiBuilder.GetInstance().DeleteItem(((Item) _itemsSpinner.getSelectedItem()).Id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe((requests, ex) ->
@@ -201,7 +201,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                                     _itemsSpinnerAdapter.remove(selectedItem);
                                     _itemsSpinnerAdapter.notifyDataSetChanged();
                                     _itemsList.remove(selectedItem);
-                                    ((ManagementActivity)getActivity()).ItemsChanged(_itemsList);
+                                    ((AdminManagementActivity)getActivity()).ItemsChanged(_itemsList);
                                     try {
                                         // Delete image from firebase
                                         FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.Path).delete().addOnSuccessListener(aVoid -> {
@@ -226,7 +226,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
     private void declineRelatedRequests(List<Borrow> borrows, Item relatedItem, List<Availability> relatedAvailabilities) {
         for (Borrow request : borrows){
-            ((ManagementActivity)getActivity()).sendSMS(request, relatedItem,
+            ((AdminManagementActivity)getActivity()).sendSMS(request, relatedItem,
                     relatedAvailabilities.stream().filter(availability -> availability.Id == request.Availability).findFirst().get(), false);
         }
     }
@@ -277,7 +277,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
 
     private void AddItem(Item newItem)
     {
-        HandyServiceFactory.GetInstance().AddItem(newItem)
+        HandyRestApiBuilder.GetInstance().AddItem(newItem)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((itemId, throwable) -> {
@@ -300,7 +300,7 @@ public class ManageItemFragment extends Fragment implements Validator.Validation
                         _itemsList.add(newItem);
 
                         // Notify other fragments and ourselves
-                        ((ManagementActivity)getActivity()).ItemsChanged(_itemsList);
+                        ((AdminManagementActivity)getActivity()).ItemsChanged(_itemsList);
                         _itemsSpinnerAdapter.notifyDataSetChanged();
 
                         _itemImage.setImageResource(R.drawable.ic_add_photo);

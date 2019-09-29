@@ -2,7 +2,6 @@ package com.example.lendandborrowclient.ListAdapters;
 
 import android.content.Context;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +16,7 @@ import com.example.lendandborrowclient.Models.Availability;
 import com.example.lendandborrowclient.Models.Borrow;
 import com.example.lendandborrowclient.Models.Item;
 import com.example.lendandborrowclient.R;
-import com.example.lendandborrowclient.RestAPI.HandyServiceFactory;
+import com.example.lendandborrowclient.RestAPI.HandyRestApiBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,13 +105,13 @@ public class RequestsListAdapter extends RecyclerView.Adapter<RequestsListAdapte
         }
 
         public void bind(final Borrow request) {
-            HandyServiceFactory.GetInstance().GetAvailabilityById(request.Availability)
+            HandyRestApiBuilder.GetInstance().GetAvailabilityById(request.Availability)
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe((availability, throwable) ->
                     {
                         if (throwable == null && availability.Item_id != 0) {
                             _relatedAvailability = availability;
-                            HandyServiceFactory.GetInstance().GetItem(availability.Item_id)
+                            HandyRestApiBuilder.GetInstance().GetItem(availability.Item_id)
                                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                                     .subscribe((item, ex) -> {
                                         if (ex == null) {
