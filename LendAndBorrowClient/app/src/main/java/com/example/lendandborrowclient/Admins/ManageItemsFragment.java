@@ -51,7 +51,6 @@ public class ManageItemsFragment extends Fragment implements Validator.Validatio
 {
     private static final int IMAGE_PICK = 1;
     private List<Item> _itemsList;
-    //private ProgressDialog _progressDialog;
     private Validator _validator;
     private ArrayAdapter<Item> _itemsSpinnerAdapter;
     private StorageReference _imagesRef = FirebaseStorage.getInstance().getReference().child("Items");
