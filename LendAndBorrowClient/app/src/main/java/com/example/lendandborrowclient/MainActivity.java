@@ -28,9 +28,14 @@ public class MainActivity extends AppCompatActivity implements ServerNotificatio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Get the correct server url from firebase and start the application after its received.
         HandyRestApiBuilder.SetServerUrl(this);
     }
 
+    /*
+    specify the options menu for the activity
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -38,15 +43,17 @@ public class MainActivity extends AppCompatActivity implements ServerNotificatio
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu,menu);
 
-        // Create search bar in the action bar
+        // Add search to the action bar
         MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         SearchView searchView  = (SearchView) searchItem.getActionView();
         searchView.setLayoutParams(new ActionBar.LayoutParams(Gravity.CENTER));
 
+        // Using android system service for searching
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         if (searchManager != null)
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+        // Make the search open by default
         searchView.setIconifiedByDefault(false);
         return true;
     }

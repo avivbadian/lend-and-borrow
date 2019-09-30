@@ -14,16 +14,16 @@ INSERT INTO admins VALUES
 
 --- id, title, category, description
 INSERT INTO items (title, category, description, path) VALUES
-  ('Tent', 'Camping Equipment', '4 people tent, green, okay condition.', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F12.jpg?alt=media&token=d795442f-f69e-4b89-830d-0c206033e9fc'),
-  ('Harry Potter: The Philosophers stone', 'Books', 'Harry Potter book first book', 'https://media.bloomsbury.com/rep/bj/9781408855652.jpeg'),
-  ('Harry Potter: The Chamber of Secrets', 'Books', 'Harry Potter book second book', 'https://media.bloomsbury.com/rep/bj/9781408855669.jpeg'),
-  ('Hammer', 'Tools', 'A hammer with wooden handle in good condition, 5K','https://i.imgur.com/ORGInJP.png'),
-  ('Screwdriver', 'Tools', 'Swiss screwdriver, small size', 'https://i.imgur.com/VnjgYTq.png'),
-  ('Crutches', 'Mobility aids', 'Metal crutches, for adults', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Axillary_%28underarm%29_crutches.JPG/150px-Axillary_%28underarm%29_crutches.JPG'),
-  ('Scooter', 'Mobility aids', 'Small scooter for people with mobility problems', 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Walking_Aid_Scooter_and_mobility_aid.jpg/330px-Walking_Aid_Scooter_and_mobility_aid.jpg'),
-  ('Cat', 'Pets', 'A cat, so you wont get lonley, his name is Jeff', 'https://i.imgur.com/QCoM9Qu.png'),
-  ('Dog', 'Pets', 'A dog, so you wont get lonley, his name is Moon', 'https://i.imgur.com/l1NdaKS.png'),
-  ('Calculator', 'tools', 'A Brand new casio calculator, sceintific' , 'https://i.imgur.com/W37GCYM.png');
+  ('Tent', 'Camping', 'HOSPORT Camping Tent 2-3 Person Tent Instant Pop Up Tent Automatic Backpacking Dome Tents Waterproof Canopy Tent for Camping Outdoor Sports Travel Beach', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2Ftent.jpg?alt=media&token=d8f51276-0174-4e86-8b6e-1e4db0d48874'),
+  ('Harry Potter: The Philosophers stone', 'Books', 'Harry Potter book first book', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F9781408855652.jpeg?alt=media&token=d1d3968e-42d0-4ea5-bada-faf55a760cbb'),
+  ('Harry Potter: The Chamber of Secrets', 'Books', 'Harry Potter book second book', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F9781408855669.jpeg?alt=media&token=fb947acd-02df-4945-8f47-28a209db4e11'),
+  ('Hand weights', 'Sports', '3 lbs Neoprene Dumbbells + Resistance Exercise Bands + Adjustable Jump Rope + Slip-Proof Gloves - Body Workout Equipment Set for Home, Gym & Outdoor Sports – Skytree','https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F51KmnJ2NCLL._AC_SL1000_.jpg?alt=media&token=1a070abe-d95e-4cc5-8189-8132bc989613'),
+  ('Pan', 'Coocking', 'Lodge 10.5 Inch Cast Iron Griddle. Pre-seasoned Round Cast Iron Pan Perfect for Pancakes, Pizzas, and Quesadillas.', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F71lb5I5fhyL._AC_SL1500_.jpg?alt=media&token=8a0e7a04-de5c-4b57-a495-373e5a698539'),
+  ('Sports watch', 'Sports', 'YANCH Compatible with for Apple Watch Band 38mm 42mm 40mm 44mm, Soft Silicone Sport Band Replacement Wrist Strap Compatible with for iWatch Series 4/3/2/1, Nike+,Sport,Edition', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F61Pbybg6CsL._AC_SL1200_.jpg?alt=media&token=19b82d54-3d0b-4f1f-af76-a7ab84360708'),
+  ('Flashlight', 'Camping', 'Anker Rechargeable Bolder LC90 LED Flashlight, Pocket-Sized Torch with Super Bright 900 Lumens CREE LED, IP65 Water-Resistant, Zoomable, 5 Light Modes, 18650 Battery Included', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F7113yxOuyKL._AC_SL1500_.jpg?alt=media&token=94ee13f4-c936-43cd-8f6a-34868f53d099'),
+  ('Airbed', 'Sleep', 'Intex Dura-Beam Standard Series Deluxe Single-High Airbed', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F71icCvGLCjL._AC_SL1500_.jpg?alt=media&token=387a92c3-de59-4a75-8113-f8462a6ae4de'),
+  ('Sleeping bag', 'Camping', 'Kelty Boys & Girls Big Dipper Sleeping Bag, Childrens Sleeping Bag for Sleepovers, Camping, Backpacking and More', 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F81EuTaT47KL._AC_SL1500_.jpg?alt=media&token=f538f7ea-90fd-4bbe-8a0d-259ff13a0e28'),
+  ('Water bottle', 'Sports', 'Hydro Flask Standard Mouth Water Bottle, Flex Cap - Multiple Sizes & Colors' , 'https://firebasestorage.googleapis.com/v0/b/handy-d7cdd.appspot.com/o/Items%2F61Cgdjpo-gL._AC_SL1500_.jpg?alt=media&token=8da2b02d-bc2a-4847-bfb0-228387ca9efe');
 
 
 -- title, address
