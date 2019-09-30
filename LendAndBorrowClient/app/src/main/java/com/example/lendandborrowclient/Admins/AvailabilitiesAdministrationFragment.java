@@ -73,7 +73,7 @@ public class AvailabilitiesAdministrationFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.fragment_manage_availabilites, container, false);
+        View v = inflater.inflate(R.layout.fragment_availabilites_administration, container, false);
         _unbinder = ButterKnife.bind(this, v);
         calendarPickerView.setVisibility(View.GONE);
         _availabilitiesOfItem = new ArrayList<>();

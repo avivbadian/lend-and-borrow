@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,16 +41,23 @@ public class RequestsAdministrationFragment extends Fragment implements RequestC
 
     @BindView(R.id.rv_requests)
     RecyclerView requestsRecyclerView;
+    @BindView(R.id.requests_pull_to_refresh)
+    SwipeRefreshLayout refreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_manage_requests, container, false);
+        View v = inflater.inflate(R.layout.fragment_requests_administration, container, false);
         _unbinder = ButterKnife.bind(this, v);
         _requestsListAdapter = new RequestsListAdapter(getContext(), this);
         requestsRecyclerView.setAdapter(_requestsListAdapter);
         requestsRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 1));
         requestsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        refreshLayout.setOnRefreshListener(() -> {
+            ReloadPendingRequests();
+            refreshLayout.setRefreshing(false);
+        });
 
         ReloadPendingRequests();
         return v;

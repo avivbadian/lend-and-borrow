@@ -89,7 +89,7 @@ public class ItemsAdministrationFragment extends Fragment implements Validator.V
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.fragment_manage_items, container, false);
+        View v = inflater.inflate(R.layout.fragment_items_administration, container, false);
         _unbinder = ButterKnife.bind(this, v);
 
         // Setting fields validator
