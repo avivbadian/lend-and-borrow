@@ -93,7 +93,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
 
         builder.append(item.Title).append("\nCategory: ").append(item.Category)
                 .append("\n" + availability)
-                .append("\nfrom branch: ").append(branch.Title).append("(").append(branch.Address).append(")");
+                .append("\nbranch: ").append(branch.Title).append("(").append(branch.Address).append(")");
 
         return builder.toString();
     }

@@ -49,7 +49,7 @@ public class AdminLoginActivity extends AppCompatActivity implements Validator.V
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        setTitle("Login");
+        setTitle("Admin");
 
         // Setting fields validator
         _validator = new Validator(this);

@@ -86,7 +86,7 @@ public class ManageAvailabilitiesFragment extends Fragment
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                _deleteAvailabilityButton.setEnabled(true);
+                OnItemSelected(((Item)_itemsSpinnerForDel.getSelectedItem()).Id, true);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent)
@@ -108,7 +108,7 @@ public class ManageAvailabilitiesFragment extends Fragment
         _availabilitiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+                _deleteAvailabilityButton.setEnabled(true);
             }
 
             @Override
@@ -276,6 +276,8 @@ public class ManageAvailabilitiesFragment extends Fragment
                             _availabilitiesSpinnerAdapter.addAll(_availabilitiesOfItem);
                             _availabilitiesSpinnerAdapter.notifyDataSetChanged();
                         }
+                    } else {
+                        Snackbar.make(getView(), "Failed loading item availabilities", Snackbar.LENGTH_LONG).show();
                     }
                 });
     }

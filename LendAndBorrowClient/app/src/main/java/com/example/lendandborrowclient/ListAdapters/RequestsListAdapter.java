@@ -127,7 +127,7 @@ public class RequestsListAdapter extends RecyclerView.Adapter<RequestsListAdapte
                                             Toast.makeText(_ctx, "Failed Loading requested item", Toast.LENGTH_SHORT).show();
                                         }
                                     });
-                            requestDates.setText(availability.toString());
+                            requestDates.setText(String.format("%s %s (%s)", request.First_name, request.Last_name, availability.toString()));
                         } else
                             Toast.makeText(_ctx, "Failed Loading request availability", Toast.LENGTH_SHORT).show();
                     });

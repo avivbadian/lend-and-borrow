@@ -51,7 +51,7 @@ public class AdminManagementActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_management);
         ButterKnife.bind(this);
-        setTitle("Management");
+        setTitle("Administration");
         _viewPagerAdapter = new ManagementFragmentsAdapter(getSupportFragmentManager());
         _viewPager.setAdapter(_viewPagerAdapter);
         _tabLayout.setupWithViewPager(_viewPager);

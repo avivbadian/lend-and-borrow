@@ -66,7 +66,7 @@
     <string name="failure_deleting_availability">Failed deleting availability</string>
 
     // Login errors
-    <string name="password_invalid_error">Password must be with numbers and letters</string>
+    <string name="password_invalid_error">Password should contain numbers and letters</string>
     <string name="login_user_hint">User</string>
     <string name="login_password_hint">Password</string>
 
