@@ -36,19 +36,16 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ItemsDisplayFragment extends Fragment implements ItemClickedListener
 {
-    // Views
     @BindView(R.id.pb_items) ProgressBar _progressBar;
     @BindView(R.id.rv_items) RecyclerView m_itemsListRecyclerView;
     @BindView(R.id.pullToRefresh) SwipeRefreshLayout swipeRefreshLayout;
 
-    // Variables
     private List<Item> _itemDisplays;
     private ItemsListAdapter _itemsAdapter;
 
     /** because a Fragment may continue to exist after its Views are destroyed,
      *  we manually call .unbind() from fragments to release reference to Views (and allow associated memory to be reclaimed)*/
     private Unbinder _unbinder;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -71,54 +68,41 @@ public class ItemsDisplayFragment extends Fragment implements ItemClickedListene
         m_itemsListRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            LoadItemsList(true);
+            LoadItemsList();
             swipeRefreshLayout.setRefreshing(false);
         });
 
         LoadItemsList();
-
         return v;
     }
 
-    private void LoadItemsList()
-    {
-        LoadItemsList(false);
-    }
+    private void LoadItemsList() {
+        HandyRestApiBuilder.GetInstance().GetAllItems()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(
+                        disposable ->
+                        {
+                            _progressBar.setVisibility(View.VISIBLE);
+                            m_itemsListRecyclerView.setVisibility(View.GONE);
+                        }
+                ).subscribe((items, throwable) ->
+        {
+            _progressBar.setVisibility(View.GONE);
+            m_itemsListRecyclerView.setVisibility(View.VISIBLE);
 
-    private void LoadItemsList(boolean forceLoad)
-    {
-        if (forceLoad || _itemDisplays == null)
-            HandyRestApiBuilder.GetInstance().GetAllItems()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .doOnSubscribe(
-                            disposable ->
-                            {
-                                _progressBar.setVisibility(View.VISIBLE);
-                                m_itemsListRecyclerView.setVisibility(View.GONE);
-                            }
-                    ).subscribe((items, throwable) ->
-            {
-                _progressBar.setVisibility(View.GONE);
-                m_itemsListRecyclerView.setVisibility(View.VISIBLE);
+            if (items != null) {
+                _itemDisplays = items;
+                _itemsAdapter.SetData(_itemDisplays);
+            } else {
+                Log.d("Items", "Error retrieving the items");
 
-                if (items != null)
-                {
-                    _itemDisplays = items;
-                    _itemsAdapter.SetData(_itemDisplays);
-                }
-                else
-                {
-                    Log.d("Items", "Error retrieving the items");
-
-                    Snackbar.make(getView(),
-                            "Failed Loading Items", Snackbar.LENGTH_SHORT)
-                            .setAction(R.string.retry, v -> LoadItemsList(forceLoad))
-                            .show();
-                }
-            });
-        else
-            _itemsAdapter.SetData(_itemDisplays);
+                Snackbar.make(getView(),
+                        "Failed Loading Items", Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.retry, v -> LoadItemsList())
+                        .show();
+            }
+        });
     }
 
     @Override
@@ -135,8 +119,10 @@ public class ItemsDisplayFragment extends Fragment implements ItemClickedListene
         MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         androidx.appcompat.widget.SearchView searchView = (androidx.appcompat.widget.SearchView) searchItem.getActionView();
 
+        // Listener on the search text
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener()
         {
+            // Query the items by name
             @Override
             public boolean onQueryTextSubmit(String query)
             {
@@ -144,6 +130,7 @@ public class ItemsDisplayFragment extends Fragment implements ItemClickedListene
                 return true;
             }
 
+            // Clear query when text is empty.
             @Override
             public boolean onQueryTextChange(String newText)
             {
@@ -159,12 +146,11 @@ public class ItemsDisplayFragment extends Fragment implements ItemClickedListene
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
+        // Next button is invisible in this part
         MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         MenuItem nextItem = menu.findItem(R.id.next_action);
-
         nextItem.setVisible(false);
         searchItem.setVisible(true);
-
         super.onPrepareOptionsMenu(menu);
     }
 

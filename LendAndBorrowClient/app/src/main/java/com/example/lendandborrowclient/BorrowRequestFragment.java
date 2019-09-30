@@ -38,6 +38,12 @@ import io.reactivex.schedulers.Schedulers;
 
 public class BorrowRequestFragment extends Fragment implements AvailabilitiesChangedListener
 {
+    @BindView(R.id.iv_item_image) ImageView _itemImage;
+    @BindView(R.id.tv_item_title) TextView _itemTitle;
+    @BindView(R.id.tv_item_category) TextView _itemCategory;
+    @BindView(R.id.tv_item_description) TextView _itemDescription;
+    @BindView(R.id.tv_selected_availability) TextView _selectedAvailabilityView;
+    @BindView(R.id.sp_branch_to_borrow) Spinner _branchesSpinner;
 
     private ArrayAdapter<Branch> _branchesSpinnerAdapter;
     private Unbinder _unbinder;
@@ -45,13 +51,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
     private List<Availability> _allAvailabilities;
     private List<Branch> _allBranches;
     private Availability _selectedAvailability;
-
-    @BindView(R.id.iv_item_image) ImageView _itemImage;
-    @BindView(R.id.tv_item_title) TextView _itemTitle;
-    @BindView(R.id.tv_item_category) TextView _itemCategory;
-    @BindView(R.id.tv_item_description) TextView _itemDescription;
-    @BindView(R.id.tv_selected_availability) TextView _selectedAvailabilityView;
-    @BindView(R.id.sp_branch_to_borrow) Spinner _branchesSpinner;
+    private Branch _selectedBranch;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -196,13 +196,13 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
             case R.id.next_action:
             {
                 if (_selectedAvailability.Id != 0) {
-                    Branch selectedBranch = (Branch)_branchesSpinner.getSelectedItem();
-                    if (selectedBranch == null || selectedBranch.Title.equals("")) {
+                    _selectedBranch = (Branch)_branchesSpinner.getSelectedItem();
+                    if (_selectedBranch == null || _selectedBranch.Title.equals("")) {
                         Toast.makeText(getContext(), "Please choose a branch", Toast.LENGTH_LONG).show();
                         return true;
                     }
                     try  {
-                        ((MainActivity) getActivity()).ShowBorrowConfirmDialog(selectedBranch, _selectedAvailability);
+                        ((MainActivity) getActivity()).ShowBorrowConfirmDialog(_selectedBranch, _selectedAvailability);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

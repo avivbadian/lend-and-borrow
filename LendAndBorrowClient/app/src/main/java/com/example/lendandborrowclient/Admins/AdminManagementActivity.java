@@ -92,11 +92,11 @@ public class AdminManagementActivity extends AppCompatActivity
              */
             switch (position) {
                 case ITEM_FRAGMENT:
-                    return ManageItemsFragment.newInstance();
+                    return ItemsAdministrationFragment.newInstance();
                 case AVAILABILITY_FRAGMENT:
-                    return ManageAvailabilitiesFragment.newInstance();
+                    return AvailabilitiesAdministrationFragment.newInstance();
                 case REQUESTS_FRAGMENT:
-                    return ManageRequestsFragment.newInstance();
+                    return RequestsAdministrationFragment.newInstance();
                 default:
                     return null;
             }
@@ -145,11 +145,11 @@ public class AdminManagementActivity extends AppCompatActivity
     // TODO: Add push notifications
 
     public void AvailabilityDeleted() {
-        ((ManageRequestsFragment)_viewPagerAdapter.getRegisteredFragment(REQUESTS_FRAGMENT)).ReloadPendingRequests();
+        ((RequestsAdministrationFragment)_viewPagerAdapter.getRegisteredFragment(REQUESTS_FRAGMENT)).ReloadPendingRequests();
     }
 
     public void ItemsChanged(List<Item> items) {
-        ((ManageAvailabilitiesFragment)_viewPagerAdapter.getRegisteredFragment(AVAILABILITY_FRAGMENT)).RefreshItems(items);
+        ((AvailabilitiesAdministrationFragment)_viewPagerAdapter.getRegisteredFragment(AVAILABILITY_FRAGMENT)).RefreshItems(items);
     }
 
     //endregion

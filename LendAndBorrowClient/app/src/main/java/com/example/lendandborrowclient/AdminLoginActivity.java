@@ -37,8 +37,8 @@ public class AdminLoginActivity extends AppCompatActivity implements Validator.V
     TextInputLayout _userText;
     @BindView(R.id.til_input_password) @Password(scheme = Password.Scheme.ALPHA_NUMERIC, messageResId = R.string.password_invalid_error)
     TextInputLayout _passwordText;
-    @BindView(R.id.btn_login) Button _loginButton;
-
+    @BindView(R.id.btn_login)
+    Button _loginButton;
     @BindView(android.R.id.content)
     View _rootView;
 
@@ -60,10 +60,7 @@ public class AdminLoginActivity extends AppCompatActivity implements Validator.V
 
     public void Login()
     {
-        Log.d(TAG, "Login");
-
         _loginButton.setEnabled(false);
-
         final ProgressDialog progressDialog = new ProgressDialog(AdminLoginActivity.this,
                 android.R.style.Theme_Material_Light);
         progressDialog.setIndeterminate(true);
@@ -102,7 +99,6 @@ public class AdminLoginActivity extends AppCompatActivity implements Validator.V
     public void OnLoginFailed()
     {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
         _loginButton.setEnabled(true);
     }
 

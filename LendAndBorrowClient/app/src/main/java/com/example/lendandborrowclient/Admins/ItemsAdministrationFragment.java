@@ -47,7 +47,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import static android.app.Activity.RESULT_OK;
 
-public class ManageItemsFragment extends Fragment implements Validator.ValidationListener
+public class ItemsAdministrationFragment extends Fragment implements Validator.ValidationListener
 {
     private static final int IMAGE_PICK = 1;
     private List<Item> _itemsList;
@@ -81,8 +81,8 @@ public class ManageItemsFragment extends Fragment implements Validator.Validatio
     /* Used to handle permission request */
     private static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
 
-    static ManageItemsFragment newInstance() {
-        return new ManageItemsFragment();
+    static ItemsAdministrationFragment newInstance() {
+        return new ItemsAdministrationFragment();
     }
 
     @Nullable

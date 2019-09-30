@@ -26,15 +26,15 @@ import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class ManageRequestsFragment extends Fragment implements RequestClickedListener {
+public class RequestsAdministrationFragment extends Fragment implements RequestClickedListener {
 
 
     /** because a Fragment may continue to exist after its Views are destroyed,
      *  we manually call .unbind() from fragments to release reference to Views (and allow associated memory to be reclaimed)*/
     private Unbinder _unbinder;
     private RequestsListAdapter _requestsListAdapter;
-    public static ManageRequestsFragment newInstance() {
-        return new ManageRequestsFragment();
+    public static RequestsAdministrationFragment newInstance() {
+        return new RequestsAdministrationFragment();
     }
 
     @BindView(R.id.rv_requests)

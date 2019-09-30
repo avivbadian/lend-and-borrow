@@ -33,7 +33,7 @@ import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class ManageAvailabilitiesFragment extends Fragment
+public class AvailabilitiesAdministrationFragment extends Fragment
 {
     // Members
     private List<Item> _itemsList;
@@ -59,8 +59,8 @@ public class ManageAvailabilitiesFragment extends Fragment
     @BindView(R.id.btn_delete_availability)
     Button _deleteAvailabilityButton;
 
-    static ManageAvailabilitiesFragment newInstance() {
-        return new ManageAvailabilitiesFragment();
+    static AvailabilitiesAdministrationFragment newInstance() {
+        return new AvailabilitiesAdministrationFragment();
     }
 
     @Override
