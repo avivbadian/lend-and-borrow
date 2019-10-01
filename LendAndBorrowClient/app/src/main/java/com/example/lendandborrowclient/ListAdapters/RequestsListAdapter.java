@@ -105,16 +105,19 @@ public class RequestsListAdapter extends RecyclerView.Adapter<RequestsListAdapte
         }
 
         public void bind(final Borrow request) {
+            // Getting the availability related to the current request
             HandyRestApiBuilder.GetInstance().GetAvailabilityById(request.Availability)
                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe((availability, throwable) ->
                     {
                         if (throwable == null && availability.Item_id != 0) {
                             _relatedAvailability = availability;
+                            // Getting the item related to the availability
                             HandyRestApiBuilder.GetInstance().GetItem(availability.Item_id)
                                     .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                                     .subscribe((item, ex) -> {
                                         if (ex == null) {
+                                            // Setting UI parameters
                                             _relatedItem = item;
                                             itemName.setText(item.Title);
                                             itemCategory.setText(item.Category);
@@ -135,11 +138,13 @@ public class RequestsListAdapter extends RecyclerView.Adapter<RequestsListAdapte
 
         @OnClick(R.id.iv_approve_request)
         public void OnApproveRequestClicked() {
+            // Pop up confirm to the parent
             _listener.RequestConfirmClicked(_requestsList.get(getAdapterPosition()), _relatedItem, _relatedAvailability);
         }
 
         @OnClick(R.id.iv_decline_request)
         public void OnDeclineRequestClicked() {
+            // Pop up decline to parent
             _listener.RequestDeclineClicked(_requestsList.get(getAdapterPosition()), _relatedItem, _relatedAvailability);
         }
     }

@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements ServerNotificatio
         // Using android system service for searching
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         if (searchManager != null)
+            // Display information related to the search (placeholder)
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         // Make the search open by default
@@ -68,11 +69,13 @@ public class MainActivity extends AppCompatActivity implements ServerNotificatio
                 return false;
             }
             case R.id.admin_action: {
+                // Start admin logon activity
                 Intent intent = new Intent(this, AdminLoginActivity.class);
                 startActivity(intent);
                 return true;
             }
             case R.id.about_action: {
+                // Show an about message
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                 alertDialog.setTitle("Handy App");
                 alertDialog.setMessage("Handy App was developed by Aviv Badian and Yaniv Krim.\n" +
@@ -99,22 +102,16 @@ public class MainActivity extends AppCompatActivity implements ServerNotificatio
     }
 
     @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
-        }
+    protected void onRestart() {
+        super.onRestart();
     }
+
+    //region fragments
 
     public void CloseAllFragments()
     {
+        // Remove all previous fragments in the back stack of the container
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
     }
 
     public void ShowSelectAvailabilityFragment(Item item)
@@ -123,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements ServerNotificatio
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, new BorrowRequestFragment())
+                // add to back stack allows going back to last fragment with the back button.
                 .addToBackStack(null).commit();
     }
 
@@ -147,6 +145,19 @@ public class MainActivity extends AppCompatActivity implements ServerNotificatio
     }
 
 
+    @Override
+    public void onBackPressed() {
+        // If there is a fragment to go back to, pop it
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    //endregion
+
+    //region construct borrow
     public Item GetSelectedItem(){
         return _selectedItem;
     }
@@ -158,4 +169,6 @@ public class MainActivity extends AppCompatActivity implements ServerNotificatio
     public Branch GetSelectedBranch() {
         return _selectedBranch;
     }
+
+    //endregion
 }

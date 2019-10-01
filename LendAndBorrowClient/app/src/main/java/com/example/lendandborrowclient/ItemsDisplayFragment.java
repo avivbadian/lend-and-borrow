@@ -58,15 +58,22 @@ public class ItemsDisplayFragment extends Fragment implements ItemClickedListene
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState)
     {
+        // Disable back button.
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
+        // (false = not responsible for adding the view to the parent, let android handle it)
         View v = inflater.inflate(R.layout.fragment_items_list, container, false);
         _unbinder = ButterKnife.bind(this, v);
         _itemsAdapter = new ItemsListAdapter(this, getContext());
         m_itemsListRecyclerView.setAdapter(_itemsAdapter);
+
+        // 4 items in a row
         m_itemsListRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 4));
+
+        // Basic animation on add/remove to the items in the recycler view
         m_itemsListRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        // Reload items when user refreshes the page
         swipeRefreshLayout.setOnRefreshListener(() -> {
             LoadItemsList();
             swipeRefreshLayout.setRefreshing(false);
@@ -107,6 +114,7 @@ public class ItemsDisplayFragment extends Fragment implements ItemClickedListene
 
     @Override
     public void OnItemClicked(Item item) {
+        // When an item is selected, we move on to the next fragment in the borrow process
         ((com.example.lendandborrowclient.MainActivity)getActivity()).ShowSelectAvailabilityFragment(item);
     }
 

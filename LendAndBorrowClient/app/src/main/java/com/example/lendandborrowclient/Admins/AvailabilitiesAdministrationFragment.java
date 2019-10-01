@@ -81,6 +81,7 @@ public class AvailabilitiesAdministrationFragment extends Fragment
         _availabilitiesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _availabilitiesSpinner.setAdapter(_availabilitiesSpinnerAdapter);
 
+
         _itemsSpinnerForAdd.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override

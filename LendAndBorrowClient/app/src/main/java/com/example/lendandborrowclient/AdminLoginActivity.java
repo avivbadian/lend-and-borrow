@@ -8,7 +8,6 @@ import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -60,6 +59,7 @@ public class AdminLoginActivity extends AppCompatActivity implements Validator.V
 
     public void Login()
     {
+        // Loading while validating user
         _loginButton.setEnabled(false);
         final ProgressDialog progressDialog = new ProgressDialog(AdminLoginActivity.this,
                 android.R.style.Theme_Material_Light);
@@ -68,9 +68,11 @@ public class AdminLoginActivity extends AppCompatActivity implements Validator.V
         progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         progressDialog.show();
 
+        // Getting user parameters
         String userName = _userText.getEditText().getText().toString();
         String password = _passwordText.getEditText().getText().toString();
 
+        // POST request to the server to validate user (parameters sent through the body)
         HandyRestApiBuilder.GetInstance().ValidateUser(new Admin(userName, password))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -91,6 +93,7 @@ public class AdminLoginActivity extends AppCompatActivity implements Validator.V
 
     public void OnLoginSuccess()
     {
+        // Start the administration activity
         _loginButton.setEnabled(true);
         startActivity(new Intent(this, AdminManagementActivity.class));
         finish();

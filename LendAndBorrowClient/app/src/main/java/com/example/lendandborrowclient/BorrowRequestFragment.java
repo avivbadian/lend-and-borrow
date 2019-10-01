@@ -57,6 +57,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        // Enable back button
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setHasOptionsMenu(true);
     }
@@ -67,6 +68,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
     {
         View v = inflater.inflate(R.layout.fragment_borrow_request, container, false);
         _unbinder = ButterKnife.bind(this, v);
+        // Set scrollable text view in case of overflows
         _itemDescription.setMovementMethod(ScrollingMovementMethod.getInstance());
         return v;
     }
@@ -85,7 +87,10 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
         HandyRestApiBuilder.GetInstance().GetBranches().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe((branches, throwable) ->
                 {
+                    // Getting the branches from the server
                     if (branches != null) {
+                        // No need for special adapter as we only display the toString() of every branch in the spinner.
+                        // (Adapter = bridge between the UI components and the data source that fill data into the UI Component)
                         _allBranches = branches;
                         _branchesSpinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item,
                                 _allBranches);
@@ -114,12 +119,12 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
         Calendar now = Calendar.getInstance();
 
         // Using a date picker dialog which enables setting selectable dates.
-        // Using a date picker dialog which enables setting selectable dates.
         DatePickerDialog initialDatePickerDialog = DatePickerDialog.newInstance(new initialDatePicker(),
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH));
 
+        // Initializing the datepicker dialog only in case there are availabilities for that item
         if (_allAvailabilities != null && _allAvailabilities.size() != 0)
         {
             Calendar[] selectableDays = _allAvailabilities.stream().map(
@@ -136,11 +141,13 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
 
     private void PopulateFields()
     {
+        // display fields in the UI
         _selectedAvailability = new Availability();
         _itemTitle.setText(_displayedItem.Title);
         _itemCategory.setText(String.format(getString(R.string.categories), _displayedItem.Category));
-        Glide.with(this).load(_displayedItem.Path).into(_itemImage);
         _itemDescription.setText(String.format(getString(R.string.description_format), _displayedItem.Description));
+        // Load image with Glide
+        Glide.with(this).load(_displayedItem.Path).into(_itemImage);
     }
 
     @Override
@@ -153,11 +160,13 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
     class initialDatePicker implements DatePickerDialog.OnDateSetListener{
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+            // Converting the selected date into the java.util.Date object
             Calendar cur = Calendar.getInstance();
             cur.set(year, monthOfYear, dayOfMonth);
             Date date = new Date(cur.getTimeInMillis());
             DateTimeComparator comparator = DateTimeComparator.getDateOnlyInstance();
 
+            // Getting the fitting availability with the selected date as the start date
             _selectedAvailability = _allAvailabilities.stream().filter((availability) ->
                 comparator.compare(availability.Start_date, date) == 0
             ).findFirst().orElse(null);
@@ -176,6 +185,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
         MenuItem searchItem = menu.findItem(R.id.menu_item_search);
         MenuItem nextItem = menu.findItem(R.id.next_action);
 
+        // Next is visible, Search is invisible in this fragment
         nextItem.setVisible(true);
         searchItem.setVisible(false);
 
@@ -195,6 +205,7 @@ public class BorrowRequestFragment extends Fragment implements AvailabilitiesCha
             }
             case R.id.next_action:
             {
+                // If the user selected availability and branch, route him to the next fragment
                 if (_selectedAvailability.Id != 0) {
                     _selectedBranch = (Branch)_branchesSpinner.getSelectedItem();
                     if (_selectedBranch == null || _selectedBranch.Title.equals("")) {

@@ -80,12 +80,13 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        // Indicates that this fragment wants to be notified about menu options selected (for back button)
         setHasOptionsMenu(true);
     }
 
     private String ConstructBorrowSummary()
     {
+        // Display summary of the borrow details to the client
         StringBuilder builder = new StringBuilder();
         Item item = ((MainActivity)getActivity()).GetSelectedItem();
         Branch branch = ((MainActivity)getActivity()).GetSelectedBranch();
@@ -107,6 +108,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
     @Override
     public void onValidationSucceeded()
     {
+        // When validation is ok, clear all previous errors
         ClearErrorOnAllFields();
 
         Borrow borrow = new Borrow();
@@ -152,12 +154,13 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
         builder.setView(messageText);
 
         builder.setPositiveButton("Ok", (dialog, id) -> {
+            // Closing all the fragments related to the borrow requested by the user
             ((MainActivity)getActivity()).CloseAllFragments();
+            // Displaying the items fragment once again
             ((MainActivity)getActivity()).DisplayItemsFragment();
         });
 
         AlertDialog dlg = builder.create();
-
         dlg.show();
 
         final Button positiveButton = dlg.getButton(AlertDialog.BUTTON_POSITIVE);
@@ -182,7 +185,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
     public void onValidationFailed(List<ValidationError> errors)
     {
         ClearErrorOnAllFields();
-
+        // Displaying validation errors
         for (ValidationError error : errors)
         {
             View view = error.getView();
@@ -213,6 +216,7 @@ public class BorrowConfirmFragment extends Fragment implements Validator.Validat
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        // Handles back press - popping last fragment from the stack
         if (item.getItemId() == android.R.id.home) {
             getActivity().onBackPressed();
             return true;

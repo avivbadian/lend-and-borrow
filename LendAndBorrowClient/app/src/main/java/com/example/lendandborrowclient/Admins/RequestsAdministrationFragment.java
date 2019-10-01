@@ -54,6 +54,7 @@ public class RequestsAdministrationFragment extends Fragment implements RequestC
         requestsRecyclerView.setLayoutManager(new GridLayoutManager(container.getContext(), 1));
         requestsRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        // Enable refresh for the admin
         refreshLayout.setOnRefreshListener(() -> {
             ReloadPendingRequests();
             refreshLayout.setRefreshing(false);

@@ -68,6 +68,7 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
 
     public void SetData(List<Item> items)
     {
+        // Setting data and notifying changes
         _itemsList = items;
         _displayedItems = items;
         notifyDataSetChanged();
@@ -75,11 +76,13 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
 
     public void FilterDataByItemName(String query)
     {
+        // Filtering items by name
         _displayedItems = _itemsList.
                 stream().
                 filter(item -> item.Title.toLowerCase().contains(query.toLowerCase())).
                 collect(Collectors.toList());
 
+        // Notify ui changes
         notifyDataSetChanged();
     }
 
@@ -113,6 +116,7 @@ public class ItemsListAdapter extends RecyclerView.Adapter<ItemsListAdapter.Item
         }
 
         public void bind(final Item item) {
+            // Display items name and image for each item
             _itemTitle.setText(item.Title);
             try {
                 Glide.with(_ctx).load(item.Path).into(_itemPicture);
